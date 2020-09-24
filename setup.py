@@ -123,10 +123,10 @@ setup(
         'typecode',
     ],
     install_requires=[
-        'attr',
+        'attrs',
         'binaryornot',
         'commoncode',
-        'pdfminer',
+        'pdfminer.six',
         'plugincode',
         'pygments',
         'six',
