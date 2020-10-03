@@ -69,8 +69,6 @@ contains_text = lambda l: get_type(l).contains_text
 class TestContentTypeComplex(FileBasedTesting):
 #     test_data_dir = os.path.join(os.path.dirname(__file__), 'data')
     test_data_dir = os.path.join(os.path.dirname(__file__), 'data')
-    from collections import Counter
-    paths = Counter()
 
     def test_filetype_file_on_unicode_file_name(self):
         test_zip = self.extract_test_zip('contenttype/unicode/unicode.zip')
