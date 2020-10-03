@@ -39,21 +39,21 @@ class TestExtractible(FileBasedTesting):
 
     def test__can_extract(self):
         tests = (
-            ('contenttype/archive/a.tar.gz', True),
-            ('contenttype/archive/crashing-squashfs', False),
-            ('contenttype/archive/dbase.fdt', False),
-            ('contenttype/archive/e.tar', True),
-            ('contenttype/archive/e.tar.bz2', True),
-            ('contenttype/archive/e.tar.gz', True),
-            ('contenttype/archive/file_4.26-1.diff.gz', True),
-            ('contenttype/archive/posixnotgnu.tar', True),
-            ('contenttype/archive/sqfs-gz.sqs', False),
-            ('contenttype/archive/sqfs-lzo.sqs', False),
-            ('contenttype/archive/sqfs-xz.sqs', False),
-            ('contenttype/archive/win-archive.lib', False),
-            ('contenttype/archive/test.tar.lzma', True if py3 else False),
-            ('contenttype/archive/test.tar.xz', True if py3 else False),
-            ('contenttype/archive/test.zip', True),
+            ('extractible/a.tar.gz', True),
+            ('extractible/crashing-squashfs', False),
+            ('extractible/dbase.fdt', False),
+            ('extractible/e.tar.bz2', True),
+            ('extractible/e.tar.gz', True),
+            ('extractible/e.tar', True),
+            ('extractible/file_4.26-1.diff.gz', True),
+            ('extractible/posixnotgnu.tar', True),
+            ('extractible/sqfs-gz.sqs', False),
+            ('extractible/sqfs-lzo.sqs', False),
+            ('extractible/sqfs-xz.sqs', False),
+            ('extractible/test.tar.lzma', True if py3 else False),
+            ('extractible/test.tar.xz', True if py3 else False),
+            ('extractible/test.zip', True),
+            ('extractible/win-archive.lib', False),
         )
         for location, expected in tests:
             test_file = self.get_test_loc(location)
