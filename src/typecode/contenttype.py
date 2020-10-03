@@ -25,6 +25,7 @@
 from __future__ import absolute_import
 from __future__ import print_function
 
+from collections import OrderedDict
 import contextlib
 import io
 import os
@@ -57,7 +58,6 @@ from typecode.pygments_lexers import ClassNotFound as LexerClassNotFound
 from typecode.pygments_lexers import get_lexer_for_filename
 from typecode.pygments_lexers import guess_lexer
 
-
 """
 Utilities to detect and report the type of a file or path based on its name,
 extension and mostly its content.
@@ -82,14 +82,12 @@ if TRACE:
     def logger_debug(*args):
         return logger.debug(' '.join(isinstance(a, string_types) and a or repr(a) for a in args))
 
-
 data_dir = os.path.join(os.path.dirname(__file__), 'data')
 
 # Python mimetypes path setup using Apache mimetypes DB
 os.environ['XDG_DATA_DIRS'] = os.path.join(data_dir, 'apache')
 os.environ['XDG_DATA_HOME'] = os.environ['XDG_DATA_DIRS']
 APACHE_MIME_TYPES = os.path.join(data_dir, 'apache', 'mime.types')
-
 
 # Ensure that all dates are UTC, especially for fine free file.
 os.environ['TZ'] = 'UTC'
@@ -107,7 +105,6 @@ ELF_SHARED = 'shared object'
 ELF_RELOC = 'relocatable'
 ELF_UNKNOWN = 'unknown'
 elf_types = (ELF_EXE, ELF_SHARED, ELF_RELOC,)
-
 
 # TODO:
 # http://svn.zope.org/z3c.mimetype/trunk/?pathrev=103648
@@ -172,6 +169,55 @@ class Type(object):
         '_contains_text',
     )
 
+    # FIXME: we should use an introspectable attrs class instead
+    # ATTENTION: keep this in sync with sloats and properties
+    text_attributes = [
+        'filetype_file',
+        'mimetype_file',
+        'mimetype_python',
+        'filetype_pygment',
+        'elf_type',
+        'programming_language',
+    ]
+
+    exportable_attributes = text_attributes + [
+        'is_file',
+        'is_dir',
+        'is_regular',
+        'is_special',
+        'date',
+        'is_link',
+        'is_broken_link',
+        'link_target',
+        'size',
+        'is_pdf_with_text',
+        'is_text',
+        'is_text_with_long_lines',
+        'is_compact_js',
+        'is_js_map',
+        'is_binary',
+        'is_data',
+        'is_archive',
+        'contains_text',
+        'is_compressed',
+        'is_c_source',
+        'is_c_source',
+        'is_elf',
+        'is_elf',
+        'is_filesystem',
+        'is_java_class',
+        'is_java_source',
+        'is_media',
+        'is_media_with_meta',
+        'is_office_doc',
+        'is_package',
+        'is_pdf',
+        'is_script',
+        'is_source',
+        'is_stripped_elf',
+        'is_winexe',
+    ]
+
     def __init__(self, location):
         if (not location
             or (not os.path.exists(location)
@@ -214,6 +260,15 @@ class Type(object):
         return ('Type(ftf=%r, mtf=%r, ftpyg=%r, mtpy=%r)'
                 % (self.filetype_file, self.mimetype_file,
                    self.filetype_pygment, self.mimetype_python))
+
+    def to_dict(self, include_date=True):
+        """
+        Return a mapping of attributes.
+        """
+        nv = ((n, getattr(self, n)) for n in self.exportable_attributes)
+        if not include_date:
+            nv = ((n,v) for n,v in nv if n != 'date')
+        return OrderedDict(nv)
 
     @property
     def size(self):

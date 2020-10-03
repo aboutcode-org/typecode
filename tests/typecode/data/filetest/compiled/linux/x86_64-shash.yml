@@ -1,0 +1,10 @@
+filetype_file: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked
+mimetype_file: application/x-executable
+elf_type: executable
+is_file: yes
+is_regular: yes
+size: '19446'
+is_binary: yes
+contains_text: yes
+is_elf: yes
+is_media_with_meta: yes

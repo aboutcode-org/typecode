@@ -30,7 +30,7 @@ norecursedirs = [
    "Scripts",
    "thirdparty",
    "tmp",
-   "tests/data",
+   "tests/typecode/data",
    ".eggs"
 ]
     

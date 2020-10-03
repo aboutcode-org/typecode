@@ -1,0 +1,9 @@
+filetype_file: PE32 executable (console) Intel 80386 (stripped to external PDB), for MS Windows
+mimetype_file: application/x-dosexec
+is_file: yes
+is_regular: yes
+size: 45056
+is_binary: yes
+contains_text: yes
+is_media_with_meta: yes
+is_winexe: yes
