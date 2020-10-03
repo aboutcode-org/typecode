@@ -195,7 +195,7 @@ class TestContentTypeComplex(FileBasedTesting):
             'c source, ascii text',
         )
         assert get_filetype(test_file) in expected
-        assert 'C++' == get_filetype_pygment(test_file)
+        assert 'C' == get_filetype_pygment(test_file)
         assert is_source(test_file)
         assert is_text(test_file)
 
@@ -209,7 +209,7 @@ class TestContentTypeComplex(FileBasedTesting):
         )
         assert get_filetype(test_file) in expected
         assert is_source(test_file)
-        assert 'C++' == get_filetype_pygment(test_file)
+        assert 'C' == get_filetype_pygment(test_file)
 
     def test_code_python_2(self):
         test_file = self.get_test_loc('contenttype/code/python/extract.py')
