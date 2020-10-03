@@ -40,7 +40,7 @@ from commoncode.testcase import FileDrivenTesting
 from commoncode.testcase import get_test_file_pairs
 from commoncode.text import python_safe_name
 from typecode.contenttype import get_type
-
+from typecode.contenttype import Type
 
 """
 Data-driven file type test utilities.
@@ -52,21 +52,68 @@ test_env.test_data_dir = path.join(path.dirname(__file__), 'data')
 
 @attr.s(slots=True)
 class FileTypeTest(object):
+    """
+    A filetype detection test is used to verify that file type detection
+    works correctly
+
+    It consists of two files with the same base file name:
+    - a file to test for file type named for instance foo.txt
+    - a foo.txt.yml YAML file with expected test data
+
+    The following data are from the .yml file:
+     - the set of attributes of the typecode.contenttype.Type object
+       excluding date and location.
+     - notes
+    """
+
     data_file = attr.ib(default=None)
     test_file = attr.ib(default=None)
-    # one of holders, copyrights, authors
-    what = attr.ib(default=attr.Factory(list))
-    mime_type = attr.ib(default=attr.Factory(list))
-    file_type = attr.ib(default=attr.Factory(list))
-    programming_language = attr.ib(default=attr.Factory(list))
-    is_binary = attr.ib(default=attr.Factory(list))
-    is_text = attr.ib(default=attr.Factory(list))
-    is_archive = attr.ib(default=attr.Factory(list))
-    is_media = attr.ib(default=attr.Factory(list))
-    is_source = attr.ib(default=attr.Factory(list))
-    is_script = attr.ib(default=attr.Factory(list))
 
-    expected_failures = attr.ib(default=attr.Factory(list))
+    # ATTENTION: keep these attributes  in sync with typecode.contenttype.Type
+    filetype_file = attr.ib(default=None)
+    mimetype_file = attr.ib(default=None)
+    mimetype_python = attr.ib(default=None)
+    filetype_pygment = attr.ib(default=None)
+    elf_type = attr.ib(default=None)
+    programming_language = attr.ib(default=None)
+
+    is_file = attr.ib(default=False)
+    is_dir = attr.ib(default=False)
+    is_regular = attr.ib(default=False)
+    is_special = attr.ib(default=False)
+
+    is_link = attr.ib(default=False)
+    is_broken_link = attr.ib(default=False)
+    link_target = attr.ib(default=False)
+    size = attr.ib(default=False)
+    is_pdf_with_text = attr.ib(default=False)
+    is_text = attr.ib(default=False)
+    is_text_with_long_lines = attr.ib(default=False)
+    is_compact_js = attr.ib(default=False)
+    is_js_map = attr.ib(default=False)
+    is_binary = attr.ib(default=False)
+    is_data = attr.ib(default=False)
+    is_archive = attr.ib(default=False)
+    contains_text = attr.ib(default=False)
+    is_compressed = attr.ib(default=False)
+    is_c_source = attr.ib(default=False)
+    is_c_source = attr.ib(default=False)
+    is_elf = attr.ib(default=False)
+    is_elf = attr.ib(default=False)
+    is_filesystem = attr.ib(default=False)
+    is_java_class = attr.ib(default=False)
+    is_java_source = attr.ib(default=False)
+    is_media = attr.ib(default=False)
+    is_media_with_meta = attr.ib(default=False)
+    is_office_doc = attr.ib(default=False)
+    is_package = attr.ib(default=False)
+    is_pdf = attr.ib(default=False)
+    is_script = attr.ib(default=False)
+    is_source = attr.ib(default=False)
+    is_stripped_elf = attr.ib(default=False)
+    is_winexe = attr.ib(default=False)
+
+    expected_failure = attr.ib(default=False)
     notes = attr.ib(default=None)
 
     def __attrs_post_init__(self, *args, **kwargs):
@@ -86,13 +133,11 @@ class FileTypeTest(object):
         Serialize self to an ordered mapping.
         """
         filtered = [field for field in attr.fields(FileTypeTest)
-                    if '_file' in field.name]
+                    if field.name in ('data_file', 'test_file')]
         fields_filter = attr.filters.exclude(*filtered)
         data = attr.asdict(self, filter=fields_filter, dict_factory=OrderedDict)
-        return OrderedDict([
-            (key, value) for key, value in data.items()
-            # do not dump false and empties
-            if value])
+        # skip empty fields
+        return OrderedDict([(key, val) for key, val in data.items() if val])
 
     def dumps(self):
         """
@@ -110,34 +155,14 @@ class FileTypeTest(object):
             df.write(self.dumps())
 
 
-def load_filetype_tests(test_dir=test_env.test_data_dir):
+def load_filetype_tests(test_dir):
     """
     Yield an iterable of FileTypeTest loaded from test data files in `test_dir`.
     """
-    test_dir = path.join(test_dir, 'filetest')
-
     all_test_files = get_test_file_pairs(test_dir)
 
     for data_file, test_file in all_test_files:
         yield FileTypeTest(data_file, test_file)
-
-
-def filetype_detector(location):
-    """
-    Return detected filetype info
-    """
-    collector = get_type(location)
-    return {
-        'mime_type': collector.mimetype_file or None,
-        'file_type': collector.filetype_file or None,
-        'programming_language': collector.programming_language or None,
-        'is_binary': bool(collector.is_binary),
-        'is_text': bool(collector.is_text),
-        'is_archive': bool(collector.is_archive),
-        'is_media': bool(collector.is_media),
-        'is_source': bool(collector.is_source),
-        'is_script': bool(collector.is_script),
-    }
 
 
 def make_filetype_test_functions(test, index, test_data_dir=test_env.test_data_dir, regen=False):
@@ -146,17 +171,37 @@ def make_filetype_test_functions(test, index, test_data_dir=test_env.test_data_d
     """
 
     def closure_test_function(*args, **kwargs):
-        results = filetype_detector(test_file)
-
-        expected_yaml = test.dumps()
-
-        for wht in test.what:
-            setattr(test, wht, results.get(wht))
-        results_yaml = test.dumps()
+        results = get_type(test_file).to_dict(include_date=False)
+        results_yaml = saneyaml.dump(results)
 
         if regen:
-            test.dump()
-        if expected_yaml != results_yaml:
+            for key, value in results.items():
+                setattr(test, key, value)
+                test.dump()
+
+            expected_yaml = results_yaml
+
+        passing = True
+        for expected_key, expected_value in test.to_dict().items():
+            result_value = results[expected_key]
+
+            # these attributes should be tested with startswith
+            if expected_key in Type.text_attributes:
+                if result_value and expected_value:
+                    if not result_value.startswith(expected_value):
+                        passing = False
+                else:
+                    if not result_value == expected_value:
+                        passing = False
+
+            # we have either None or Boolean value and
+            # we want both values to be both trueish or falsish
+            else:
+                if not (result_value and expected_value):
+                    passing = False
+
+        # this is done to display slightly eaier to handle error traces
+        if not passing:
             expected_yaml = (
                 'data file: file://' + data_file +
                 '\ntest file: file://' + test_file + '\n'
@@ -166,10 +211,8 @@ def make_filetype_test_functions(test, index, test_data_dir=test_env.test_data_d
 
     data_file = test.data_file
     test_file = test.test_file
-    what = test.what
 
     tfn = test_file.replace(test_data_dir, '').strip('\\/\\')
-    whats = '_'.join(what)
     test_name = 'test_%(tfn)s_%(index)s' % locals()
     test_name = python_safe_name(test_name)
 
@@ -179,7 +222,7 @@ def make_filetype_test_functions(test, index, test_data_dir=test_env.test_data_d
 
     closure_test_function.__name__ = test_name
 
-    if test.expected_failures:
+    if test.expected_failure:
         closure_test_function = pytest.mark.xfail(closure_test_function)
 
     return closure_test_function, test_name
@@ -187,12 +230,12 @@ def make_filetype_test_functions(test, index, test_data_dir=test_env.test_data_d
 
 def build_tests(filetype_tests, clazz, test_data_dir=test_env.test_data_dir, regen=False):
     """
-    Dynamically build test methods from a sequence of FileTypeTests and attach
+    Dynamically build test methods from a sequence of FileTypeTest and attach
     these method to the clazz test class.
     """
     for i, test in enumerate(sorted(filetype_tests, key=lambda x:x.test_file)):
         # closure on the test params
-        if test.expected_failures:
+        if test.expected_failure:
             actual_regen = False
         else:
             actual_regen = regen

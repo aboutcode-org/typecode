@@ -27,16 +27,26 @@ from __future__ import absolute_import
 from __future__ import print_function
 from __future__ import unicode_literals
 
-import pytest
+import os
+
+from commoncode.testcase import FileDrivenTesting
 
 from filetype_test_utils import build_tests
 from filetype_test_utils import load_filetype_tests
-from commoncode.testcase import FileBasedTesting
 
 
-class TestFileTypesDataDriven(FileBasedTesting):
+test_env = FileDrivenTesting()
+test_env.test_data_dir = os.path.join(os.path.dirname(__file__), 'data')
+
+
+class TestFileTypesDataDriven(FileDrivenTesting):
     # test functions are attached to this class at module import time
     pass
 
 
-build_tests(filetype_tests=load_filetype_tests(), clazz=TestFileTypesDataDriven, regen=False)
+build_tests(
+    filetype_tests=load_filetype_tests(
+        os.path.join(test_env.test_data_dir, 'filetest')), 
+    clazz=TestFileTypesDataDriven, 
+    test_data_dir=test_env.test_data_dir,
+    regen=False)
