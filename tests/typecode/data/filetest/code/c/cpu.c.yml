@@ -1,7 +1,7 @@
 filetype_file: C source, ASCII text
 mimetype_file: text/x-c
-filetype_pygment: C++
-programming_language: C++
+filetype_pygment: C
+programming_language: C
 is_file: yes
 is_regular: yes
 size: 3044
