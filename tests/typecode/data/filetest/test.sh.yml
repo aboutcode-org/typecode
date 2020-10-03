@@ -1,0 +1,16 @@
+what:
+  - mime_type
+  - file_type
+  - programming_language
+  - is_binary
+  - is_text
+  - is_archive
+  - is_media
+  - is_source
+  - is_script
+mime_type: text/x-shellscript
+file_type: POSIX shell script, ASCII text executable
+programming_language: Bash
+is_text: yes
+is_source: yes
+is_script: yes
