@@ -180,6 +180,8 @@ def make_filetype_test_functions(test, index, test_data_dir=test_env.test_data_d
                 test.dump()
 
             expected_yaml = results_yaml
+        else:
+            expected_yaml = test.dumps()
 
         passing = True
         for expected_key, expected_value in test.to_dict().items():
