@@ -1,5 +1,7 @@
-filetype_file: JPEG image data, JFIF standard 1.01
+filetype_file: JPEG image data, JFIF standard 1.01, resolution (DPI), density 72x72, segment
+  length 16, progressive, precision 8, 1x1, components 1
 mimetype_file: image/jpeg
+mimetype_python: image/jpeg
 is_file: yes
 is_regular: yes
 size: 280

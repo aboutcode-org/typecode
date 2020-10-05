@@ -1,5 +1,6 @@
 filetype_file: C source, ASCII text, with CRLF line terminators
 mimetype_file: text/x-c
+mimetype_python: text/x-asm
 filetype_pygment: GAS
 programming_language: GAS
 is_file: yes
@@ -8,5 +9,4 @@ size: 32452
 is_text: yes
 contains_text: yes
 is_c_source: yes
-is_media_with_meta: yes
 is_source: yes

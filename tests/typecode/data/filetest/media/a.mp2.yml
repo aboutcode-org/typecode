@@ -1,5 +1,6 @@
-filetype_file: MPEG ADTS, layer II
+filetype_file: MPEG ADTS, layer II, v1, 160 kbps, 44.1 kHz, Monaural
 mimetype_file: audio/mpeg
+mimetype_python: audio/mpeg
 is_file: yes
 is_regular: yes
 size: 2088

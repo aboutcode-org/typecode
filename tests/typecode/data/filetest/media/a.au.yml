@@ -1,5 +1,6 @@
 filetype_file: Sun/NeXT audio data
 mimetype_file: audio/basic
+mimetype_python: audio/basic
 is_file: yes
 is_regular: yes
 size: 8216

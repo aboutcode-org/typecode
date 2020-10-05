@@ -1,5 +1,6 @@
 filetype_file: ASCII text, with very long lines, with no line terminators
 mimetype_file: text/plain
+mimetype_python: text/plain
 is_file: yes
 is_regular: yes
 size: 10000
@@ -7,4 +8,3 @@ is_text: yes
 is_text_with_long_lines: yes
 is_data: yes
 contains_text: yes
-is_media_with_meta: yes

@@ -1,5 +1,6 @@
 filetype_file: data
 mimetype_file: application/octet-stream
+mimetype_python: text/x-java-source
 filetype_pygment: Java
 programming_language: Java
 is_file: yes
@@ -9,5 +10,4 @@ is_text: yes
 is_data: yes
 contains_text: yes
 is_java_source: yes
-is_media_with_meta: yes
 is_source: yes

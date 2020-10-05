@@ -1,5 +1,6 @@
-filetype_file: Adobe Photoshop Image
+filetype_file: Adobe Photoshop Image, 1 x 1, bitmap, 1-bit channel
 mimetype_file: image/vnd.adobe.photoshop
+mimetype_python: image/vnd.adobe.photoshop
 is_file: yes
 is_regular: yes
 size: 132

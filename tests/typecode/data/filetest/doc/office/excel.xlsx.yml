@@ -1,10 +1,10 @@
 filetype_file: Microsoft Excel 2007+
 mimetype_file: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+mimetype_python: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
 is_file: yes
 is_regular: yes
 size: 8276
 is_binary: yes
 is_archive: yes
 is_compressed: yes
-is_media_with_meta: yes
 is_office_doc: yes

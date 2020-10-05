@@ -1,9 +1,9 @@
 filetype_file: bzip2 compressed data, block size = 900k
 mimetype_file: application/x-bzip2
+mimetype_python: application/x-tar
 is_file: yes
 is_regular: yes
 size: 216
 is_binary: yes
 is_archive: yes
 is_compressed: yes
-is_media_with_meta: yes

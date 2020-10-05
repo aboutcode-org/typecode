@@ -1,9 +1,9 @@
 filetype_file: POSIX tar archive
 mimetype_file: application/x-tar
+mimetype_python: application/x-tar
 is_file: yes
 is_regular: yes
 size: 35328
 is_binary: yes
 is_archive: yes
 contains_text: yes
-is_media_with_meta: yes

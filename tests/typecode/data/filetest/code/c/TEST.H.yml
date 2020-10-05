@@ -1,5 +1,6 @@
 filetype_file: C source, ASCII text
 mimetype_file: text/x-c
+mimetype_python: text/x-c
 filetype_pygment: C++
 programming_language: C++
 is_file: yes
@@ -8,5 +9,4 @@ size: 8440
 is_text: yes
 contains_text: yes
 is_c_source: yes
-is_media_with_meta: yes
 is_source: yes

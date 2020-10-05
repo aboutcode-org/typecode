@@ -1,8 +1,8 @@
 filetype_file: Macromedia Flash data, version 7
 mimetype_file: application/x-shockwave-flash
+mimetype_python: application/x-shockwave-flash
 is_file: yes
 is_regular: yes
 size: 2386
 is_binary: yes
 contains_text: yes
-is_media_with_meta: yes

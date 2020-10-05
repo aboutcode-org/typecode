@@ -1,5 +1,6 @@
-filetype_file: RIFF (little-endian) data, WAVE audio
+filetype_file: RIFF (little-endian) data, WAVE audio, Microsoft ADPCM, mono 44100 Hz
 mimetype_file: audio/x-wav
+mimetype_python: audio/x-wav
 is_file: yes
 is_regular: yes
 size: 4186

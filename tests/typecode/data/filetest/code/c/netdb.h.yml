@@ -1,5 +1,6 @@
 filetype_file: very short file (no magic)
 mimetype_file: application/octet-stream
+mimetype_python: text/x-c
 filetype_pygment: C
 programming_language: C
 is_file: yes
@@ -9,5 +10,4 @@ is_text: yes
 is_data: yes
 contains_text: yes
 is_c_source: yes
-is_media_with_meta: yes
 is_source: yes

@@ -1,5 +1,6 @@
 filetype_file: HTML document, ASCII text, with very long lines
 mimetype_file: text/html
+mimetype_python: text/html
 filetype_pygment: HTML
 programming_language: HTML
 is_file: yes
@@ -8,5 +9,4 @@ size: 49584
 is_text: yes
 is_text_with_long_lines: yes
 contains_text: yes
-is_media_with_meta: yes
 is_source: yes

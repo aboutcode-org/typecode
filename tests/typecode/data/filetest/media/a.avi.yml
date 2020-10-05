@@ -1,5 +1,6 @@
 filetype_file: Microsoft ASF, Video Media
 mimetype_file: video/x-ms-asf
+mimetype_python: video/x-msvideo
 is_file: yes
 is_regular: yes
 size: 156277

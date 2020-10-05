@@ -1,4 +1,4 @@
-filetype_file: ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV)
+filetype_file: ELF 32-bit LSB executable, Intel 80386
 mimetype_file: application/x-executable
 elf_type: executable
 is_file: yes
@@ -7,4 +7,3 @@ size: 22887
 is_binary: yes
 contains_text: yes
 is_elf: yes
-is_media_with_meta: yes

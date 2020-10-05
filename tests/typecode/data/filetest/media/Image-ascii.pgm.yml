@@ -1,5 +1,6 @@
-filetype_file: Netpbm image data
+filetype_file: Netpbm image data, size = 62 x 23, greymap, ASCII text
 mimetype_file: image/x-portable-greymap
+mimetype_python: image/x-portable-graymap
 is_file: yes
 is_regular: yes
 size: 5458

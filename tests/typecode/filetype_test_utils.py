@@ -70,12 +70,12 @@ class FileTypeTest(object):
     test_file = attr.ib(default=None)
 
     # ATTENTION: keep these attributes  in sync with typecode.contenttype.Type
-    filetype_file = attr.ib(default=None)
-    mimetype_file = attr.ib(default=None)
-    mimetype_python = attr.ib(default=None)
-    filetype_pygment = attr.ib(default=None)
-    elf_type = attr.ib(default=None)
-    programming_language = attr.ib(default=None)
+    filetype_file = attr.ib(default='')
+    mimetype_file = attr.ib(default='')
+    mimetype_python = attr.ib(default='')
+    filetype_pygment = attr.ib(default='')
+    elf_type = attr.ib(default='')
+    programming_language = attr.ib(default='')
 
     is_file = attr.ib(default=False)
     is_dir = attr.ib(default=False)
@@ -84,7 +84,7 @@ class FileTypeTest(object):
 
     is_link = attr.ib(default=False)
     is_broken_link = attr.ib(default=False)
-    link_target = attr.ib(default=False)
+    link_target = attr.ib(default='')
     size = attr.ib(default=False)
     is_pdf_with_text = attr.ib(default=False)
     is_text = attr.ib(default=False)
@@ -112,6 +112,7 @@ class FileTypeTest(object):
     is_source = attr.ib(default=False)
     is_stripped_elf = attr.ib(default=False)
     is_winexe = attr.ib(default=False)
+    is_makefile = attr.ib(default=False)
 
     expected_failure = attr.ib(default=False)
     notes = attr.ib(default=None)
@@ -127,8 +128,10 @@ class FileTypeTest(object):
                 import traceback
                 msg = 'file://' + self.data_file + '\n' + repr(self) + '\n' + traceback.format_exc()
                 raise Exception(msg)
+        if isinstance(self.size, str):
+            self.size = int(self.size)
 
-    def to_dict(self):
+    def to_dict(self, filter_empty=False, filter_extra=False):
         """
         Serialize self to an ordered mapping.
         """
@@ -136,14 +139,20 @@ class FileTypeTest(object):
                     if field.name in ('data_file', 'test_file')]
         fields_filter = attr.filters.exclude(*filtered)
         data = attr.asdict(self, filter=fields_filter, dict_factory=OrderedDict)
-        # skip empty fields
-        return OrderedDict([(key, val) for key, val in data.items() if val])
+        data = data.items()
+        if filter_empty:
+            # skip empty fields
+            data = ((k, v) for k, v in data if v)
+        if filter_extra:
+            data = ((k, v) for k, v in data if k not in ('expected_failure', 'notes'))
+
+        return OrderedDict(data)
 
     def dumps(self):
         """
         Return a string representation of self in YAML block format.
         """
-        return saneyaml.dump(self.to_dict())
+        return saneyaml.dump(self.to_dict(filter_empty=True))
 
     def dump(self, check_exists=False):
         """
@@ -165,6 +174,38 @@ def load_filetype_tests(test_dir):
         yield FileTypeTest(data_file, test_file)
 
 
+def check_types_equal(expected, result):
+    """
+    Compare type data dict expected to type data dict result key by key.
+    Return True if they match, false otherwise.
+    Check also that the keys are identical.
+    Treat text attributes in a special way as we test for "startswith".
+    Empty strings are treated the same as None.
+    """
+    extra_keys = set(expected.keys()).symmetric_difference(set(result.keys()))
+    assert not extra_keys
+
+    for expected_key, expected_value in expected.items():
+        result_value = result[expected_key]
+
+        # these attributes should be tested with startswith
+        if expected_key in Type.text_attributes:
+            if result_value and expected_value:
+                if not result_value.startswith(expected_value):
+                    return False
+            else:
+                if result_value != expected_value:
+                    return False
+
+        # we have either number, date, None or boolean value and
+        # we want both values to be both trueish or falsish
+        else:
+
+            if bool(result_value) != bool(expected_value):
+                return False
+    return True
+
+
 def make_filetype_test_functions(test, index, test_data_dir=test_env.test_data_dir, regen=False):
     """
     Build and return a test function closing on tests arguments and the function name.
@@ -172,44 +213,20 @@ def make_filetype_test_functions(test, index, test_data_dir=test_env.test_data_d
 
     def closure_test_function(*args, **kwargs):
         results = get_type(test_file).to_dict(include_date=False)
-        results_yaml = saneyaml.dump(results)
 
         if regen:
             for key, value in results.items():
                 setattr(test, key, value)
                 test.dump()
 
-            expected_yaml = results_yaml
-        else:
-            expected_yaml = test.dumps()
-
-        passing = True
-        for expected_key, expected_value in test.to_dict().items():
-            result_value = results[expected_key]
-
-            # these attributes should be tested with startswith
-            if expected_key in Type.text_attributes:
-                if result_value and expected_value:
-                    if not result_value.startswith(expected_value):
-                        passing = False
-                else:
-                    if not result_value == expected_value:
-                        passing = False
-
-            # we have either None or Boolean value and
-            # we want both values to be both trueish or falsish
-            else:
-                if not (result_value and expected_value):
-                    passing = False
+        expected = test.to_dict(filter_empty=False, filter_extra=True)
+        passing = check_types_equal(expected, results)
 
         # this is done to display slightly eaier to handle error traces
         if not passing:
-            expected_yaml = (
-                'data file: file://' + data_file +
-                '\ntest file: file://' + test_file + '\n'
-            ) + expected_yaml
-
-            assert expected_yaml == results_yaml
+            expected['data file']= 'file://' + data_file
+            expected['test_file']= 'file://' + test_file
+            assert dict(expected) == dict(results)
 
     data_file = test.data_file
     test_file = test.test_file
