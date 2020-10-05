@@ -1,10 +1,10 @@
 filetype_file: Java archive data (JAR)
 mimetype_file: application/java-archive
+mimetype_python: application/zip
 is_file: yes
 is_regular: yes
 size: 30122
 is_binary: yes
 is_archive: yes
 is_compressed: yes
-is_media_with_meta: yes
 is_package: yes

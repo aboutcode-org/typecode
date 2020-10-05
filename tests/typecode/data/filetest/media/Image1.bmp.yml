@@ -1,5 +1,7 @@
-filetype_file: PC bitmap, Windows 3.x format
+filetype_file: PC bitmap, Windows 3.x format, 1 x 1 x 1, image size 4, resolution 2834 x 2834
+  px/m, 2 important colors, cbSize 66, bits offset 62
 mimetype_file: image/bmp
+mimetype_python: image/bmp
 is_file: yes
 is_regular: yes
 size: 66

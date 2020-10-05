@@ -1,5 +1,6 @@
-filetype_file: GIF image data, version 87a
+filetype_file: GIF image data, version 87a, 1 x 1
 mimetype_file: image/gif
+mimetype_python: image/gif
 is_file: yes
 is_regular: yes
 size: 34

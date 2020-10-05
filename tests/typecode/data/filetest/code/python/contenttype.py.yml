@@ -1,5 +1,6 @@
 filetype_file: Python script, ASCII text executable
 mimetype_file: text/x-script.python
+mimetype_python: text/x-python
 filetype_pygment: Python
 programming_language: Python
 is_file: yes
@@ -7,6 +8,5 @@ is_regular: yes
 size: 94
 is_text: yes
 contains_text: yes
-is_media_with_meta: yes
 is_script: yes
 is_source: yes

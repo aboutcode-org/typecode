@@ -1,8 +1,8 @@
-filetype_file: MSVC program database ver 7.00, 1024*843 bytes
+filetype_file: MSVC program database ver 7.00
 mimetype_file: application/x-ms-pdb
+mimetype_python: application/vnd.palm
 is_file: yes
 is_regular: yes
 size: 863232
 is_binary: yes
 contains_text: yes
-is_media_with_meta: yes

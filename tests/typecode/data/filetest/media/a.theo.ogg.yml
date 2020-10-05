@@ -1,5 +1,6 @@
 filetype_file: Ogg data, Theora video
 mimetype_file: video/ogg
+mimetype_python: audio/ogg
 is_file: yes
 is_regular: yes
 size: 81644

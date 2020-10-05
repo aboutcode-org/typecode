@@ -1,5 +1,6 @@
 filetype_file: IFF data, AIFF audio
 mimetype_file: audio/x-aiff
+mimetype_python: audio/x-aiff
 is_file: yes
 is_regular: yes
 size: 8246

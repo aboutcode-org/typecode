@@ -6,5 +6,4 @@ size: 880
 is_binary: yes
 is_archive: yes
 is_compressed: yes
-is_media_with_meta: yes
 is_package: yes

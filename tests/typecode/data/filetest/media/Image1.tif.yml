@@ -1,5 +1,7 @@
-filetype_file: TIFF image data
+filetype_file: TIFF image data, little-endian, direntries=14, height=1, bps=1, compression=LZW,
+  PhotometricIntepretation=BlackIsZero, width=1
 mimetype_file: image/tiff
+mimetype_python: image/tiff
 is_file: yes
 is_regular: yes
 size: 222

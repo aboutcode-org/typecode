@@ -46,7 +46,8 @@ class TestFileTypesDataDriven(FileDrivenTesting):
 
 build_tests(
     filetype_tests=load_filetype_tests(
-        os.path.join(test_env.test_data_dir, 'filetest')), 
-    clazz=TestFileTypesDataDriven, 
+        os.path.join(test_env.test_data_dir, 'filetest')),
+    clazz=TestFileTypesDataDriven,
     test_data_dir=test_env.test_data_dir,
-    regen=False)
+    regen=False,
+)

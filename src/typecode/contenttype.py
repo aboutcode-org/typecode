@@ -106,6 +106,30 @@ ELF_RELOC = 'relocatable'
 ELF_UNKNOWN = 'unknown'
 elf_types = (ELF_EXE, ELF_SHARED, ELF_RELOC,)
 
+
+PLAIN_TEXT_EXTENSIONS = (
+    # docs
+    '.rst', '.rest', '.md',
+    '.txt',
+    # This one is actually not handled by Pygments. There are probably more.
+    '.log',
+    # various data
+    '.json',
+    '.xml',
+)
+
+if on_linux and py2:
+    PLAIN_TEXT_EXTENSIONS = as_bytes(PLAIN_TEXT_EXTENSIONS)
+
+
+MAKEFILE_EXTENSIONS = (
+    'Makefile',
+    'Makefile.inc',
+)
+
+if on_linux and py2:
+    MAKEFILE_EXTENSIONS = as_bytes(MAKEFILE_EXTENSIONS)
+
 # TODO:
 # http://svn.zope.org/z3c.mimetype/trunk/?pathrev=103648
 # http://svn.zope.org/z3c.sharedmimeinfo/trunk/TODO.txt?revision=103668&view=markup
@@ -157,7 +181,7 @@ class Type(object):
         '_mimetype_python',
         '_filetype_file',
         '_mimetype_file',
-        '_filetype_pygments',
+        '_filetype_pygment',
         '_is_pdf_with_text',
         '_is_text',
         '_is_text_with_long_lines',
@@ -178,18 +202,19 @@ class Type(object):
         'filetype_pygment',
         'elf_type',
         'programming_language',
+        'link_target',
     ]
 
-    exportable_attributes = text_attributes + [
+    numeric_attributes = ['size', ]
+    date_attributes = ['date', ]
+
+    boolean_attributes = [
         'is_file',
         'is_dir',
         'is_regular',
         'is_special',
-        'date',
         'is_link',
         'is_broken_link',
-        'link_target',
-        'size',
         'is_pdf_with_text',
         'is_text',
         'is_text_with_long_lines',
@@ -216,7 +241,10 @@ class Type(object):
         'is_source',
         'is_stripped_elf',
         'is_winexe',
+        'is_makefile',
     ]
+    exportable_attributes = (
+        text_attributes + numeric_attributes + date_attributes + boolean_attributes)
 
     def __init__(self, location):
         if (not location
@@ -234,7 +262,7 @@ class Type(object):
         self.date = filetype.get_last_modified_date(location)
 
         self.is_link = filetype.is_link(location)
-        self.is_broken_link = filetype.is_broken_link(location)
+        self.is_broken_link = bool(filetype.is_broken_link(location))
 
         # FIXME: the way the True and False values are checked in properties is verbose and contrived at best
         # and is due to use None/True/False as different values
@@ -245,7 +273,7 @@ class Type(object):
         self._mimetype_python = None
         self._filetype_file = None
         self._mimetype_file = None
-        self._filetype_pygments = None
+        self._filetype_pygment = None
         self._is_pdf_with_text = None
         self._is_text = None
         self._is_text_with_long_lines = None
@@ -267,7 +295,8 @@ class Type(object):
         """
         nv = ((n, getattr(self, n)) for n in self.exportable_attributes)
         if not include_date:
-            nv = ((n,v) for n,v in nv if n != 'date')
+            nv = ((n, v) for n, v in nv if n not in self.date_attributes)
+
         return OrderedDict(nv)
 
     @property
@@ -303,8 +332,8 @@ class Type(object):
             if self.is_file is True:
                 if not mimetype_python.inited:
                     mimetype_python.init([APACHE_MIME_TYPES])
-                    val = mimetype_python.guess_type(self.location)[0]
-                    self._mimetype_python = val
+                val = mimetype_python.guess_type(self.location)[0]
+                self._mimetype_python = val or ''
         return self._mimetype_python
 
     @property
@@ -334,15 +363,15 @@ class Type(object):
         """
         Return the filetype guessed using Pygments lexer, mostly for source code.
         """
-        if self._filetype_pygments is None:
-            self._filetype_pygments = ''
+        if self._filetype_pygment is None:
+            self._filetype_pygment = ''
             if self.is_text and not self.is_media:
                 lexer = get_pygments_lexer(self.location)
                 if lexer and not lexer.name.startswith('JSON'):
-                    self._filetype_pygments = lexer.name or ''
+                    self._filetype_pygment = lexer.name or ''
                 else:
-                    self._filetype_pygments = ''
-        return self._filetype_pygments
+                    self._filetype_pygment = ''
+        return self._filetype_pygment
 
     # FIXME: we way we use tri booleans is a tad ugly
 
@@ -585,8 +614,11 @@ class Type(object):
         # but we exclude some.
 
         # FIXME: only include types that are known to have metadata
-        if (self.is_media and self.filetype_file.lower().startswith(
-                ('gif image', 'png image', 'jpeg image', 'netpbm', 'mpeg'))):
+        if not self.is_media:
+            return False
+        if self.filetype_file.lower().startswith(
+            ('gif image', 'png image', 'jpeg image', 'netpbm', 'mpeg')
+        ):
             return False
         else:
             return True
@@ -596,8 +628,7 @@ class Type(object):
         """
         Return True if the file is highly likely to be a pdf file.
         """
-        ft = self.mimetype_file
-        if 'pdf' in ft:
+        if 'pdf' in self.mimetype_file:
             return True
         else:
             return False
@@ -699,6 +730,13 @@ class Type(object):
         else:
             return False
 
+    def _is_plain_text(self, _pte=PLAIN_TEXT_EXTENSIONS):
+        return self.location.endswith(_pte)
+
+    @property
+    def is_makefile(self):
+        return self.location.endswith(MAKEFILE_EXTENSIONS)
+
     @property
     def is_source(self):
         """
@@ -706,18 +744,19 @@ class Type(object):
         """
         if self.is_text is False:
             return False
-        PLAIN_TEXT_EXTENSIONS = (
-            '.rst', '.rest', '.txt', '.md',
-            # This one is actually not handled by Pygments. There are probably more.
-            '.log')
-        if on_linux and py2:
-            PLAIN_TEXT_EXTENSIONS = as_bytes(PLAIN_TEXT_EXTENSIONS)
 
-        if self.location.endswith(PLAIN_TEXT_EXTENSIONS):
+        elif self._is_plain_text():
             return False
 
-        if self.filetype_pygment or self.is_script is True:
+        elif self.is_makefile or self.is_js_map:
+            return False
+
+        elif self.is_java_source is True or self.is_c_source is True:
             return True
+
+        elif self.filetype_pygment or self.is_script is True:
+            return True
+
         else:
             return False
 
@@ -727,7 +766,9 @@ class Type(object):
         Return the programming language if the file is source code or an empty
         string.
         """
-        return self.filetype_pygment or ''
+        if self.is_source:
+            return self.filetype_pygment or ''
+        return ''
 
     @property
     def is_c_source(self):
@@ -797,6 +838,7 @@ class Type(object):
 
             if (fnmatch.fnmatch(name, b'*.java' if on_linux and py2 else u'*.java')
              or fnmatch.fnmatch(name, b'*.aj' if on_linux and py2 else u'*.aj')
+             or fnmatch.fnmatch(name, b'*.jad' if on_linux and py2 else u'*.jad')
              or fnmatch.fnmatch(name, b'*.ajt' if on_linux and py2 else u'*.ajt')):
                 return True
             else:
@@ -889,31 +931,43 @@ def get_pygments_lexer(location):
     except KeyError:
         if is_binary(location):
             return
+
+    # We first try to get a lexer using
+    #  - the filename
+    #  - then the lowercased filename
+    #  - and finally the begining of the file content.
+    # We try with lowercase as detection is skewed otherwise (e.g. .java vs .JAVA)
+
     try:
-        # FIXME: Latest Pygments versions should work fine
-        # win32_bug_on_s_files = dejacode.on_windows and location.endswith('.s')
-
-        # NOTE: we use only the location for its file name here, we could use
-        # lowercase location may be
-        lexer = get_lexer_for_filename(location, stripnl=False, stripall=False)
-        return lexer
-
+        return get_lexer_for_filename(location)
     except LexerClassNotFound:
         try:
-            # if Pygments does not guess we should not carry forward
-            # read the first 4K of the file
-            try:
-                with io.open(location, 'r') as f:
-                    content = f.read(4096)
-            except:
-                # try again as bytes and force unicode
-                with open(location, 'rb') as f:
-                    content = text.as_unicode(f.read(4096))
-
-            guessed = guess_lexer(content)
-            return guessed
+            return get_lexer_for_filename(location.lower())
         except LexerClassNotFound:
-            return
+            try:
+                # if Pygments does not guess we should not carry forward
+                content = get_text_file_start(location)
+                return guess_lexer(content)
+            except LexerClassNotFound:
+                return
+
+
+def get_text_file_start(location, length=4096):
+    """
+    Return a unicode string with up the first "length" characters from the text
+    file at location.
+    """
+    content = None
+    # read the first 4K of the file
+    try:
+        with io.open(location, 'r') as f:
+            content = f.read(length)
+    except:
+        # try again as bytes and force unicode
+        with open(location, 'rb') as f:
+            content = text.as_unicode(f.read(length))
+    finally:
+        return content
 
 
 def get_filetype(location):

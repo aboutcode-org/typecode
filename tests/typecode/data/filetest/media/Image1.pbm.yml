@@ -1,5 +1,6 @@
-filetype_file: Netpbm image data
+filetype_file: Netpbm image data, size = 1 x 1, bitmap, ASCII text
 mimetype_file: image/x-portable-bitmap
+mimetype_python: image/x-portable-bitmap
 is_file: yes
 is_regular: yes
 size: 40

@@ -35,6 +35,7 @@ function setup {
 setup
 
 $CONFIGURE_ROOT_DIR/tmp/bin/pip install -e .[testing]
+$CONFIGURE_ROOT_DIR/tmp/bin/pip install typecode_libmagic
 
 if [ -f "$CONFIGURE_ROOT_DIR/tmp/bin/activate" ]; then
     source "$CONFIGURE_ROOT_DIR/tmp/bin/activate"

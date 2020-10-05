@@ -1,5 +1,6 @@
-filetype_file: Sun raster image data
+filetype_file: Sun raster image data, 1 x 1, 1-bit, no colormap
 mimetype_file: application/octet-stream
+mimetype_python: image/x-cmu-raster
 is_file: yes
 is_regular: yes
 size: 34

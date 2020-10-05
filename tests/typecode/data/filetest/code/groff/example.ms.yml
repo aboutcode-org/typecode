@@ -1,5 +1,6 @@
 filetype_file: troff or preprocessor input, ASCII text
 mimetype_file: text/troff
+mimetype_python: text/troff
 filetype_pygment: GAS
 programming_language: GAS
 is_file: yes
@@ -7,5 +8,4 @@ is_regular: yes
 size: 93
 is_text: yes
 contains_text: yes
-is_media_with_meta: yes
 is_source: yes
