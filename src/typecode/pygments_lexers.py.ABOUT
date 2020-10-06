@@ -1,20 +1,16 @@
 about_resource: pygments_lexers.py
-attribute: true
-copyright: Copyright by the Pygments team
-download_url: https://pypi.python.org/packages/02/ee/b6e02dc6529e82b75bb06823ff7d005b141037cb1416b10c6f00fc419dca/Pygments-2.2.0-py2.py3-none-any.whl#md5=ce67fc58b51ffd29a2de8b97fcda274a
-homepage_url: http://pygments.org/
+name: pygments
+version: 2.7.1
+download_url: https://files.pythonhosted.org/packages/d7/72/49a7db1b245c13d0e38cfdc96c1adf6e3bd16a7a0dceb7b25faa6612353b/Pygments-2.7.1-py3-none-any.whl
+homepage_url: https://pygments.org/
 license_expression: bsd-simplified
+copyright: Copyright (c) the Pygments team
+attribute: yes
+checksum_md5: ac2ef50fd1ece4c6df9a070e34728c0b
+checksum_sha1: 7d0504c6d1f0cb30d44491f8f7b477186281db4e
+package_url: pkg:pypi/pygments@2.7.1
 licenses:
--   file: prog_lexers.py.LICENSE
-    key: bsd-simplified
+  - key: bsd-simplified
     name: BSD-2-Clause
-name: Pygments
-notice_file: pygments_lexers.py.NOTICE
-notice_url: https://bitbucket.org/birkenfeld/pygments-main/src/7941677dc77d4f2bf0bbd6140ade85a9454b8b80/LICENSE?at=default&fileviewer=file-view-default
-owner: Pocoo Team
-owner_url: http://www.pocoo.org/
-track_changes: true
-vcs_url: hg+http://bitbucket.org/birkenfeld/pygments-main
-version: 2.2.0
-
+    file: bsd-simplified.LICENSE
 notes: this is a tiny subset of Pygments to focus on programming languages detection only.
