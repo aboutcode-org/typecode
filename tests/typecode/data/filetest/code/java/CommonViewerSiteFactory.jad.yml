@@ -1,6 +1,8 @@
 filetype_file: Java source, ASCII text
 mimetype_file: text/x-java
 mimetype_python: text/vnd.sun.j2me.app-descriptor
+filetype_pygment: Python
+programming_language: Python
 is_file: yes
 is_regular: yes
 size: 1447

@@ -1,4 +1,5 @@
-filetype_file: Microsoft ASF, Video Media
+filetype_file: Microsoft ASF, Video Media (Encoded Image Width 1680, Encoded Image Height 1050,
+  Image Width 1680, Image Height 1050, Bits Per Pixel Count 24, Error correction type ASF_No_Error_Correction)
 mimetype_file: video/x-ms-asf
 mimetype_python: video/x-msvideo
 is_file: yes
