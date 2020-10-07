@@ -1,4 +1,4 @@
-filetype_file: Sun/NeXT audio data
+filetype_file: 'Sun/NeXT audio data: 16-bit linear PCM, mono, 44100 Hz'
 mimetype_file: audio/basic
 mimetype_python: audio/basic
 is_file: yes

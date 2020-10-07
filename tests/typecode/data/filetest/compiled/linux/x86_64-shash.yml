@@ -1,4 +1,5 @@
-filetype_file: ELF 64-bit LSB executable, x86-64
+filetype_file: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter
+  /lib64/ld-linux-x86-64.so.2, for GNU/Linux 2.6.9, not stripped
 mimetype_file: application/x-executable
 elf_type: executable
 is_file: yes

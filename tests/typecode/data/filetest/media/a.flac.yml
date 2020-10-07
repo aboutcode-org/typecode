@@ -1,4 +1,4 @@
-filetype_file: FLAC audio bitstream data
+filetype_file: FLAC audio bitstream data, 16 bit, mono, 44.1 kHz, 4096 samples
 mimetype_file: audio/flac
 is_file: yes
 is_regular: yes

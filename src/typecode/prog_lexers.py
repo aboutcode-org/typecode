@@ -347,7 +347,7 @@ LEXERS = {
     #'PugLexer': ('pygments.lexers.html', 'Pug', ('pug', 'jade'), ('*.pug', '*.jade'), ('text/x-pug', 'text/x-jade')),
     #'PuppetLexer': ('pygments.lexers.dsls', 'Puppet', ('puppet',), ('*.pp',), ()),
     #'PyPyLogLexer': ('pygments.lexers.console', 'PyPy Log', ('pypylog', 'pypy'), ('*.pypylog',), ('application/x-pypylog',)),
-    #'Python3Lexer': ('pygments.lexers.python', 'Python 3', ('python3', 'py3'), (), ('text/x-python3', 'application/x-python3')),
+    'Python3Lexer': ('pygments.lexers.python', 'Python 3', ('python3', 'py3'), (), ('text/x-python3', 'application/x-python3')),
     #'Python3TracebackLexer': ('pygments.lexers.python', 'Python 3.0 Traceback', ('py3tb',), ('*.py3tb',), ('text/x-python3-traceback',)),
     #'PythonConsoleLexer': ('pygments.lexers.python', 'Python console session', ('pycon',), (), ('text/x-python-doctest',)),
     'PythonLexer': ('pygments.lexers.python', 'Python', ('python', 'py', 'sage'), ('*.py', '*.pyw', '*.sc', 'SConstruct', 'SConscript', '*.tac', '*.sage'), ('text/x-python', 'application/x-python')),
