@@ -18,8 +18,13 @@ from os.path import basename
 from typecode.prog_lexers import LEXERS
 from pygments.modeline import get_filetype_from_buffer
 from pygments.plugin import find_plugin_lexers
-from pygments.util import ClassNotFound, itervalues, guess_decode, text_type
+from pygments.util import ClassNotFound, guess_decode
 
+# TODO: re-vendor this from the current version of pygments once py2 support is dropped
+import six
+text_type = six.text_type
+def itervalues(x):
+    return x.values()
 
 __all__ = ['get_lexer_by_name', 'get_lexer_for_filename', 'find_lexer_class',
            'guess_lexer', 'load_lexer_from_file'] + list(LEXERS)
