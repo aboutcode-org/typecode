@@ -11,5 +11,8 @@ If you want to use the version of libmagic provided by your operating system, us
 To set up the typecode development environment:
     source configure
 
+To run unit tests:
+    pytest -vvs -n 2 .
+
 To clean up development environment:
     ./configure --clean
