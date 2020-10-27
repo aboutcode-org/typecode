@@ -193,6 +193,8 @@ class TestContentTypeComplex(FileBasedTesting):
             'ti-xx graphing calculator (flash)',
             # correct in libmagic 5.39+
             'c source, ascii text',
+            # libmagic 5.39+ on Windows
+            'c source, ascii text, with crlf line terminators',
         )
         assert get_filetype(test_file) in expected
         assert 'C' == get_filetype_pygment(test_file)
@@ -206,6 +208,8 @@ class TestContentTypeComplex(FileBasedTesting):
             'ti-xx graphing calculator (flash)',
             # correct in libmagic 5.39+
             'c source, ascii text',
+            # libmagic 5.39+ on Windows
+            'c source, ascii text, with crlf line terminators',
         )
         assert get_filetype(test_file) in expected
         assert is_source(test_file)
@@ -221,6 +225,8 @@ class TestContentTypeComplex(FileBasedTesting):
             'text/x-python',
             # new in libmagic 5.39
             'text/x-script.python',
+            # libmagic 5.39+ on Windows
+            'c source, ascii text, with crlf line terminators',
         )
         assert get_mimetype_file(test_file) in expected
         assert get_filetype_file(test_file).startswith('Python script')
