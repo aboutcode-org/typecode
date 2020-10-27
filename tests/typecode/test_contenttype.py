@@ -220,15 +220,17 @@ class TestContentTypeComplex(FileBasedTesting):
         assert is_source(test_file)
         assert is_text(test_file)
         assert 'Python' == get_filetype_pygment(test_file)
-        assert 'python script, ascii text executable' == get_filetype(test_file)
-        expected = (
+        filetype_expected = (
+            'python script, ascii text executable',
+            'python script, ascii text executable, with crlf line terminators',
+        )
+        assert get_filetype(test_file) in filetype_expected
+        mimetype_expected = (
             'text/x-python',
             # new in libmagic 5.39
             'text/x-script.python',
-            # libmagic 5.39+ on Windows
-            'c source, ascii text, with crlf line terminators',
         )
-        assert get_mimetype_file(test_file) in expected
+        assert get_mimetype_file(test_file) in mimetype_expected
         assert get_filetype_file(test_file).startswith('Python script')
 
     def test_compiled_elf_so(self):
