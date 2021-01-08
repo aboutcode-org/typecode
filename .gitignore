@@ -68,9 +68,8 @@ pyvenv.cfg
 lib64
 tcl
 
-
-__pycache__
-
+# Ignore Jupyter Notebook related temp files
+.ipynb_checkpoints/
 
 
 # test files that should not be ignored
