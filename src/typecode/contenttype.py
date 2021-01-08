@@ -790,7 +790,7 @@ class Type(object):
         Return True if a the file is a windows executable.
         """
         ft = self.filetype_file.lower()
-        if 'executable for ms windows' in ft or ft.startswith('pe32'):
+        if 'for ms windows' in ft or ft.startswith('pe32'):
             return True
         else:
             return False
