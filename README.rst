@@ -1,6 +1,11 @@
 TypeCode
 ========
 
+- license: Apache-2.0
+- copyright: copyright (c) nexB. Inc. and others
+- homepage_url: https://github.com/nexB/typecode
+- keywords: filetype, mimetype, libmagic, scancode-toolkit, typecode
+
 TypeCode provides comprehensive filetype and mimetype detection using multiple
 detectors including libmagic (included as a dependency for Linux, Windows and
 macOS) and Pygments. It started as library in scancode-toolkit.
@@ -27,10 +32,3 @@ To clean up development environment::
 
     ./configure --clean
 
-License: Apache-2.0
-copyright: copyright (c) nexB. Inc. and others
-description: TypeCode provides comprehensive filetype and mimetype detection using multiple
- detectors including libmagic (included as a dependency for Linux, Windows and
- macOS). It started as library in scancode-toolkit.
-homepage_url: https://github.com/nexB/typecode
-keywords: filetype, mimetype, libmagic, scancode-toolkit, typecode
