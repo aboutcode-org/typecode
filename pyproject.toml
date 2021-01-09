@@ -31,22 +31,25 @@ norecursedirs = [
    "thirdparty",
    "tmp",
    "tests/typecode/data",
-   ".eggs"
+   ".eggs",
+   "typecode/_vendor",
+   "typecode/data",
+]
+
+
+python_files = "*.py"
+
+python_classes = "Test"
+python_functions = "test"
+
+addopts = [
+    "-rfExXw",
+    "--strict",
+    "--doctest-modules"
 ]
 
 [tool.vendy]
 target = 'typecode'
 packages = [
     "pygments==2.4.2",
-]
-
-python_files = "*.py"
-
-python_classes="Test"
-python_functions="test"
-
-addopts = [
-    "-rfExXw",
-    "--strict",
-    "--doctest-modules"
 ]
