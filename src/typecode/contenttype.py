@@ -306,6 +306,11 @@ class Type(object):
             self._mimetype_python = ''
             if self.is_file is True:
                 if not mimetype_python.inited:
+                    # Ad workaround for this Python bug
+                    # https://bugs.python.org/issue4963?#msg384730
+                    # and https://github.com/nexB/typecode/issues/14
+                    # ... we monkey mimetypes.knownfiles to avoid problems
+                    mimetype_python.knownfiles = []
                     mimetype_python.init([APACHE_MIME_TYPES])
                 val = mimetype_python.guess_type(self.location)[0]
                 self._mimetype_python = val or ''

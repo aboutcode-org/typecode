@@ -243,13 +243,12 @@ def guess_lexer_for_filename(_fn, _text, **options):
 
     usage::
 
-        >>> from typecode._vendor.pygments.lexers import guess_lexer_for_filename
         >>> guess_lexer_for_filename('hello.html', '<%= @foo %>').__class__.__name__
-        'RhtmlLexer'
+        'HtmlLexer'
         >>> guess_lexer_for_filename('hello.html', '<h1>{{ title|e }}</h1>').__class__.__name__
-        'HtmlDjangoLexer'
+        'HtmlLexer'
         >>> guess_lexer_for_filename('style.css', 'a { color: <?= $link ?> }').__class__.__name__
-        'CssPhpLexer'
+        'CssLexer'
     """
     fn = basename(_fn)
     primary = {}
