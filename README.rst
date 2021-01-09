@@ -1,18 +1,36 @@
-typecode
+TypeCode
 ========
-typecode provides file type detection functionality to ScanCode toolkit.
 
-To install this package with its full capability (where the binaries for libmagic are installed), use the `full` option:
+TypeCode provides comprehensive filetype and mimetype detection using multiple
+detectors including libmagic (included as a dependency for Linux, Windows and
+macOS) and Pygments. It started as library in scancode-toolkit.
+
+To install this package with its full capability (where the binaries for
+libmagic are installed), use the `full` option::
+
     pip install typecode[full]
 
-If you want to use the version of libmagic provided by your operating system, use the `minimal` option:
+If you want to use the version of libmagic (possibly) provided by your operating
+system, use the `minimal` option::
+
     pip install typecode[minimal]
 
-To set up the typecode development environment:
+To set up the typecode development environment::
+
     source configure
 
-To run unit tests:
-    pytest -vvs -n 2 .
+To run unit tests::
 
-To clean up development environment:
+    pytest -vvs -n 2
+
+To clean up development environment::
+
     ./configure --clean
+
+License: Apache-2.0
+copyright: copyright (c) nexB. Inc. and others
+description: TypeCode provides comprehensive filetype and mimetype detection using multiple
+ detectors including libmagic (included as a dependency for Linux, Windows and
+ macOS). It started as library in scancode-toolkit.
+homepage_url: https://github.com/nexB/typecode
+keywords: filetype, mimetype, libmagic, scancode-toolkit, typecode

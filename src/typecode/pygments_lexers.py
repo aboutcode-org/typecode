@@ -6,7 +6,7 @@
     Pygments lexers.
 
     :copyright: Copyright 2006-2019 by the Pygments team, see AUTHORS.
-    :license: BSD, see LICENSE for details.
+    :license: BSD, see pygments_lexers.py.ABOUT for details.
 """
 
 import re

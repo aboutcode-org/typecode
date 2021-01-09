@@ -1,6 +1,16 @@
 Release notes
 =============
 
+Version 21.1.9
+----------------
+
+*2021-01-09* 
+- Remove Python 2
+- Switch to plain Apache license per https://github.com/nexB/scancode-toolkit/issues/2337
+- Improve documentation
+- Enable Ci on more OS/Python combos
+
+
 Version 21.1.8.1
 ----------------
 

@@ -16,7 +16,7 @@
     Do not alter the LEXERS dictionary by hand.
 
     :copyright: Copyright 2006-2014, 2016 by the Pygments team, see AUTHORS.
-    :license: BSD, see LICENSE for details.
+    :license: BSD, see prog_lexers.py.ABOUT for details.
 """
 
 from __future__ import print_function
