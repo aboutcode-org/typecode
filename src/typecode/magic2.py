@@ -45,9 +45,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from __future__ import absolute_import
-from __future__ import print_function
-
 import ctypes
 import os
 
@@ -55,17 +52,9 @@ from commoncode import command
 from commoncode import compat
 from plugincode.location_provider import get_location
 
-# Python 2 and 3 support
-try:
-    from os import fsencode
-    from os import fsdecode
-except ImportError:
-    from backports.os import fsencode  # NOQA
-    from backports.os import fsdecode  # NOQA
-
+from os import fsencode
 
 TRACE = False
-
 
 """
 magic2 is minimal and specialized wrapper around a vendored libmagic file
@@ -113,9 +102,12 @@ def load_lib():
 
 
 if TRACE:
+
     def file_type(location):
         return _detect(location, DETECT_TYPE)
+
 else:
+
     def file_type(location):
         """"
         Return the detected filetype for file at `location` or an empty string if

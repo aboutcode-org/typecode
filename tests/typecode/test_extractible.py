@@ -22,13 +22,8 @@
 #  ScanCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/scancode-toolkit/ for support and download.
 
-from __future__ import absolute_import
-from __future__ import print_function
-from __future__ import unicode_literals
-
 import os
 
-from commoncode.system import py3
 from commoncode.testcase import FileBasedTesting
 
 from typecode import extractible
@@ -50,8 +45,8 @@ class TestExtractible(FileBasedTesting):
             ('extractible/sqfs-gz.sqs', False),
             ('extractible/sqfs-lzo.sqs', False),
             ('extractible/sqfs-xz.sqs', False),
-            ('extractible/test.tar.lzma', True if py3 else False),
-            ('extractible/test.tar.xz', True if py3 else False),
+            ('extractible/test.tar.lzma', True),
+            ('extractible/test.tar.xz', True),
             ('extractible/test.zip', True),
             ('extractible/win-archive.lib', False),
         )

@@ -22,13 +22,9 @@
 #  ScanCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/scancode-toolkit/ for support and download.
 
-from __future__ import absolute_import
-from __future__ import division
-
 from functools import partial
 import unittest
 
-from commoncode.system import py2
 from typecode.entropy import gzip_entropy
 from typecode.entropy import shannon_entropy
 
@@ -49,10 +45,7 @@ class TestEntropy(unittest.TestCase):
         # http://rosettacode.org/wiki/Entropy#Python
         check = partial(check_entropy, func=shannon_entropy)
 
-        if py2:
-            check(b''.join(map(chr, range(256))), 8.0)
-        else:
-            check(bytes(list(range(256))), 8.0)
+        check(bytes(list(range(256))), 8.0)
 
         check('', 0.0)
         check('0', 0.0)
@@ -83,10 +76,7 @@ class TestEntropy(unittest.TestCase):
 
     def test_gz_entropy(self):
         check = partial(check_entropy, func=gzip_entropy)
-        if py2:
-            check(b''.join(map(chr, range(256))), 1.04)
-        else:
-            check(bytes(list(range(256))), 1.04)
+        check(bytes(list(range(256))), 1.04)
 
         check('', 0.0)
         check('0', 9.0)
