@@ -1,6 +1,14 @@
 Release notes
 =============
 
+
+Version 21.1.9.1
+----------------
+
+*2021-01-09* 
+- Work around Python bug https://github.com/nexB/typecode/issues/14
+
+
 Version 21.1.9
 ----------------
 
