@@ -1,6 +1,18 @@
 Release notes
 =============
 
+vNext
+-----
+
+
+Version 21.1.21
+---------------
+
+*2021-01-21*
+- Fix testing issues and testing requirements
+- Make typecode-libmagic
+- Various documentation and comment normalization and updates
+
 
 Version 21.1.9.1
 ----------------
