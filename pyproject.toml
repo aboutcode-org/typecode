@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools", "wheel", "setuptools_scm[toml] >= 4"]
+requires = ["setuptools >= 44", "wheel", "setuptools_scm[toml] >= 4"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools_scm]
@@ -30,12 +30,13 @@ norecursedirs = [
    "Scripts",
    "thirdparty",
    "tmp",
+   "tests/data",
+   ".eggs",
    "tests/typecode/data",
    ".eggs",
    "typecode/_vendor",
    "typecode/data",
 ]
-
 
 python_files = "*.py"
 
