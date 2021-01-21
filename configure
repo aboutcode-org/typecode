@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) nexB Inc. http://www.nexb.com/ - All rights reserved.
+# Copyright (c) nexB Inc. and others.
+# SPDX-License-Identifier: Apache-2.0
 #
 
 set -e
@@ -34,8 +35,7 @@ function setup {
 
 setup
 
-$CONFIGURE_ROOT_DIR/tmp/bin/pip install -e .[testing]
-$CONFIGURE_ROOT_DIR/tmp/bin/pip install typecode_libmagic
+$CONFIGURE_ROOT_DIR/tmp/bin/pip install -e .[testing] -e .[full]
 
 if [ -f "$CONFIGURE_ROOT_DIR/tmp/bin/activate" ]; then
     source "$CONFIGURE_ROOT_DIR/tmp/bin/activate"
