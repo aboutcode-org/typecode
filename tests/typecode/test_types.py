@@ -1,12 +1,9 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) nexB Inc. and others.
-# Visit https://github.com/nexB/typecode/
-# Visit https://nexb.com https://aboutcode.org and
-#  https://github.com/nexB/scancode-toolkit/ for support
-# ScanCode is a trademark of nexB Inc.
+# SPDX-License-Identifier: Apache-2.0
 #
-# SPDX-License_identifier: Apache-2.0
+# Visit https://aboutcode.org and https://github.com/nexB/ for support and download.
+# ScanCode is a trademark of nexB Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
