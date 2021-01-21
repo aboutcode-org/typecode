@@ -1,11 +1,9 @@
 #
 # Copyright (c) nexB Inc. and others.
-# Visit https://github.com/nexB/typecode/
-# Visit https://nexb.com https://aboutcode.org and
-#  https://github.com/nexB/scancode-toolkit/ for support
-# ScanCode is a trademark of nexB Inc.
+# SPDX-License-Identifier: Apache-2.0 AND MIT
 #
-# SPDX-License_identifier: Apache-2.0
+# Visit https://aboutcode.org and https://github.com/nexB/ for support and download.
+# ScanCode is a trademark of nexB Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,7 +16,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 #
 #
 # This code was in part derived from the python-magic library:
