@@ -15,7 +15,7 @@ import types
 import fnmatch
 from os.path import basename
 
-from typecode.prog_lexers import LEXERS
+from typecode.pygments_lexers_mapping import LEXERS
 from typecode._vendor.pygments.modeline import get_filetype_from_buffer
 from typecode._vendor.pygments.plugin import find_plugin_lexers
 from typecode._vendor.pygments.util import ClassNotFound, itervalues, guess_decode, text_type

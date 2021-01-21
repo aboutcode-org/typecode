@@ -1,0 +1,23 @@
+about_resource: pygments_lexers_mapping.py
+attribute: yes
+checksum_md5: ea723daf498a9805b481619c19ab75f8
+checksum_sha1: b22c0e245d2f7874e09bf817352f25462874dd18
+contact: georg@python.org
+copyright: Copyright (c) by the Pygments team
+description: Pygments is a generic syntax highlighter suitable for use in code hosting, forums,
+  wikis or other applications that need to prettify source code.
+download_url: https://files.pythonhosted.org/packages/7e/ae/26808275fc76bf2832deb10d3a3ed3107bc4de01b85dcccbe525f2cd6d1e/Pygments-2.4.2.tar.gz
+homepage_url: http://pygments.org/
+license_expression: bsd-simplified AND (bsd-new AND apache-2.0 AND public-domain)
+name: pygments
+notes: this is a Pygments file copied from pygments/lexers/_mapping.py
+ to focus on programming languages detection only. It has been modified to be
+ usable alone.
+notice_file: pygments_lexers.py.NOTICE
+notice_url: https://github.com/pygments/pygments/blob/2.4.2/LICENSE
+owner: Pocoo Team
+owner_url: http://www.pocoo.org/
+package_url: pkg:pypi/pygments@2.4.2#pygments/lexers/_mapping.py
+track_changes: yes
+vcs_url: https://github.com/pygments/pygments
+version: 2.4.2
