@@ -183,10 +183,10 @@ def check_types_equal(expected, result):
         if expected_key in Type.text_attributes:
             if result_value and expected_value:
                 if not result_value.startswith(expected_value):
+                    # on windows we really have weird things
                     return False
             else:
-                if result_value != expected_value:
-                    return False
+                return result_value == expected_value
 
         # we have either number, date, None or boolean value and
         # we want both values to be both trueish or falsish
