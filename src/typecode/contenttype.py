@@ -21,7 +21,6 @@
 import contextlib
 import io
 import os
-import fnmatch
 import mimetypes as mimetype_python
 
 import attr
@@ -350,6 +349,14 @@ class Type(object):
                 else:
                     self._filetype_pygment = ''
         return self._filetype_pygment
+
+    @property
+    def file_name(self):
+        """
+        Return the file name for this location.
+        """
+        # TODO: cache me
+        return fileutils.file_name(self.location)
 
     # FIXME: we way we use tri booleans is a tad ugly
 
@@ -729,10 +736,7 @@ class Type(object):
             '.s', '.asm', '.hpp', '.hxx', '.h++', '.i', '.ii', '.m'])
 
         ext = fileutils.file_extension(self.location)
-        if self.is_text is True and ext.lower() in C_EXTENSIONS:
-            return True
-        else:
-            return False
+        return self.is_text is True and ext.lower() in C_EXTENSIONS
 
     @property
     def is_winexe(self):
@@ -740,10 +744,7 @@ class Type(object):
         Return True if a the file is a windows executable.
         """
         ft = self.filetype_file.lower()
-        if 'for ms windows' in ft or ft.startswith('pe32'):
-            return True
-        else:
-            return False
+        return 'for ms windows' in ft or ft.startswith('pe32')
 
     @property
     def is_elf(self):
@@ -771,10 +772,7 @@ class Type(object):
     @property
     def is_stripped_elf(self):
         if self.is_elf is True:
-            if 'not stripped' not in self.filetype_file.lower():
-                return True
-            else:
-                return False
+            return 'not stripped' not in self.filetype_file.lower()
         else:
             return False
 
@@ -783,32 +781,14 @@ class Type(object):
         """
         FIXME: Check the filetype.
         """
-        if self.is_file is True:
-            name = fileutils.file_name(self.location)
-
-            if (fnmatch.fnmatch(name, '*.java')
-             or fnmatch.fnmatch(name, '*.aj')
-             or fnmatch.fnmatch(name, '*.jad')
-             or fnmatch.fnmatch(name, '*.ajt')):
-                return True
-            else:
-                return False
-        else:
-            return False
+        return self.is_file and self.file_name.lower().endswith(('.java', '.aj', '.jad', '.ajt'))
 
     @property
     def is_java_class(self):
         """
         FIXME: Check the filetype.
         """
-        if self.is_file is True:
-            name = fileutils.file_name(self.location)
-            if fnmatch.fnmatch(name, '*?.class'):
-                return True
-            else:
-                return False
-        else:
-            return False
+        return self.is_file and self.file_name.lower().endswith('.class')
 
 
 @attr.attributes
