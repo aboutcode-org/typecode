@@ -1,9 +1,4 @@
-filetype_file: 'Composite Document File V2 Document, Little Endian, Os: MacOS, Version 10.3,
-  Code page: 10000, Title: Test, Author: Test, Template: Normal.dotm, Last Saved By: Francois
-  Granade, Revision Number: 4, Name of Creating Application: Microsoft Word 12.1.0, Last Printed:
-  Wed Feb 18 00:38:00 2004, Create Time/Date: Mon Nov 8 19:49:00 2010, Last Saved Time/Date:
-  Mon Nov 8 19:51:00 2010, Number of Pages: 1, Number of Words: 0, Number of Characters: 0,
-  Security: 0'
+filetype_file: Composite Document File V2 Document
 mimetype_file: application/msword
 mimetype_python: application/msword
 is_file: yes

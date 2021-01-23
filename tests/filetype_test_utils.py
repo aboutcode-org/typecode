@@ -26,6 +26,8 @@ import attr
 import pytest
 import saneyaml
 
+from commoncode.system import on_mac
+from commoncode.system import on_windows
 from commoncode.testcase import FileDrivenTesting
 from commoncode.testcase import get_test_file_pairs
 from commoncode.text import python_safe_name
@@ -227,7 +229,14 @@ def make_filetype_test_functions(test, index, test_data_dir=test_env.test_data_d
 
     closure_test_function.__name__ = test_name
 
-    if test.expected_failure:
+    if (test.expected_failure is True
+        or (isinstance(test.expected_failure, str)
+            and (
+                ('windows' in test.expected_failure and on_windows)
+                or ('macos' in test.expected_failure and on_mac)
+            )
+        )
+    ):
         closure_test_function = pytest.mark.xfail(closure_test_function)
 
     return closure_test_function, test_name
