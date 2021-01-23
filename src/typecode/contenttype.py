@@ -21,7 +21,6 @@
 import contextlib
 import io
 import os
-import mimetypes as mimetype_python
 
 import attr
 from binaryornot.helpers import get_starting_chunk
@@ -42,6 +41,7 @@ from commoncode import text
 from typecode import entropy
 from typecode import extractible
 from typecode import magic2
+from typecode import mimetypes
 from typecode.pygments_lexers import ClassNotFound as LexerClassNotFound
 from typecode.pygments_lexers import get_lexer_for_filename
 from typecode.pygments_lexers import guess_lexer
@@ -49,6 +49,18 @@ from typecode.pygments_lexers import guess_lexer
 """
 Utilities to detect and report the type of a file or path based on its name,
 extension and mostly its content.
+
+
+TODO: consider adding support for these
+
+https://www.freedesktop.org/wiki/Specifications/shared-mime-info-spec/
+ https://github.com/freedesktop/xdg-shared-mime-info
+ https://pypi.python.org/pypi/z3c.sharedmimeinfo/0.1.0
+ https://github.com/chesstrian/mimetype-description
+
+and :
+ https://github.com/mime-types/mime-types-data
+
 """
 
 # Tracing flag
@@ -69,13 +81,6 @@ if TRACE:
 
     def logger_debug(*args):
         return logger.debug(' '.join(isinstance(a, str) and a or repr(a) for a in args))
-
-data_dir = os.path.join(os.path.dirname(__file__), 'data')
-
-# Python mimetypes path setup using Apache mimetypes DB
-os.environ['XDG_DATA_DIRS'] = os.path.join(data_dir, 'apache')
-os.environ['XDG_DATA_HOME'] = os.environ['XDG_DATA_DIRS']
-APACHE_MIME_TYPES = os.path.join(data_dir, 'apache', 'mime.types')
 
 # Ensure that all dates are UTC, especially for fine free file.
 os.environ['TZ'] = 'UTC'
@@ -102,14 +107,9 @@ MAKEFILE_EXTENSIONS = (
     'Makefile.inc',
 )
 
-# TODO:
-# http://svn.zope.org/z3c.mimetype/trunk/?pathrev=103648
-# http://svn.zope.org/z3c.sharedmimeinfo/trunk/TODO.txt?revision=103668&view=markup
-# https://pypi.python.org/pypi/z3c.sharedmimeinfo/0.1.0
-# https://github.com/plone/Products.MimetypesRegistry/
 
 # Global registry of Type objects, keyed by location
-# FIXME: can this be a memroy hog for very large scans?
+# FIXME: can this be a memory hog for very large scans?
 _registry = {}
 
 
@@ -130,7 +130,7 @@ def get_type(location):
 
 class Type(object):
     """
-    Content, media and mime type information about a file.
+    Content, media and mimetype information about a file.
     All flags and values are tri-booleans. You can test a value state with
     `is`:
 
@@ -258,8 +258,12 @@ class Type(object):
 
     def __repr__(self):
         return ('Type(ftf=%r, mtf=%r, ftpyg=%r, mtpy=%r)'
-                % (self.filetype_file, self.mimetype_file,
-                   self.filetype_pygment, self.mimetype_python))
+            % (
+                self.filetype_file,
+                self.mimetype_file,
+                self.filetype_pygment,
+                self.mimetype_python
+        ))
 
     def to_dict(self, include_date=True):
         """
@@ -296,21 +300,12 @@ class Type(object):
     @property
     def mimetype_python(self):
         """
-        Return the mimetype using the Python stdlib and the Apache HTTPD
-        mimetype definitions.
+        Return the mimetype using the a map of mimetypes by file extension.
         """
         if self._mimetype_python is None:
             self._mimetype_python = ''
             if self.is_file is True:
-                if not mimetype_python.inited:
-                    # Ad workaround for this Python bug
-                    # https://bugs.python.org/issue4963?#msg384730
-                    # and https://github.com/nexB/typecode/issues/14
-                    # ... we monkey mimetypes.knownfiles to avoid problems
-                    mimetype_python.knownfiles = []
-                    mimetype_python.init([APACHE_MIME_TYPES])
-                val = mimetype_python.guess_type(self.location)[0]
-                self._mimetype_python = val or ''
+                self._mimetype_python = mimetypes.guess_type(self.location) or ''
         return self._mimetype_python
 
     @property
