@@ -18,7 +18,6 @@
 # limitations under the License.
 #
 
-
 from collections import OrderedDict
 import io
 from os import path
@@ -215,8 +214,8 @@ def make_filetype_test_functions(test, index, test_data_dir=test_env.test_data_d
 
         # this is done to display slightly eaier to handle error traces
         if not passing:
-            expected['data file']= 'file://' + data_file
-            expected['test_file']= 'file://' + test_file
+            expected['data file'] = 'file://' + data_file
+            expected['test_file'] = 'file://' + test_file
             assert dict(expected) == dict(results)
 
     data_file = test.data_file
