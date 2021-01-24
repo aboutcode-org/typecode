@@ -1,6 +1,7 @@
 @echo OFF
 @setlocal
-@rem Copyright (c) nexB Inc. http://www.nexb.com/ - All rights reserved.
+@rem Copyright (c) nexB Inc. and others.
+@rem SPDX-License-Identifier: Apache-2.0
 
 @rem ################################
 @rem # A configuration script for Windows
@@ -89,8 +90,8 @@ call mkdir "%CFG_ROOT_DIR%tmp"
 call curl -o "%CFG_ROOT_DIR%tmp\virtualenv.pyz" https://bootstrap.pypa.io/virtualenv.pyz
 call %PYTHON_EXECUTABLE% "%CFG_ROOT_DIR%tmp\virtualenv.pyz" "%CFG_ROOT_DIR%tmp"
 call "%CFG_ROOT_DIR%tmp\Scripts\activate"
-call "%CFG_ROOT_DIR%tmp\Scripts\pip" install --upgrade pip virtualenv setuptools wheel
-call "%CFG_ROOT_DIR%tmp\Scripts\pip" install -e .[testing]
+@rem call "%CFG_ROOT_DIR%tmp\Scripts\pip" install --upgrade pip virtualenv setuptools wheel
+call "%CFG_ROOT_DIR%tmp\Scripts\pip" install -e .[testing] -e .[full]
 
 @rem Return a proper return code on failure
 if %ERRORLEVEL% neq 0 (

@@ -1,11 +1,9 @@
 #
 # Copyright (c) nexB Inc. and others.
-# Visit https://github.com/nexB/typecode/
-# Visit https://nexb.com https://aboutcode.org and
-#  https://github.com/nexB/scancode-toolkit/ for support
-# ScanCode is a trademark of nexB Inc.
+# SPDX-License-Identifier: Apache-2.0 AND MIT
 #
-# SPDX-License_identifier: Apache-2.0
+# Visit https://aboutcode.org and https://github.com/nexB/ for support and download.
+# ScanCode is a trademark of nexB Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,7 +16,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 #
 #
 # This code was in part derived from the python-magic library:
@@ -48,7 +45,6 @@ import ctypes
 import os
 
 from commoncode import command
-from commoncode import compat
 from plugincode.location_provider import get_location
 
 from os import fsencode
@@ -85,10 +81,8 @@ TYPECODE_LIBMAGIC_DATABASE = 'typecode.libmagic.db'
 
 def load_lib():
     """
-    Return the loaded libmagic shared library object from plugin provided or
-    default "vendored" paths.
+    Return the loaded libmagic shared library object from plugin-provided path.
     """
-    # get paths from plugins
     dll = get_location(TYPECODE_LIBMAGIC_DLL)
     libdir = get_location(TYPECODE_LIBMAGIC_LIBDIR)
     if not (dll and libdir) or not os.path.isfile(dll) or not os.path.isdir(libdir):
@@ -173,7 +167,7 @@ class Detector(object):
             magic_db_location = get_location(TYPECODE_LIBMAGIC_DATABASE)
 
         # Note: this location must always be bytes on Python2 and 3, all OSes
-        if isinstance(magic_db_location, compat.unicode):
+        if isinstance(magic_db_location, str):
             magic_db_location = fsencode(magic_db_location)
 
         _magic_load(self.cookie, magic_db_location)
@@ -224,11 +218,11 @@ def check_error(result, func, args):  # NOQA
     """
     is_int = isinstance(result, int)
     is_bytes = isinstance(result, bytes)
-    is_text = isinstance(result, compat.unicode)
+    is_text = isinstance(result, str)
 
     if (result is None
     or (is_int and result < 0)
-    or (is_bytes and compat.unicode(result, encoding='utf-8').startswith('cannot open'))
+    or (is_bytes and str(result, encoding='utf-8').startswith('cannot open'))
     or (is_text and result.startswith('cannot open'))):
         err = _magic_error(args[0])
         raise MagicException(err)

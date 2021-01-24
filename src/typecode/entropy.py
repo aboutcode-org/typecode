@@ -1,11 +1,9 @@
 #
 # Copyright (c) nexB Inc. and others.
-# Visit https://github.com/nexB/typecode/
-# Visit https://nexb.com https://aboutcode.org and
-#  https://github.com/nexB/scancode-toolkit/ for support
-# ScanCode is a trademark of nexB Inc.
+# SPDX-License-Identifier: Apache-2.0
 #
-# SPDX-License_identifier: Apache-2.0
+# Visit https://aboutcode.org and https://github.com/nexB/ for support and download.
+# ScanCode is a trademark of nexB Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,8 +21,6 @@
 from collections import Counter
 import math
 import zlib
-
-from commoncode import compat
 
 
 def entropy(location, length=5000):
@@ -66,7 +62,7 @@ def gzip_entropy(s):
     if not s:
         return 0
 
-    if isinstance(s, compat.unicode):
+    if isinstance(s, str):
         s = s.encode('utf-8')
 
     length = len(s)
