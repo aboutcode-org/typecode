@@ -9,9 +9,12 @@ Version 21.1.21
 ---------------
 
 *2021-01-21*
+- Update typecode-libmagic
+- Drop using the standard library mimetypes modules because of
+  https://github.com/nexB/typecode/issues/14
 - Fix testing issues and testing requirements
-- Make typecode-libmagic
-- Various documentation and comment normalization and updates
+- Update documentation and comments
+- Uupdate to use latest commoncode
 
 
 Version 21.1.9.1
