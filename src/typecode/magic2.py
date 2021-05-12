@@ -45,9 +45,7 @@ import ctypes
 import os
 
 from commoncode import command
-from plugincode.location_provider import get_location
-
-from os import fsencode
+from commoncode.system import on_windows
 
 TRACE = False
 
@@ -74,24 +72,75 @@ DETECT_MIME = MAGIC_NONE | MAGIC_MIME
 DETECT_ENC = MAGIC_NONE | MAGIC_MIME | MAGIC_MIME_ENCODING
 
 # keys for plugin-provided locations
-TYPECODE_LIBMAGIC_LIBDIR = 'typecode.libmagic.libdir'
 TYPECODE_LIBMAGIC_DLL = 'typecode.libmagic.dll'
-TYPECODE_LIBMAGIC_DATABASE = 'typecode.libmagic.db'
+TYPECODE_LIBMAGIC_DB = 'typecode.libmagic.db'
+
+TYPECODE_LIBMAGIC_PATH_ENVVAR = 'TYPECODE_LIBMAGIC_PATH'
+TYPECODE_LIBMAGIC_DB_PATH_ENVVAR = 'TYPECODE_LIBMAGIC_DB_PATH'
 
 
 def load_lib():
     """
-    Return the loaded libmagic shared library object from plugin-provided path.
+    Return the libmagic shared library object loaded from either:
+    - an environment variable ``TYPECODE_LIBMAGIC_PATH``
+    - a plugin-provided path,
+    - the system PATH.
+    Raise an Exception if no libmagic can be found.
     """
-    dll = get_location(TYPECODE_LIBMAGIC_DLL)
-    libdir = get_location(TYPECODE_LIBMAGIC_LIBDIR)
-    if not (dll and libdir) or not os.path.isfile(dll) or not os.path.isdir(libdir):
+    from plugincode.location_provider import get_location
+
+    # try the environment first
+    dll_loc = os.environ.get(TYPECODE_LIBMAGIC_PATH_ENVVAR)
+
+    # try the PATH
+    if not dll_loc:
+        dll = 'libmagic.dll' if on_windows else 'libmagic.so'
+        dll_loc = command.find_in_path(dll)
+
+    if not dll_loc or not os.path.isfile(dll_loc):
         raise Exception(
-            'CRITICAL: libmagic DLL and is magic database are not installed. '
+            'CRITICAL: libmagic DLL and its magic database are not installed. '
             'Unable to continue: you need to install a valid typecode-libmagic '
-            'plugin with a valid and proper libmagic and magic DB available.'
+            'plugin with a valid and proper libmagic and magic DB available. '
+            f'OR set the {TYPECODE_LIBMAGIC_PATH_ENVVAR} environment variable.'
     )
-    return command.load_shared_library(dll, libdir)
+    return command.load_shared_library(dll_loc)
+
+
+def get_magicdb_location(_cache=[]):
+    """
+    Return the location of the magicdb loaded from either:
+    - an environment variable ``TYPECODE_LIBMAGIC_DB_PATH``,
+    - a plugin-provided path,
+    - the system PATH.
+    Raise an Exception if no magicdb command can be found.
+    """
+    if _cache:
+        return _cache[0]
+
+    from plugincode.location_provider import get_location
+
+    # try the environment first
+    magicdb_loc = os.environ.get(TYPECODE_LIBMAGIC_DB_PATH_ENVVAR)
+
+    # try a plugin-provided path second
+    if not magicdb_loc:
+        magicdb_loc = get_location(TYPECODE_LIBMAGIC_DB)
+
+    # try the PATH
+    if not magicdb_loc:
+        db = 'magic.mgc'
+        magicdb_loc = command.find_in_path(db)
+
+    if not magicdb_loc or not os.path.isfile(magicdb_loc):
+        raise Exception(
+            'CRITICAL: Libmagic magic database is not installed. '
+            'Unable to continue: you need to install a valid typecode-libmagic '
+            'plugin with a valid magic database available. '
+            'OR set the TYPECODE_LIBMAGIC_DB_PATH environment variable.'
+    )
+    _cache.append(magicdb_loc)
+    return magicdb_loc
 
 
 if TRACE:
@@ -164,11 +213,11 @@ class Detector(object):
         self.flags = flags
         self.cookie = _magic_open(self.flags)
         if not magic_db_location:
-            magic_db_location = get_location(TYPECODE_LIBMAGIC_DATABASE)
+            magic_db_location = get_magicdb_location()
 
-        # Note: this location must always be bytes on Python2 and 3, all OSes
+        # Note: this location must always be FS-encoded bytes on all OSes
         if isinstance(magic_db_location, str):
-            magic_db_location = fsencode(magic_db_location)
+            magic_db_location = os.fsencode(magic_db_location)
 
         _magic_load(self.cookie, magic_db_location)
 
@@ -190,7 +239,7 @@ class Detector(object):
             # location string may therefore be mangled and the file not accessible
             # anymore by libmagic in some cases.
             try:
-                uloc = fsencode(location)
+                uloc = os.fsencode(location)
                 return  _magic_file(self.cookie, uloc)
             except:
                 # if all fails, read the start of the file instead
