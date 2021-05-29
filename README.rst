@@ -60,5 +60,4 @@ To clean up development environment::
 
     ./configure --clean
 
-
-To update Pygment to a newer vendored version use vendy.
+To update Pygment to a newer vendored version use vendy::

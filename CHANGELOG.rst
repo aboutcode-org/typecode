@@ -4,7 +4,6 @@ Release notes
 vNext
 -----
 
-
 Version 21.5.29
 ---------------
 
