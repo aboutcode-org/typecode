@@ -5,6 +5,15 @@ vNext
 -----
 
 
+Version 21.5.29
+---------------
+
+- Update vendored pygments to 2.7.4
+- Update commoncode to latest version
+- Use new libmagic configuration based on a plugin, and environment variable
+  or the system path. 
+
+
 Version 21.2.24
 ---------------
 
