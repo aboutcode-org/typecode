@@ -60,4 +60,13 @@ To clean up development environment::
 
     ./configure --clean
 
-To update Pygment to a newer vendored version use vendy::
+
+To update Pygment to a newer vendored version use vendy:
+
+  - Update the version of pygments in ``pyproject.toml``
+  - Run ``vendy``
+  - Update the src/typecpde/pygments_lexers_mapping.py
+    and src/typecode/pygments_lexers.py scripts accordingly, including their
+    ABOUT files
+
+  
