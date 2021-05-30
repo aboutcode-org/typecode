@@ -42,10 +42,12 @@
 # SOFTWARE.
 
 import ctypes
+import glob
 import os
 
 from commoncode import command
 from commoncode.system import on_windows
+import warnings
 
 """
 magic2 is minimal and specialized wrapper around a vendored libmagic file
@@ -97,42 +99,64 @@ TYPECODE_LIBMAGIC_PATH_ENVVAR = 'TYPECODE_LIBMAGIC_PATH'
 TYPECODE_LIBMAGIC_DB_PATH_ENVVAR = 'TYPECODE_LIBMAGIC_DB_PATH'
 
 
+class NoMagicLibError(Exception):
+    """
+    Raised when no libmagic library is found.
+    """
+
+
 def load_lib_failover():
-  # loader from python-magic
-  libmagic = None
-  # Let's try to find magic or magic1
-  dll = (ctypes.util.find_library('magic')
+    """
+    Return a loaded libmagic from well known system installation locations.
+    This is a function originally from python-magic.
+    """
+    libmagic = None
+    # Let's try to find magic or magic1
+    dll = (
+        ctypes.util.find_library('magic')
         or ctypes.util.find_library('magic1')
         or ctypes.util.find_library('cygmagic-1')
         or ctypes.util.find_library('libmagic-1')
-        or ctypes.util.find_library('msys-magic-1')  # for MSYS2
-  )
-  # necessary because find_library returns None if it doesn't find the library
-  if dll:
-      libmagic = ctypes.CDLL(dll)
+        # for MSYS2
+        or ctypes.util.find_library('msys-magic-1')
+    )
+    # necessary because find_library returns None if it doesn't find the library
+    if dll:
+        libmagic = ctypes.CDLL(dll)
 
-  if not libmagic or not libmagic._name:
-      windows_dlls = ['magic1.dll', 'cygmagic-1.dll', 'libmagic-1.dll', 'msys-magic-1.dll']
-      platform_to_lib = {'darwin': ['/opt/local/lib/libmagic.dylib',
-                                    '/usr/local/lib/libmagic.dylib'] +
-                                  # Assumes there will only be one version installed
-                                  glob.glob('/usr/local/Cellar/libmagic/*/lib/libmagic.dylib'),  # flake8:noqa
-                        'win32': windows_dlls,
-                        'cygwin': windows_dlls,
-                        'linux': ['libmagic.so.1'],
-                        # fallback for some Linuxes (e.g. Alpine) where library search does not work # flake8:noqa
-                        }
-      platform = 'linux' if sys.platform.startswith('linux') else sys.platform
-      for dll in platform_to_lib.get(platform, []):
-          try:
-              libmagic = ctypes.CDLL(dll)
-              break
-          except OSError:
-              pass
+    if not (libmagic and libmagic._name):
+        windows_dlls = [
+            'magic1.dll',
+            'cygmagic-1.dll',
+            'libmagic-1.dll',
+            'msys-magic-1.dll',
+        ]
+        platform_to_lib = {
+            'darwin': (
+                [
+                    '/opt/local/lib/libmagic.dylib',
+                    '/usr/local/lib/libmagic.dylib',
+                ] +
+                # Assumes there will only be one version installed when using brew
+                glob.glob('/usr/local/Cellar/libmagic/*/lib/libmagic.dylib')
+            ),
+            'win32': windows_dlls,
+            'cygwin': windows_dlls,
+            'linux': ['libmagic.so.1'],
+        }
+        # fallback for some Linuxes (e.g. Alpine) where library search does not
+        # work # flake8:noqa
+        platform = 'linux' if sys.platform.startswith('linux') else sys.platform
+        for dll in platform_to_lib.get(platform, []):
+            try:
+                libmagic = ctypes.CDLL(dll)
+                break
+            except OSError:
+                pass
 
-  if not libmagic or not libmagic._name:
-      return None
-  return libmagic
+    if libmagic and libmagic._name:
+        return libmagic
+
 
 def load_lib():
     """
@@ -140,7 +164,7 @@ def load_lib():
     - an environment variable ``TYPECODE_LIBMAGIC_PATH``
     - a plugin-provided path,
     - the system PATH.
-    Raise an Exception if no libmagic can be found.
+    Raise an NoMagicLibError if no libmagic can be found.
     """
     from plugincode.location_provider import get_location
 
@@ -161,23 +185,35 @@ def load_lib():
     if not dll_loc:
         failover_lib = load_lib_failover()
         if failover_lib:
+            warnings.warn(
+                'System libmagic found in typical location is used. '
+                'Install instead a typecode-libmagic plugin for best support.'
+            )
             return failover_lib
-
 
     # try the PATH
     if not dll_loc:
         dll = 'libmagic.dll' if on_windows else 'libmagic.so'
         dll_loc = command.find_in_path(dll)
 
+        if dll_loc:
+            warnings.warn(
+                'libmagic found in the PATH. '
+                'Install instead a typecode-libmagic plugin for best support.'
+            )
+
         if TRACE and dll_loc:
             logger_debug('load_lib:', 'got path magic location:', dll_loc)
 
     if not dll_loc or not os.path.isfile(dll_loc):
-        raise Exception(
+        raise NoMagicLibError(
             'CRITICAL: libmagic DLL and its magic database are not installed. '
             'Unable to continue: you need to install a valid typecode-libmagic '
-            'plugin with a valid and proper libmagic and magic DB available. '
-            f'OR set the {TYPECODE_LIBMAGIC_PATH_ENVVAR} environment variable.'
+            'plugin with a valid and proper libmagic and magic DB available.\n'
+            f'OR set the {TYPECODE_LIBMAGIC_PATH_ENVVAR} and '
+            f'{TYPECODE_LIBMAGIC_DB_PATH_ENVVAR} environment variables.\n'
+            f'OR install libmagic in typical common locations.\n'
+            f'OR have a libmagic in the system PATH.\n'
     )
     return command.load_shared_library(dll_loc)
 
@@ -188,7 +224,7 @@ def get_magicdb_location(_cache=[]):
     - an environment variable ``TYPECODE_LIBMAGIC_DB_PATH``,
     - a plugin-provided path,
     - the system PATH.
-    Raise an Exception if no magicdb command can be found.
+    Trigger a warning if no magicdb file is found.
     """
     if _cache:
         return _cache[0]
@@ -213,16 +249,25 @@ def get_magicdb_location(_cache=[]):
         db = 'magic.mgc'
         magicdb_loc = command.find_in_path(db)
 
+        if magicdb_loc:
+            warnings.warn(
+                'magicdb found in the PATH. '
+                'Install instead a typecode-libmagic plugin for best support.\n'
+                f'OR set the {TYPECODE_LIBMAGIC_DB_PATH_ENVVAR} environment variable.'
+            )
+
         if TRACE and magicdb_loc:
             logger_debug('get_magicdb_location:', 'got path magicdb location:', magicdb_loc)
 
-    if not magicdb_loc or not os.path.isfile(magicdb_loc):
-        raise Exception(
-            'CRITICAL: Libmagic magic database is not installed. '
-            'Unable to continue: you need to install a valid typecode-libmagic '
-            'plugin with a valid magic database available. '
-            'OR set the TYPECODE_LIBMAGIC_DB_PATH environment variable.'
-    )
+    if not magicdb_loc:
+        warnings.warn(
+            'Libmagic magic database not found. '
+            'A default will be used if possible. '
+            'Install instead a typecode-libmagic plugin for best support.\n'
+            f'OR set the {TYPECODE_LIBMAGIC_DB_PATH_ENVVAR} environment variable.'
+        )
+        return
+
     _cache.append(magicdb_loc)
     return magicdb_loc
 
@@ -297,11 +342,11 @@ class Detector(object):
         self.flags = flags
         self.cookie = _magic_open(self.flags)
         if not magic_db_location:
-            # if no plugin, None is returned, and libmagic will load the default db
+            # Caveat emptor: this may be empty in which case a default will be tried
             magic_db_location = get_magicdb_location()
 
         # Note: this location must always be FS-encoded bytes on all OSes
-        if isinstance(magic_db_location, str):
+        if magic_db_location and not isinstance(magic_db_location, bytes):
             magic_db_location = os.fsencode(magic_db_location)
 
         _magic_load(self.cookie, magic_db_location)
