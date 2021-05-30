@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+
+# SPDX-License-Identifier: BSD-2-Clause
+# Copyright (c)  Pygments authors
+
 """
     pygments.lexers
     ~~~~~~~~~~~~~~~
@@ -283,6 +287,7 @@ def guess_lexer_for_filename(_fn, _text, **options):
         # - priority
         # - last resort: class name
         return (t[0], primary[t[1]], t[1].priority, t[1].__name__)
+
     result.sort(key=type_sort)
 
     return result[-1][1](**options)
