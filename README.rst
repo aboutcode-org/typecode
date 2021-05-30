@@ -12,6 +12,11 @@ macOS) and Pygments. It started as library in scancode-toolkit.
 Visit https://aboutcode.org and https://github.com/nexB/ for support and download.
 
 
+We run CI tests on:
+
+ - Travis https://travis-ci.org/github/nexB/typecode
+ - Azure pipelines https://dev.azure.com/nexB/typecode/_build
+
 To install this package with its full capability (where the binaries for
 libmagic are installed), use the `full` option::
 
@@ -32,13 +37,17 @@ available in one of these ways:
   They do so by providing a plugin entry point as a ``scancode_location_provider``
   for ``typecode_libmagic`` which points to a callable that must return a mapping
   with these two keys:
+
     - 'typecode.libmagic.dll': the absolute path to a libmagic DLL
     - 'typecode.libmagic.db': the absolute path to a libmagic 'magic.mgc' database
+
   See for example:
+
     - https://github.com/nexB/scancode-plugins/blob/4da5fe8a5ab1c87b9b4af9e54d7ad60e289747f5/builtins/typecode_libmagic-linux/setup.py#L42
     - https://github.com/nexB/scancode-plugins/blob/4da5fe8a5ab1c87b9b4af9e54d7ad60e289747f5/builtins/typecode_libmagic-linux/src/typecode_libmagic/__init__.py#L32
 
 - **environment variables**:
+
   - TYPECODE_LIBMAGIC_PATH: the absolute path to a libmagic DLL
   - TYPECODE_LIBMAGIC_DB_PATH: the absolute path to a libmagic 'magic.mgc' database
 
