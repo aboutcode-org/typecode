@@ -107,7 +107,6 @@ MAKEFILE_EXTENSIONS = (
     'Makefile.inc',
 )
 
-
 # Global registry of Type objects, keyed by location
 # FIXME: can this be a memory hog for very large scans?
 _registry = {}
@@ -395,8 +394,8 @@ class Type(object):
         """
         if self._is_compact_js is None:
             # FIXME: when moving to Python 3
-            extensions = (u'.min.js', u'.typeface.json',)
-            json_ext = u'.json'
+            extensions = ('.min.js', '.typeface.json',)
+            json_ext = '.json'
 
             self._is_compact_js = (
                 self.is_js_map
@@ -433,7 +432,7 @@ class Type(object):
             return self._is_archive
 
         self._is_archive = False
-        docx_type_end = u'2007+'
+        docx_type_end = '2007+'
 
         ft = self.filetype_file.lower()
 
@@ -464,9 +463,9 @@ class Type(object):
         loc = self.location.lower()
         # FIXME: add open office extensions and other extensions for other docs
         msoffice_exts = (
-            u'.doc', u'.docx',
-            u'.xlsx', u'.xlsx',
-            u'.ppt', u'.pptx',
+            '.doc', '.docx',
+            '.xlsx', '.xlsx',
+            '.ppt', '.pptx',
         )
 
         if loc.endswith(msoffice_exts):
@@ -485,8 +484,8 @@ class Type(object):
         # FIXME: this should beased on proper package recognition, not this simplistic check
         ft = self.filetype_file.lower()
         loc = self.location.lower()
-        package_archive_extensions = u'.jar', u'.war', u'.ear', u'.zip', '.whl', '.egg'
-        gem_extension = u'.gem'
+        package_archive_extensions = '.jar', '.war', '.ear', '.zip', '.whl', '.egg'
+        gem_extension = '.gem'
 
         # FIXME: this is grossly under specified and is missing many packages
         if ('debian binary package' in ft
@@ -505,7 +504,7 @@ class Type(object):
         """
         ft = self.filetype_file.lower()
 
-        docx_ext = u'x'
+        docx_ext = 'x'
 
         if (not self.is_text
         and (
@@ -552,7 +551,7 @@ class Type(object):
         if any(m in mt for m in mimes) or any(t in ft for t in types):
             return True
 
-        tga_ext = u'.tga'
+        tga_ext = '.tga'
 
         if ft == 'data' and mt == 'application/octet-stream' and self.location.lower().endswith(tga_ext):
             # there is a regression in libmagic 5.38 https://bugs.astron.com/view.php?id=161
@@ -615,7 +614,7 @@ class Type(object):
         Return True if a file possibly contains some text.
         """
         if self._contains_text is None:
-            svg_ext = u'.svg'
+            svg_ext = '.svg'
 
             if not self.is_file:
                 self._contains_text = False
@@ -800,7 +799,7 @@ DATA_TYPE_DEFINITIONS = tuple([
     TypeDefinition(
         name='MySQL ARCHIVE Storage Engine data files',
         filetypes=('mysql table definition file',),
-        extensions=(u'.arm', u'.arz', u'.arn',),
+        extensions=('.arm', '.arz', '.arn',),
     ),
 ])
 
@@ -864,12 +863,15 @@ def get_pygments_lexer(location):
         try:
             return get_lexer_for_filename(location.lower())
         except LexerClassNotFound:
-            try:
-                # if Pygments does not guess we should not carry forward
-                content = get_text_file_start(location)
-                return guess_lexer(content)
-            except LexerClassNotFound:
-                return
+            # only try content-based detection if we do not have an extension
+            ext = fileutils.file_extension(location)
+            if not ext:
+                try:
+                    # if Pygments does not guess we should not carry forward
+                    content = get_text_file_start(location)
+                    return guess_lexer(content)
+                except LexerClassNotFound:
+                    return
 
 
 def get_text_file_start(location, length=4096):
