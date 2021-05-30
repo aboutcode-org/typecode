@@ -97,6 +97,43 @@ TYPECODE_LIBMAGIC_PATH_ENVVAR = 'TYPECODE_LIBMAGIC_PATH'
 TYPECODE_LIBMAGIC_DB_PATH_ENVVAR = 'TYPECODE_LIBMAGIC_DB_PATH'
 
 
+def load_lib_failover():
+  # loader from python-magic
+  libmagic = None
+  # Let's try to find magic or magic1
+  dll = (ctypes.util.find_library('magic')
+        or ctypes.util.find_library('magic1')
+        or ctypes.util.find_library('cygmagic-1')
+        or ctypes.util.find_library('libmagic-1')
+        or ctypes.util.find_library('msys-magic-1')  # for MSYS2
+  )
+  # necessary because find_library returns None if it doesn't find the library
+  if dll:
+      libmagic = ctypes.CDLL(dll)
+
+  if not libmagic or not libmagic._name:
+      windows_dlls = ['magic1.dll', 'cygmagic-1.dll', 'libmagic-1.dll', 'msys-magic-1.dll']
+      platform_to_lib = {'darwin': ['/opt/local/lib/libmagic.dylib',
+                                    '/usr/local/lib/libmagic.dylib'] +
+                                  # Assumes there will only be one version installed
+                                  glob.glob('/usr/local/Cellar/libmagic/*/lib/libmagic.dylib'),  # flake8:noqa
+                        'win32': windows_dlls,
+                        'cygwin': windows_dlls,
+                        'linux': ['libmagic.so.1'],
+                        # fallback for some Linuxes (e.g. Alpine) where library search does not work # flake8:noqa
+                        }
+      platform = 'linux' if sys.platform.startswith('linux') else sys.platform
+      for dll in platform_to_lib.get(platform, []):
+          try:
+              libmagic = ctypes.CDLL(dll)
+              break
+          except OSError:
+              pass
+
+  if not libmagic or not libmagic._name:
+      return None
+  return libmagic
+
 def load_lib():
     """
     Return the libmagic shared library object loaded from either:
@@ -119,6 +156,13 @@ def load_lib():
 
         if TRACE and dll_loc:
             logger_debug('load_lib:', 'got plugin magic location:', dll_loc)
+
+    # try well known locations
+    if not dll_loc:
+        failover_lib = load_lib_failover()
+        if failover_lib:
+            return failover_lib
+
 
     # try the PATH
     if not dll_loc:
@@ -253,6 +297,7 @@ class Detector(object):
         self.flags = flags
         self.cookie = _magic_open(self.flags)
         if not magic_db_location:
+            # if no plugin, None is returned, and libmagic will load the default db
             magic_db_location = get_magicdb_location()
 
         # Note: this location must always be FS-encoded bytes on all OSes
@@ -346,3 +391,9 @@ _magic_load = libmagic.magic_load
 _magic_load.restype = ctypes.c_int
 _magic_load.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
 _magic_load.errcheck = check_error
+
+_magic_version = libmagic.magic_version
+_magic_version.restype = ctypes.c_int
+_magic_version.argtypes = []
+
+libmagic_version = _magic_version()
