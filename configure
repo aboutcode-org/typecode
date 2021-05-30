@@ -26,8 +26,8 @@ CLI_ARGS=$1
 ################################
 
 # Requirement arguments passed to pip and used by default or with --dev.
-REQUIREMENTS="--editable ."
-DEV_REQUIREMENTS="--editable .[testing]"
+REQUIREMENTS="--editable .[full]"
+DEV_REQUIREMENTS="--editable .[full,testing]"
 
 # where we create a virtualenv
 VIRTUALENV_DIR=tmp
