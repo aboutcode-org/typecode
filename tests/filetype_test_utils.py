@@ -118,7 +118,7 @@ class FileTypeTest(object):
                             setattr(self, key, value)
             except:
                 import traceback
-                msg = 'file://' + self.data_file + '\n' + repr(self) + '\n' + traceback.format_exc()
+                msg = f'file://{self.data_file}\n{repr(self)}\n' + traceback.format_exc()
                 raise Exception(msg)
         if isinstance(self.size, str):
             self.size = int(self.size)
@@ -187,7 +187,7 @@ def check_types_equal(expected, result):
                     # on windows we really have weird things
                     return False
             else:
-                return result_value == expected_value
+                return expected_value == result_value
 
         # we have either number, date, None or boolean value and
         # we want both values to be both trueish or falsish
@@ -198,9 +198,15 @@ def check_types_equal(expected, result):
     return True
 
 
-def make_filetype_test_functions(test, index, test_data_dir=test_env.test_data_dir, regen=False):
+def make_filetype_test_functions(
+    test,
+    index,
+    test_data_dir=test_env.test_data_dir,
+    regen=False,
+):
     """
-    Build and return a test function closing on tests arguments and the function name.
+    Build and return a test function closing on tests arguments and the function
+    name.
     """
 
     def closure_test_function(*args, **kwargs):
@@ -218,7 +224,7 @@ def make_filetype_test_functions(test, index, test_data_dir=test_env.test_data_d
         if not passing:
             expected['data file'] = 'file://' + data_file
             expected['test_file'] = 'file://' + test_file
-            assert dict(expected) == dict(results)
+            assert dict(results) == dict(expected)
 
     data_file = test.data_file
     test_file = test.test_file
@@ -242,7 +248,12 @@ def make_filetype_test_functions(test, index, test_data_dir=test_env.test_data_d
     return closure_test_function, test_name
 
 
-def build_tests(filetype_tests, clazz, test_data_dir=test_env.test_data_dir, regen=False):
+def build_tests(
+    filetype_tests,
+    clazz,
+    test_data_dir=test_env.test_data_dir,
+    regen=False,
+):
     """
     Dynamically build test methods from a sequence of FileTypeTest and attach
     these method to the clazz test class.
@@ -253,6 +264,7 @@ def build_tests(filetype_tests, clazz, test_data_dir=test_env.test_data_dir, reg
             actual_regen = False
         else:
             actual_regen = regen
-        method, name = make_filetype_test_functions(test, i, test_data_dir, actual_regen)
+        method, name = make_filetype_test_functions(
+            test, i, test_data_dir, actual_regen)
         # attach that method to our test class
         setattr(clazz, name, method)

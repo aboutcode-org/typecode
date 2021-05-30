@@ -28,7 +28,7 @@ from typecode.entropy import shannon_entropy
 def check_entropy(data, expected, func=shannon_entropy):
     entro = round(func(data), 2)
     expected = round(expected, 2)
-    assert expected == entro
+    assert entro == expected
 
 
 class TestEntropy(unittest.TestCase):
