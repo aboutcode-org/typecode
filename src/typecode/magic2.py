@@ -47,13 +47,31 @@ import os
 from commoncode import command
 from commoncode.system import on_windows
 
-TRACE = False
-
 """
 magic2 is minimal and specialized wrapper around a vendored libmagic file
 identification library. This is NOT thread-safe. It is based on python-magic
 by Adam Hup and adapted to the specific needs of ScanCode.
 """
+
+# Tracing flag
+TRACE = True
+
+
+def logger_debug(*args):
+    pass
+
+
+if TRACE:
+    import logging
+    import sys
+
+    logger = logging.getLogger(__name__)
+    logging.basicConfig(stream=sys.stdout)
+    logger.setLevel(logging.DEBUG)
+
+    def logger_debug(*args):
+        return logger.debug(' '.join(isinstance(a, str) and a or repr(a) for a in args))
+
 #
 # Cached detectors
 #
@@ -92,10 +110,23 @@ def load_lib():
     # try the environment first
     dll_loc = os.environ.get(TYPECODE_LIBMAGIC_PATH_ENVVAR)
 
+    if TRACE and dll_loc:
+        logger_debug('load_lib:', 'got environ magic location:', dll_loc)
+
+    # try a plugin-provided path second
+    if not dll_loc:
+        dll_loc = get_location(TYPECODE_LIBMAGIC_DLL)
+
+        if TRACE and dll_loc:
+            logger_debug('load_lib:', 'got plugin magic location:', dll_loc)
+
     # try the PATH
     if not dll_loc:
         dll = 'libmagic.dll' if on_windows else 'libmagic.so'
         dll_loc = command.find_in_path(dll)
+
+        if TRACE and dll_loc:
+            logger_debug('load_lib:', 'got path magic location:', dll_loc)
 
     if not dll_loc or not os.path.isfile(dll_loc):
         raise Exception(
@@ -123,14 +154,23 @@ def get_magicdb_location(_cache=[]):
     # try the environment first
     magicdb_loc = os.environ.get(TYPECODE_LIBMAGIC_DB_PATH_ENVVAR)
 
+    if TRACE and magicdb_loc:
+        logger_debug('get_magicdb_location:', 'got environ magicdb location:', magicdb_loc)
+
     # try a plugin-provided path second
     if not magicdb_loc:
         magicdb_loc = get_location(TYPECODE_LIBMAGIC_DB)
+
+        if TRACE and magicdb_loc:
+            logger_debug('get_magicdb_location:', 'got plugin magicdb location:', magicdb_loc)
 
     # try the PATH
     if not magicdb_loc:
         db = 'magic.mgc'
         magicdb_loc = command.find_in_path(db)
+
+        if TRACE and magicdb_loc:
+            logger_debug('get_magicdb_location:', 'got path magicdb location:', magicdb_loc)
 
     if not magicdb_loc or not os.path.isfile(magicdb_loc):
         raise Exception(
