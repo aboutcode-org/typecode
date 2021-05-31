@@ -1,3 +1,10 @@
+#
+# Copyright (c) Copyright (c) Python Software Foundation. All rights reserved.
+# SPDX-License-Identifier: Python-2.0
+# See https://github.com/nexB/typecode for support or download.
+# See https://aboutcode.org for more information about nexB OSS projects.
+#
+
 """
 Guess the MIME type of a file extension.
 download_url: https://github.com/python/cpython/blob/v3.9.1/Lib/mimetypes.py

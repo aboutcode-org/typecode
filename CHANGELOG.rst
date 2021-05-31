@@ -4,6 +4,18 @@ Release notes
 vNext
 -----
 
+Version 21.5.30
+---------------
+
+- Update vendored pygments to 2.9.0
+- Update commoncode to latest version
+- Use new libmagic configuration based on a plugin, and environment variable
+  or the system path. 
+- Only do content-based detection for programing language if there is no extension.
+- Remove Actionscript3 from programing language detection. This is not common
+  enough and is the source of too many false positives.
+
+
 
 Version 21.2.24
 ---------------
