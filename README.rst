@@ -78,4 +78,3 @@ To update Pygment to a newer vendored version use vendy:
     and src/typecode/pygments_lexers.py scripts accordingly, including their
     ABOUT files
 
-  
