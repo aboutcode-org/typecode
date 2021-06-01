@@ -4,8 +4,16 @@ Release notes
 vNext
 -----
 
+Version 21.6.1
+---------------
+
+- Disable tracing that had been left enabled by mistake
+
+
 Version 21.5.31
 ---------------
+
+(yanked from PyPI)
 
 - Update vendored pygments to 2.9.0
 - Update commoncode to latest version
