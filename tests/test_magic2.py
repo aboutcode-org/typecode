@@ -11,4 +11,4 @@ from typecode.magic2 import libmagic_version
 
 
 def test_load_lib():
-    assert libmagic_version > 0
+    assert float(libmagic_version()) > 5

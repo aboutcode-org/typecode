@@ -31,10 +31,10 @@
 import ctypes
 import glob
 import os
+import warnings
 
 from commoncode import command
 from commoncode.system import on_windows
-import warnings
 
 """
 magic2 is minimal and specialized wrapper around a vendored libmagic file
@@ -84,6 +84,24 @@ TYPECODE_LIBMAGIC_DB = 'typecode.libmagic.db'
 
 TYPECODE_LIBMAGIC_PATH_ENVVAR = 'TYPECODE_LIBMAGIC_PATH'
 TYPECODE_LIBMAGIC_DB_PATH_ENVVAR = 'TYPECODE_LIBMAGIC_DB_PATH'
+
+if TRACE:
+
+    def file_type(location):
+        return _detect(location, DETECT_TYPE)
+
+else:
+
+    def file_type(location):
+        """"
+        Return the detected filetype for file at `location` or an empty string if
+        nothing found or an error occurred.
+        """
+        try:
+            return _detect(location, DETECT_TYPE)
+        except:
+            # TODO: log errors
+            return ''
 
 
 class NoMagicLibError(Exception):
@@ -150,6 +168,7 @@ def load_lib():
     Return the libmagic shared library object loaded from either:
     - an environment variable ``TYPECODE_LIBMAGIC_PATH``
     - a plugin-provided path,
+    - well known system names and locations,
     - the system PATH.
     Raise an NoMagicLibError if no libmagic can be found.
     """
@@ -259,25 +278,6 @@ def get_magicdb_location(_cache=[]):
     return magicdb_loc
 
 
-if TRACE:
-
-    def file_type(location):
-        return _detect(location, DETECT_TYPE)
-
-else:
-
-    def file_type(location):
-        """"
-        Return the detected filetype for file at `location` or an empty string if
-        nothing found or an error occurred.
-        """
-        try:
-            return _detect(location, DETECT_TYPE)
-        except:
-            # TODO: log errors
-            return ''
-
-
 def mime_type(location):
     """"
     Return the detected mimetype for file at `location` or an empty string if
@@ -377,6 +377,10 @@ class Detector(object):
 libmagic = load_lib()
 
 
+def libmagic_version():
+    return _magic_version()
+
+
 def check_error(result, func, args):  # NOQA
     """
     ctypes error handler/checker:  Check for errors and raise an exception or
@@ -385,11 +389,14 @@ def check_error(result, func, args):  # NOQA
     is_int = isinstance(result, int)
     is_bytes = isinstance(result, bytes)
     is_text = isinstance(result, str)
-
-    if (result is None
-    or (is_int and result < 0)
-    or (is_bytes and str(result, encoding='utf-8').startswith('cannot open'))
-    or (is_text and result.startswith('cannot open'))):
+    if (
+        result is None
+        or (is_int and result < 0)
+        or (
+            is_bytes
+            and str(result, encoding='utf-8', errors='ignore').startswith('cannot open'))
+        or (is_text and result.startswith('cannot open'))
+    ):
         err = _magic_error(args[0])
         raise MagicException(err)
     else:
@@ -427,5 +434,3 @@ _magic_load.errcheck = check_error
 _magic_version = libmagic.magic_version
 _magic_version.restype = ctypes.c_int
 _magic_version.argtypes = []
-
-libmagic_version = _magic_version()
