@@ -43,7 +43,7 @@ by Adam Hup and adapted to the specific needs of ScanCode.
 """
 
 # Tracing flag
-TRACE = True
+TRACE = False
 
 
 def logger_debug(*args):
