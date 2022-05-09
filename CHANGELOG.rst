@@ -1,8 +1,14 @@
 Release notes
 =============
 
-vNext
------
+Vversion 31.0.0
+-----------------
+
+- Drop Calver
+- Fix minor bugs
+- Upgrade dependencies
+- Adopt black style
+
 
 Version 21.6.1
 ---------------
