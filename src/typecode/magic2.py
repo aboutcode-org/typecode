@@ -31,6 +31,7 @@
 import ctypes
 import glob
 import os
+import sys
 import warnings
 
 from commoncode import command
@@ -52,7 +53,6 @@ def logger_debug(*args):
 
 if TRACE:
     import logging
-    import sys
 
     logger = logging.getLogger(__name__)
     logging.basicConfig(stream=sys.stdout)
