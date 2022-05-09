@@ -1,7 +1,7 @@
 Release notes
 =============
 
-Vversion 31.0.0
+Version 30.0.0
 -----------------
 
 - Drop Calver
