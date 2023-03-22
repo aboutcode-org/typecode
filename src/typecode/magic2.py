@@ -29,6 +29,7 @@
 # SOFTWARE.
 
 import ctypes
+import ctypes.util
 import glob
 import os
 import sys
@@ -122,12 +123,21 @@ def load_lib_failover():
         or ctypes.util.find_library('magic1')
         or ctypes.util.find_library('cygmagic-1')
         or ctypes.util.find_library('libmagic-1')
+        # for Darwin
+        or ctypes.util.find_library('libmagic')
+        or ctypes.util.find_library('libmagic.1')
+        or ctypes.util.find_library('libmagic.dylib')
         # for MSYS2
         or ctypes.util.find_library('msys-magic-1')
     )
     # necessary because find_library returns None if it doesn't find the library
     if dll:
         libmagic = ctypes.CDLL(dll)
+    
+    # find_library doesn't look at homebrew. Give it a hand
+    homebrew_libmagic = '/opt/homebrew/lib/libmagic.dylib'
+    if (not dll) and sys.platform == 'darwin' and os.path.exists(homebrew_magic):
+        libmagic = ctypes.cdll.LoadLibrary(homebrew_magic)
 
     if not (libmagic and libmagic._name):
         windows_dlls = [
@@ -143,6 +153,7 @@ def load_lib_failover():
                     '/usr/local/lib/libmagic.dylib',
                 ] +
                 # Assumes there will only be one version installed when using brew
+                glob.glob('/opt/homebrew/lib/libmagic*.dylib') +
                 glob.glob('/usr/local/Cellar/libmagic/*/lib/libmagic.dylib') +
                 glob.glob('/opt/homebrew/Cellar/libmagic/*/lib/libmagic.dylib')
             ),
