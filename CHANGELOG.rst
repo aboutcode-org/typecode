@@ -1,6 +1,14 @@
 Release notes
 =============
 
+Version 30.0.1
+-----------------
+
+- Upgrade skeleton
+- Fix ctypes import
+- Bump dependencies
+
+
 Version 30.0.0
 -----------------
 
