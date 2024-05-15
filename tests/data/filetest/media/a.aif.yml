@@ -1,4 +1,4 @@
-filetype_file: IFF data, AIFF audio
+filetype_file: IFF data
 mimetype_file: audio/x-aiff
 mimetype_python: audio/x-aiff
 is_file: yes

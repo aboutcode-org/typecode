@@ -1,5 +1,5 @@
-filetype_file: PE32+ executable (DLL) x86-64, for MS Windows
-mimetype_file: application/x-dosexec
+filetype_file: PE32+ executable (DLL) (Control Panel Item) x86-64
+mimetype_file: application/vnd.microsoft.portable-executable
 mimetype_python: application/x-msdownload
 is_file: yes
 is_regular: yes

@@ -1,4 +1,4 @@
-filetype_file: Ogg data, Theora video
+filetype_file: Ogg data
 mimetype_file: video/ogg
 mimetype_python: audio/ogg
 is_file: yes

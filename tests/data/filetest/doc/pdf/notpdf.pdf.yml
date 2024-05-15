@@ -1,5 +1,5 @@
-filetype_file: CSV text
-mimetype_file: application/csv
+filetype_file: CSV ASCII text
+mimetype_file: text/csv
 mimetype_python: application/pdf
 is_file: yes
 is_regular: yes

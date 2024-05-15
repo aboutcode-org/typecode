@@ -1,5 +1,5 @@
-filetype_file: PE32 executable (console) Intel 80386 (stripped to external PDB), for MS Windows
-mimetype_file: application/x-dosexec
+filetype_file: PE32 executable (console) Intel 80386 (stripped to external PDB)
+mimetype_file: application/vnd.microsoft.portable-executable
 mimetype_python: application/x-msdownload
 is_file: yes
 is_regular: yes
