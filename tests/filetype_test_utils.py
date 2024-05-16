@@ -111,17 +111,19 @@ class FileTypeTest(object):
         if isinstance(self.size, str):
             self.size = int(self.size)
 
-    def to_dict(self, filter_empty=False, filter_extra=False, normalize_filetype_file=True):
+    def to_dict(self, filter_empty=False, filter_extra=False, normalize_filetype=True):
         """
         Serialize self to an ordered mapping.
         """
         filtered = [field for field in attr.fields(FileTypeTest)
                     if field.name in ('data_file', 'test_file')]
         fields_filter = attr.filters.exclude(*filtered)
-        if normalize_filetype_file:
-            split_filetype_file = self.filetype_file.split(',')
+
+        if normalize_filetype:
+            split_filetype_file = self.filetype_file.split(' ')
             if split_filetype_file:
                 self.filetype_file = split_filetype_file[0]
+
         data = attr.asdict(self, filter=fields_filter)
         data = data.items()
         if filter_empty:

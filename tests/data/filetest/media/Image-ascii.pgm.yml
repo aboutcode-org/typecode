@@ -1,5 +1,5 @@
-filetype_file: Netpbm image data
-mimetype_file: image/x-portable-graymap
+filetype_file: Netpbm
+mimetype_file: image/x-portable-greymap
 mimetype_python: image/x-portable-graymap
 is_file: yes
 is_regular: yes
