@@ -1,4 +1,4 @@
-filetype_file: Sun raster image data, 1 x 1, 1-bit, no colormap
+filetype_file: Sun raster image data
 mimetype_file: application/octet-stream
 mimetype_python: image/x-cmu-raster
 is_file: yes
