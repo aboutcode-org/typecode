@@ -1,6 +1,11 @@
 Release notes
 =============
 
+Version 30.0.2
+-----------------
+
+ - Update link references of ownership from nexB to aboutcode-org
+
 Version 30.0.1
 -----------------
 
@@ -74,7 +79,7 @@ Version 21.1.8.1
 ----------------
 
 - Upgrade to latest boilerplate skeletton
-- Improve detection of Windows executables 
+- Improve detection of Windows executables
 
 
 Version 20.10.20
