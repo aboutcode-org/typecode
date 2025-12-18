@@ -1,4 +1,4 @@
-filetype_file: ASCII text, with very long lines, with no line terminators
+filetype_file: ASCII text, with very long lines (10000), with no line terminators
 mimetype_file: text/plain
 mimetype_python: text/plain
 is_file: yes

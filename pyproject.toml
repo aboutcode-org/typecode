@@ -87,7 +87,9 @@ exclude = [
   "**/tests/*/test_data/**/*",
   "**/tests/test_data/**/*",
 # django migrations
-  "**/migrations/**/*"
+  "**/migrations/**/*",
+# vendored code
+  "**/_vendor/**"
 ]
 
 [tool.ruff.lint]
