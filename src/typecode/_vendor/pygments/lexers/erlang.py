@@ -1,41 +1,35 @@
-# -*- coding: utf-8 -*-
 """
     pygments.lexers.erlang
     ~~~~~~~~~~~~~~~~~~~~~~
 
     Lexers for Erlang.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
 import re
 
-from typecode._vendor.pygments.lexer import Lexer, RegexLexer, bygroups, words, do_insertions, \
-    include, default
-from typecode._vendor.pygments.token import Text, Comment, Operator, Keyword, Name, String, \
-    Number, Punctuation, Generic
+from src.typecode._vendor.pygments.lexer import Lexer, RegexLexer, bygroups, words, do_insertions, \
+    include, default, line_re
+from src.typecode._vendor.pygments.token import Comment, Operator, Keyword, Name, String, \
+    Number, Punctuation, Generic, Whitespace
 
 __all__ = ['ErlangLexer', 'ErlangShellLexer', 'ElixirConsoleLexer',
            'ElixirLexer']
 
 
-line_re = re.compile('.*?\n')
-
-
 class ErlangLexer(RegexLexer):
     """
     For the Erlang functional programming language.
-
-    Blame Jeremy Thurgood (http://jerith.za.net/).
-
-    .. versionadded:: 0.9
     """
 
     name = 'Erlang'
+    url = 'https://www.erlang.org/'
     aliases = ['erlang']
     filenames = ['*.erl', '*.hrl', '*.es', '*.escript']
     mimetypes = ['text/x-erlang']
+    version_added = '0.9'
 
     keywords = (
         'after', 'begin', 'case', 'catch', 'cond', 'end', 'fun', 'if',
@@ -94,8 +88,8 @@ class ErlangLexer(RegexLexer):
 
     tokens = {
         'root': [
-            (r'\s+', Text),
-            (r'%.*\n', Comment),
+            (r'\s+', Whitespace),
+            (r'(%.*)(\n)', bygroups(Comment, Whitespace)),
             (words(keywords, suffix=r'\b'), Keyword),
             (words(builtins, suffix=r'\b'), Name.Builtin),
             (words(word_operators, suffix=r'\b'), Operator.Word),
@@ -106,7 +100,7 @@ class ErlangLexer(RegexLexer):
             (r'>>', Name.Label),
             ('(' + atom_re + ')(:)', bygroups(Name.Namespace, Punctuation)),
             ('(?:^|(?<=:))(' + atom_re + r')(\s*)(\()',
-             bygroups(Name.Function, Text, Punctuation)),
+             bygroups(Name.Function, Whitespace, Punctuation)),
             (r'[+-]?' + base_re + r'#[0-9a-zA-Z]+', Number.Integer),
             (r'[+-]?\d+', Number.Integer),
             (r'[+-]?\d+.\d+', Number.Float),
@@ -133,9 +127,9 @@ class ErlangLexer(RegexLexer):
         ],
         'directive': [
             (r'(define)(\s*)(\()('+macro_re+r')',
-             bygroups(Name.Entity, Text, Punctuation, Name.Constant), '#pop'),
+             bygroups(Name.Entity, Whitespace, Punctuation, Name.Constant), '#pop'),
             (r'(record)(\s*)(\()('+macro_re+r')',
-             bygroups(Name.Entity, Text, Punctuation, Name.Label), '#pop'),
+             bygroups(Name.Entity, Whitespace, Punctuation, Name.Label), '#pop'),
             (atom_re, Name.Entity, '#pop'),
         ],
         'map_key': [
@@ -155,13 +149,13 @@ class ErlangLexer(RegexLexer):
 class ErlangShellLexer(Lexer):
     """
     Shell sessions in erl (for Erlang code).
-
-    .. versionadded:: 1.1
     """
     name = 'Erlang erl session'
     aliases = ['erl']
     filenames = ['*.erl-sh']
     mimetypes = ['text/x-erl-shellsession']
+    url = 'https://www.erlang.org/'
+    version_added = '1.1'
 
     _prompt_re = re.compile(r'(?:\([\w@_.]+\))?\d+>(?=\s|\Z)')
 
@@ -196,10 +190,10 @@ class ErlangShellLexer(Lexer):
 def gen_elixir_string_rules(name, symbol, token):
     states = {}
     states['string_' + name] = [
-        (r'[^#%s\\]+' % (symbol,), token),
+        (rf'[^#{symbol}\\]+', token),
         include('escapes'),
         (r'\\.', token),
-        (r'(%s)' % (symbol,), bygroups(token), "#pop"),
+        (rf'({symbol})', bygroups(token), "#pop"),
         include('interpol')
     ]
     return states
@@ -208,31 +202,31 @@ def gen_elixir_string_rules(name, symbol, token):
 def gen_elixir_sigstr_rules(term, term_class, token, interpol=True):
     if interpol:
         return [
-            (r'[^#%s\\]+' % (term_class,), token),
+            (rf'[^#{term_class}\\]+', token),
             include('escapes'),
             (r'\\.', token),
-            (r'%s[a-zA-Z]*' % (term,), token, '#pop'),
+            (rf'{term}[a-zA-Z]*', token, '#pop'),
             include('interpol')
         ]
     else:
         return [
-            (r'[^%s\\]+' % (term_class,), token),
+            (rf'[^{term_class}\\]+', token),
             (r'\\.', token),
-            (r'%s[a-zA-Z]*' % (term,), token, '#pop'),
+            (rf'{term}[a-zA-Z]*', token, '#pop'),
         ]
 
 
 class ElixirLexer(RegexLexer):
     """
-    For the `Elixir language <http://elixir-lang.org>`_.
-
-    .. versionadded:: 1.5
+    For the Elixir language.
     """
 
     name = 'Elixir'
+    url = 'https://elixir-lang.org'
     aliases = ['elixir', 'ex', 'exs']
-    filenames = ['*.ex', '*.eex', '*.exs']
+    filenames = ['*.ex', '*.eex', '*.exs', '*.leex']
     mimetypes = ['text/x-elixir']
+    version_added = '1.5'
 
     KEYWORD = ('fn', 'do', 'end', 'after', 'else', 'rescue', 'catch')
     KEYWORD_OPERATOR = ('not', 'and', 'or', 'when', 'in')
@@ -307,9 +301,9 @@ class ElixirLexer(RegexLexer):
 
         for term, name in triquotes:
             states['sigils'] += [
-                (r'(~[a-z])(%s)' % (term,), bygroups(token, String.Heredoc),
+                (rf'(~[a-z])({term})', bygroups(token, String.Heredoc),
                     (name + '-end', name + '-intp')),
-                (r'(~[A-Z])(%s)' % (term,), bygroups(token, String.Heredoc),
+                (rf'(~[A-Z])({term})', bygroups(token, String.Heredoc),
                     (name + '-end', name + '-no-intp')),
             ]
 
@@ -318,11 +312,11 @@ class ElixirLexer(RegexLexer):
                 default('#pop'),
             ]
             states[name + '-intp'] = [
-                (r'^\s*' + term, String.Heredoc, '#pop'),
+                (r'^(\s*)(' + term + ')', bygroups(Whitespace, String.Heredoc), '#pop'),
                 include('heredoc_interpol'),
             ]
             states[name + '-no-intp'] = [
-                (r'^\s*' + term, String.Heredoc, '#pop'),
+                (r'^(\s*)(' + term +')', bygroups(Whitespace, String.Heredoc), '#pop'),
                 include('heredoc_no_interpol'),
             ]
 
@@ -341,12 +335,12 @@ class ElixirLexer(RegexLexer):
     op3_re = "|".join(re.escape(s) for s in OPERATORS3)
     op2_re = "|".join(re.escape(s) for s in OPERATORS2)
     op1_re = "|".join(re.escape(s) for s in OPERATORS1)
-    ops_re = r'(?:%s|%s|%s)' % (op3_re, op2_re, op1_re)
+    ops_re = rf'(?:{op3_re}|{op2_re}|{op1_re})'
     punctuation_re = "|".join(re.escape(s) for s in PUNCTUATION)
     alnum = r'\w'
-    name_re = r'(?:\.\.\.|[a-z_]%s*[!?]?)' % alnum
-    modname_re = r'[A-Z]%(alnum)s*(?:\.[A-Z]%(alnum)s*)*' % {'alnum': alnum}
-    complex_name_re = r'(?:%s|%s|%s)' % (name_re, modname_re, ops_re)
+    name_re = rf'(?:\.\.\.|[a-z_]{alnum}*[!?]?)'
+    modname_re = rf'[A-Z]{alnum}*(?:\.[A-Z]{alnum}*)*'
+    complex_name_re = rf'(?:{name_re}|{modname_re}|{ops_re})'
     special_atom_re = r'(?:\.\.\.|<<>>|%\{\}|%|\{\})'
 
     long_hex_char_re = r'(\\x\{)([\da-fA-F]+)(\})'
@@ -355,7 +349,7 @@ class ElixirLexer(RegexLexer):
 
     tokens = {
         'root': [
-            (r'\s+', Text),
+            (r'\s+', Whitespace),
             (r'#.*$', Comment.Single),
 
             # Various kinds of characters
@@ -379,7 +373,7 @@ class ElixirLexer(RegexLexer):
             (r":'", String.Symbol, 'string_single_atom'),
 
             # [keywords: ...]
-            (r'(%s|%s)(:)(?=\s|\n)' % (special_atom_re, complex_name_re),
+            (rf'({special_atom_re}|{complex_name_re})(:)(?=\s|\n)',
                 bygroups(String.Symbol, Punctuation)),
 
             # @attributes
@@ -387,7 +381,7 @@ class ElixirLexer(RegexLexer):
 
             # identifiers
             (name_re, Name),
-            (r'(%%?)(%s)' % (modname_re,), bygroups(Punctuation, Name.Class)),
+            (rf'(%?)({modname_re})', bygroups(Punctuation, Name.Class)),
 
             # operators and punctuation
             (op3_re, Operator),
@@ -404,8 +398,10 @@ class ElixirLexer(RegexLexer):
             (r'\d(_?\d)*', Number.Integer),
 
             # strings and heredocs
-            (r'"""\s*', String.Heredoc, 'heredoc_double'),
-            (r"'''\s*$", String.Heredoc, 'heredoc_single'),
+            (r'(""")(\s*)', bygroups(String.Heredoc, Whitespace),
+                'heredoc_double'),
+            (r"(''')(\s*)$", bygroups(String.Heredoc, Whitespace),
+                'heredoc_single'),
             (r'"', String.Double, 'string_double'),
             (r"'", String.Single, 'string_single'),
 
@@ -415,7 +411,7 @@ class ElixirLexer(RegexLexer):
             (r'\{', Punctuation, 'tuple'),
         ],
         'heredoc_double': [
-            (r'^\s*"""', String.Heredoc, '#pop'),
+            (r'^(\s*)(""")', bygroups(Whitespace, String.Heredoc), '#pop'),
             include('heredoc_interpol'),
         ],
         'heredoc_single': [
@@ -432,7 +428,7 @@ class ElixirLexer(RegexLexer):
         'heredoc_no_interpol': [
             (r'[^\\\n]+', String.Heredoc),
             (r'\\.', String.Heredoc),
-            (r'\n+', String.Heredoc),
+            (r'\n+', Whitespace),
         ],
         'escapes': [
             (long_hex_char_re,
@@ -486,13 +482,13 @@ class ElixirConsoleLexer(Lexer):
         [1,2,3]
         iex> length [head | tail]
         3
-
-    .. versionadded:: 1.5
     """
 
     name = 'Elixir iex session'
     aliases = ['iex']
     mimetypes = ['text/x-elixir-shellsession']
+    url = 'https://elixir-lang.org'
+    version_added = '1.5'
 
     _prompt_re = re.compile(r'(iex|\.{3})((?:\([\w@_.]+\))?\d+|\(\d+\))?> ')
 

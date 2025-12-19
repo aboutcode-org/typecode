@@ -1,25 +1,26 @@
-# -*- coding: utf-8 -*-
 """
     pygments.styles.borland
     ~~~~~~~~~~~~~~~~~~~~~~~
 
     Style similar to the style used in the Borland IDEs.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
-from typecode._vendor.pygments.style import Style
-from typecode._vendor.pygments.token import Keyword, Name, Comment, String, Error, \
+from src.typecode._vendor.pygments.style import Style
+from src.typecode._vendor.pygments.token import Keyword, Name, Comment, String, Error, \
      Number, Operator, Generic, Whitespace
+
+
+__all__ = ['BorlandStyle']
 
 
 class BorlandStyle(Style):
     """
     Style similar to the style used in the borland IDEs.
     """
-
-    default_style = ''
+    name = 'borland'
 
     styles = {
         Whitespace:             '#bbbbbb',
@@ -43,6 +44,7 @@ class BorlandStyle(Style):
         Generic.Error:          '#aa0000',
         Generic.Emph:           'italic',
         Generic.Strong:         'bold',
+        Generic.EmphStrong:     'bold italic',
         Generic.Prompt:         '#555555',
         Generic.Output:         '#888888',
         Generic.Traceback:      '#aa0000',

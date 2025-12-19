@@ -1,36 +1,35 @@
-# -*- coding: utf-8 -*-
 """
     pygments.lexers.stata
     ~~~~~~~~~~~~~~~~~~~~~
 
     Lexer for Stata
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
 import re
-from typecode._vendor.pygments.lexer import RegexLexer, default, include, words
-from typecode._vendor.pygments.token import Comment, Keyword, Name, Number, \
+from src.typecode._vendor.pygments.lexer import RegexLexer, default, include, words
+from src.typecode._vendor.pygments.token import Comment, Keyword, Name, Number, \
     String, Text, Operator
 
-from typecode._vendor.pygments.lexers._stata_builtins import builtins_base, builtins_functions
+from src.typecode._vendor.pygments.lexers._stata_builtins import builtins_base, builtins_functions
 
 __all__ = ['StataLexer']
 
 
 class StataLexer(RegexLexer):
     """
-    For `Stata <http://www.stata.com/>`_ do files.
-
-    .. versionadded:: 2.2
+    For Stata do files.
     """
     # Syntax based on
     # - http://fmwww.bc.edu/RePEc/bocode/s/synlightlist.ado
     # - https://github.com/isagalaev/highlight.js/blob/master/src/languages/stata.js
     # - https://github.com/jpitblado/vim-stata/blob/master/syntax/stata.vim
 
-    name      = 'Stata'
+    name = 'Stata'
+    url = 'http://www.stata.com/'
+    version_added = '2.2'
     aliases   = ['stata', 'do']
     filenames = ['*.do', '*.ado']
     mimetypes = ['text/x-stata', 'text/stata', 'application/x-stata']

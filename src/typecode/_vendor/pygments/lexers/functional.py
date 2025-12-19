@@ -1,21 +1,21 @@
-# -*- coding: utf-8 -*-
 """
     pygments.lexers.functional
     ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     Just export lexer classes previously contained in this module.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
-from typecode._vendor.pygments.lexers.lisp import SchemeLexer, CommonLispLexer, RacketLexer, \
+# ruff: noqa: F401
+from src.typecode._vendor.pygments.lexers.lisp import SchemeLexer, CommonLispLexer, RacketLexer, \
     NewLispLexer, ShenLexer
-from typecode._vendor.pygments.lexers.haskell import HaskellLexer, LiterateHaskellLexer, \
+from src.typecode._vendor.pygments.lexers.haskell import HaskellLexer, LiterateHaskellLexer, \
     KokaLexer
-from typecode._vendor.pygments.lexers.theorem import CoqLexer
-from typecode._vendor.pygments.lexers.erlang import ErlangLexer, ErlangShellLexer, \
+from src.typecode._vendor.pygments.lexers.theorem import CoqLexer
+from src.typecode._vendor.pygments.lexers.erlang import ErlangLexer, ErlangShellLexer, \
     ElixirConsoleLexer, ElixirLexer
-from typecode._vendor.pygments.lexers.ml import SMLLexer, OcamlLexer, OpaLexer
+from src.typecode._vendor.pygments.lexers.ml import SMLLexer, OcamlLexer, OpaLexer
 
 __all__ = []

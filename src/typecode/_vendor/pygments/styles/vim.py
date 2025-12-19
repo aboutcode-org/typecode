@@ -1,17 +1,19 @@
-# -*- coding: utf-8 -*-
 """
     pygments.styles.vim
     ~~~~~~~~~~~~~~~~~~~
 
     A highlighting style for Pygments, inspired by vim.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
-from typecode._vendor.pygments.style import Style
-from typecode._vendor.pygments.token import Keyword, Name, Comment, String, Error, \
+from src.typecode._vendor.pygments.style import Style
+from src.typecode._vendor.pygments.token import Keyword, Name, Comment, String, Error, \
      Number, Operator, Generic, Whitespace, Token
+
+
+__all__ = ['VimStyle']
 
 
 class VimStyle(Style):
@@ -19,9 +21,10 @@ class VimStyle(Style):
     Styles somewhat like vim 7.0
     """
 
+    name = 'vim'
+    
     background_color = "#000000"
     highlight_color = "#222222"
-    default_style = "#cccccc"
 
     styles = {
         Token:                     "#cccccc",
@@ -55,6 +58,7 @@ class VimStyle(Style):
         Generic.Error:             "#FF0000",
         Generic.Emph:              "italic",
         Generic.Strong:            "bold",
+        Generic.EmphStrong:        "bold italic",
         Generic.Prompt:            "bold #000080",
         Generic.Output:            "#888",
         Generic.Traceback:         "#04D",

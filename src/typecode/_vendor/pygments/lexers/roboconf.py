@@ -1,29 +1,28 @@
-# -*- coding: utf-8 -*-
 """
     pygments.lexers.roboconf
     ~~~~~~~~~~~~~~~~~~~~~~~~
 
     Lexers for Roboconf DSL.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
-from typecode._vendor.pygments.lexer import RegexLexer, words, re
-from typecode._vendor.pygments.token import Text, Operator, Keyword, Name, Comment
+from src.typecode._vendor.pygments.lexer import RegexLexer, words, re
+from src.typecode._vendor.pygments.token import Text, Operator, Keyword, Name, Comment
 
 __all__ = ['RoboconfGraphLexer', 'RoboconfInstancesLexer']
 
 
 class RoboconfGraphLexer(RegexLexer):
     """
-    Lexer for `Roboconf <http://roboconf.net/en/roboconf.html>`_ graph files.
-
-    .. versionadded:: 2.1
+    Lexer for Roboconf graph files.
     """
     name = 'Roboconf Graph'
     aliases = ['roboconf-graph']
     filenames = ['*.graph']
+    url = 'https://roboconf.github.io/en/user-guide/graph-definition.html'
+    version_added = '2.1'
 
     flags = re.IGNORECASE | re.MULTILINE
     tokens = {
@@ -52,13 +51,13 @@ class RoboconfGraphLexer(RegexLexer):
 
 class RoboconfInstancesLexer(RegexLexer):
     """
-    Lexer for `Roboconf <http://roboconf.net/en/roboconf.html>`_ instances files.
-
-    .. versionadded:: 2.1
+    Lexer for Roboconf instances files.
     """
     name = 'Roboconf Instances'
     aliases = ['roboconf-instances']
     filenames = ['*.instances']
+    url = 'https://roboconf.github.io'
+    version_added = '2.1'
 
     flags = re.IGNORECASE | re.MULTILINE
     tokens = {

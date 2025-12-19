@@ -1,21 +1,18 @@
-# -*- coding: utf-8 -*-
 """
     pygments.formatters.terminal
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     Formatter for terminal output with ANSI sequences.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
-import sys
-
-from typecode._vendor.pygments.formatter import Formatter
-from typecode._vendor.pygments.token import Keyword, Name, Comment, String, Error, \
+from src.typecode._vendor.pygments.formatter import Formatter
+from src.typecode._vendor.pygments.token import Keyword, Name, Comment, String, Error, \
     Number, Operator, Generic, Token, Whitespace
-from typecode._vendor.pygments.console import ansiformat
-from typecode._vendor.pygments.util import get_choice_opt
+from src.typecode._vendor.pygments.console import ansiformat
+from src.typecode._vendor.pygments.util import get_choice_opt
 
 
 __all__ = ['TerminalFormatter']

@@ -1,31 +1,30 @@
-# -*- coding: utf-8 -*-
 """
     pygments.lexers.floscript
     ~~~~~~~~~~~~~~~~~~~~~~~~~
 
     Lexer for FloScript
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
-from typecode._vendor.pygments.lexer import RegexLexer, include
-from typecode._vendor.pygments.token import Text, Comment, Operator, Keyword, Name, String, \
-    Number, Punctuation
+from src.typecode._vendor.pygments.lexer import RegexLexer, include, bygroups
+from src.typecode._vendor.pygments.token import Text, Comment, Operator, Keyword, Name, String, \
+    Number, Punctuation, Whitespace
 
 __all__ = ['FloScriptLexer']
 
 
 class FloScriptLexer(RegexLexer):
     """
-    For `FloScript <https://github.com/ioflo/ioflo>`_ configuration language source code.
-
-    .. versionadded:: 2.4
+    For FloScript configuration language source code.
     """
 
     name = 'FloScript'
+    url = 'https://github.com/ioflo/ioflo'
     aliases = ['floscript', 'flo']
     filenames = ['*.flo']
+    version_added = '2.4'
 
     def innerstring_rules(ttype):
         return [
@@ -42,11 +41,10 @@ class FloScriptLexer(RegexLexer):
 
     tokens = {
         'root': [
-            (r'\n', Text),
-            (r'[^\S\n]+', Text),
+            (r'\s+', Whitespace),
 
             (r'[]{}:(),;[]', Punctuation),
-            (r'\\\n', Text),
+            (r'(\\)(\n)', bygroups(Text, Whitespace)),
             (r'\\', Text),
             (r'(to|by|with|from|per|for|cum|qua|via|as|at|in|of|on|re|is|if|be|into|'
              r'and|not)\b', Operator.Word),
@@ -60,7 +58,7 @@ class FloScriptLexer(RegexLexer):
 
             include('name'),
             include('numbers'),
-            (r'#.+$', Comment.Singleline),
+            (r'#.+$', Comment.Single),
         ],
         'string': [
             ('[^"]+', String),

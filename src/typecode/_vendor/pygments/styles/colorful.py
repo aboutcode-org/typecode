@@ -1,25 +1,26 @@
-# -*- coding: utf-8 -*-
 """
     pygments.styles.colorful
     ~~~~~~~~~~~~~~~~~~~~~~~~
 
     A colorful style, inspired by CodeRay.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
-from typecode._vendor.pygments.style import Style
-from typecode._vendor.pygments.token import Keyword, Name, Comment, String, Error, \
+from src.typecode._vendor.pygments.style import Style
+from src.typecode._vendor.pygments.token import Keyword, Name, Comment, String, Error, \
      Number, Operator, Generic, Whitespace
+
+
+__all__ = ['ColorfulStyle']
 
 
 class ColorfulStyle(Style):
     """
     A colorful style, inspired by CodeRay.
     """
-
-    default_style = ""
+    name = 'colorful'
 
     styles = {
         Whitespace:                "#bbbbbb",
@@ -73,6 +74,7 @@ class ColorfulStyle(Style):
         Generic.Error:             "#FF0000",
         Generic.Emph:              "italic",
         Generic.Strong:            "bold",
+        Generic.EmphStrong:        "bold italic",
         Generic.Prompt:            "bold #c65d09",
         Generic.Output:            "#888",
         Generic.Traceback:         "#04D",

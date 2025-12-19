@@ -1,16 +1,15 @@
-# -*- coding: utf-8 -*-
 """
     pygments.lexers.rust
     ~~~~~~~~~~~~~~~~~~~~
 
     Lexers for the Rust language.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
-from typecode._vendor.pygments.lexer import RegexLexer, include, bygroups, words, default
-from typecode._vendor.pygments.token import Text, Comment, Operator, Keyword, Name, String, \
+from src.typecode._vendor.pygments.lexer import RegexLexer, include, bygroups, words, default
+from src.typecode._vendor.pygments.token import Text, Comment, Operator, Keyword, Name, String, \
     Number, Punctuation, Whitespace
 
 __all__ = ['RustLexer']
@@ -19,13 +18,13 @@ __all__ = ['RustLexer']
 class RustLexer(RegexLexer):
     """
     Lexer for the Rust programming language (version 1.47).
-
-    .. versionadded:: 1.6
     """
     name = 'Rust'
+    url = 'https://www.rust-lang.org/'
     filenames = ['*.rs', '*.rs.in']
     aliases = ['rust', 'rs']
     mimetypes = ['text/rust', 'text/x-rust']
+    version_added = '1.6'
 
     keyword_types = (words((
         'u8', 'u16', 'u32', 'u64', 'u128', 'i8', 'i16', 'i32', 'i64', 'i128',
@@ -99,18 +98,18 @@ class RustLexer(RegexLexer):
             (r'let\b', Keyword.Declaration),
             (r'fn\b', Keyword, 'funcname'),
             (r'(struct|enum|type|union)\b', Keyword, 'typename'),
-            (r'(default)(\s+)(type|fn)\b', bygroups(Keyword, Text, Keyword)),
+            (r'(default)(\s+)(type|fn)\b', bygroups(Keyword, Whitespace, Keyword)),
             keyword_types,
             (r'[sS]elf\b', Name.Builtin.Pseudo),
             # Prelude (taken from Rust's src/libstd/prelude.rs)
             builtin_funcs_types,
             builtin_macros,
-            # Path seperators, so types don't catch them.
-            (r'::\b', Text),
+            # Path separators, so types don't catch them.
+            (r'::\b', Punctuation),
             # Types in positions.
-            (r'(?::|->)', Text, 'typename'),
+            (r'(?::|->)', Punctuation, 'typename'),
             # Labels
-            (r'(break|continue)(\s*)(\'[A-Za-z_]\w*)?',
+            (r'(break|continue)(\b\s*)(\'[A-Za-z_]\w*)?',
              bygroups(Keyword, Text.Whitespace, Name.Label)),
 
             # Character literals
@@ -136,7 +135,7 @@ class RustLexer(RegexLexer):
             # String literals
             (r'b"', String, 'bytestring'),
             (r'"', String, 'string'),
-            (r'b?r(#*)".*?"\1', String),
+            (r'(?s)b?r(#*)".*?"\1', String),
 
             # Lifetime names
             (r"'", Operator, 'lifetime'),
@@ -153,6 +152,11 @@ class RustLexer(RegexLexer):
 
             # Attributes
             (r'#!?\[', Comment.Preproc, 'attribute['),
+
+            # Misc
+            # Lone hashes: not used in Rust syntax, but allowed in macro
+            # arguments, most famously for quote::quote!()
+            (r'#', Punctuation),
         ],
         'comment': [
             (r'[^*/]+', Comment.Multiline),
@@ -167,17 +171,17 @@ class RustLexer(RegexLexer):
             (r'[*/]', String.Doc),
         ],
         'modname': [
-            (r'\s+', Text),
+            (r'\s+', Whitespace),
             (r'[a-zA-Z_]\w*', Name.Namespace, '#pop'),
             default('#pop'),
         ],
         'funcname': [
-            (r'\s+', Text),
+            (r'\s+', Whitespace),
             (r'[a-zA-Z_]\w*', Name.Function, '#pop'),
             default('#pop'),
         ],
         'typename': [
-            (r'\s+', Text),
+            (r'\s+', Whitespace),
             (r'&', Keyword.Pseudo),
             (r"'", Operator, 'lifetime'),
             builtin_funcs_types,
@@ -209,16 +213,10 @@ class RustLexer(RegexLexer):
         'attribute_common': [
             (r'"', String, 'string'),
             (r'\[', Comment.Preproc, 'attribute['),
-            (r'\(', Comment.Preproc, 'attribute('),
         ],
         'attribute[': [
             include('attribute_common'),
-            (r'\];?', Comment.Preproc, '#pop'),
-            (r'[^"\]]+', Comment.Preproc),
-        ],
-        'attribute(': [
-            include('attribute_common'),
-            (r'\);?', Comment.Preproc, '#pop'),
-            (r'[^")]+', Comment.Preproc),
+            (r'\]', Comment.Preproc, '#pop'),
+            (r'[^"\]\[]+', Comment.Preproc),
         ],
     }

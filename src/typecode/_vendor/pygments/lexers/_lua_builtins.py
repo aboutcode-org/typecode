@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
     pygments.lexers._lua_builtins
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -9,7 +8,9 @@
 
     Do not edit the MODULES dict by hand.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    Run with `python -I` to regenerate.
+
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
@@ -36,6 +37,7 @@ MODULES = {'basic': ('_G',
            'tonumber',
            'tostring',
            'type',
+           'warn',
            'xpcall'),
  'bit32': ('bit32.arshift',
            'bit32.band',
@@ -49,7 +51,8 @@ MODULES = {'basic': ('_G',
            'bit32.replace',
            'bit32.rrotate',
            'bit32.rshift'),
- 'coroutine': ('coroutine.create',
+ 'coroutine': ('coroutine.close',
+               'coroutine.create',
                'coroutine.isyieldable',
                'coroutine.resume',
                'coroutine.running',
@@ -173,18 +176,7 @@ MODULES = {'basic': ('_G',
 
 if __name__ == '__main__':  # pragma: no cover
     import re
-    import sys
-
-    # urllib ends up wanting to import a module called 'math' -- if
-    # pygments/lexers is in the path, this ends badly.
-    for i in range(len(sys.path)-1, -1, -1):
-        if sys.path[i].endswith('/lexers'):
-            del sys.path[i]
-
-    try:
-        from urllib import urlopen
-    except ImportError:
-        from urllib.request import urlopen
+    from urllib.request import urlopen
     import pprint
 
     # you can't generally find out what module a function belongs to if you
@@ -233,16 +225,16 @@ if __name__ == '__main__':  # pragma: no cover
         f = urlopen('http://www.lua.org/manual/')
         r = re.compile(r'^<A HREF="(\d\.\d)/">(Lua )?\1</A>')
         for line in f:
-            m = r.match(line)
+            m = r.match(line.decode('iso-8859-1'))
             if m is not None:
                 return m.groups()[0]
 
     def get_lua_functions(version):
-        f = urlopen('http://www.lua.org/manual/%s/' % version)
+        f = urlopen(f'http://www.lua.org/manual/{version}/')
         r = re.compile(r'^<A HREF="manual.html#pdf-(?!lua|LUA)([^:]+)">\1</A>')
         functions = []
         for line in f:
-            m = r.match(line)
+            m = r.match(line.decode('iso-8859-1'))
             if m is not None:
                 functions.append(m.groups()[0])
         return functions
@@ -257,23 +249,23 @@ if __name__ == '__main__':  # pragma: no cover
             return 'basic'
 
     def regenerate(filename, modules):
-        with open(filename) as fp:
+        with open(filename, encoding='utf-8') as fp:
             content = fp.read()
 
         header = content[:content.find('MODULES = {')]
         footer = content[content.find("if __name__ == '__main__':"):]
 
 
-        with open(filename, 'w') as fp:
+        with open(filename, 'w', encoding='utf-8') as fp:
             fp.write(header)
-            fp.write('MODULES = %s\n\n' % pprint.pformat(modules))
+            fp.write(f'MODULES = {pprint.pformat(modules)}\n\n')
             fp.write(footer)
 
     def run():
         version = get_newest_version()
         functions = set()
         for v in ('5.2', version):
-            print('> Downloading function index for Lua %s' % v)
+            print(f'> Downloading function index for Lua {v}')
             f = get_lua_functions(v)
             print('> %d functions found, %d new:' %
                   (len(f), len(set(f) - functions)))
@@ -283,7 +275,7 @@ if __name__ == '__main__':  # pragma: no cover
 
         modules = {}
         for full_function_name in functions:
-            print('>> %s' % full_function_name)
+            print(f'>> {full_function_name}')
             m = get_function_module(full_function_name)
             modules.setdefault(m, []).append(full_function_name)
         modules = {k: tuple(v) for k, v in modules.items()}

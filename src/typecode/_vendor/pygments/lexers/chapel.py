@@ -1,69 +1,82 @@
-# -*- coding: utf-8 -*-
 """
     pygments.lexers.chapel
     ~~~~~~~~~~~~~~~~~~~~~~
 
     Lexer for the Chapel language.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
-from typecode._vendor.pygments.lexer import RegexLexer, bygroups, words
-from typecode._vendor.pygments.token import Text, Comment, Operator, Keyword, Name, String, \
-    Number, Punctuation
+from src.typecode._vendor.pygments.lexer import RegexLexer, bygroups, words
+from src.typecode._vendor.pygments.token import Text, Comment, Operator, Keyword, Name, String, \
+    Number, Punctuation, Whitespace
 
 __all__ = ['ChapelLexer']
 
 
 class ChapelLexer(RegexLexer):
     """
-    For `Chapel <https://chapel-lang.org/>`_ source.
-
-    .. versionadded:: 2.0
+    For Chapel source.
     """
     name = 'Chapel'
+    url = 'https://chapel-lang.org/'
     filenames = ['*.chpl']
     aliases = ['chapel', 'chpl']
+    version_added = '2.0'
     # mimetypes = ['text/x-chapel']
+
+    known_types = ('bool', 'bytes', 'complex', 'imag', 'int', 'locale',
+                   'nothing', 'opaque', 'range', 'real', 'string', 'uint',
+                   'void')
+
+    type_modifiers_par = ('atomic', 'single', 'sync')
+    type_modifiers_mem = ('borrowed', 'owned', 'shared', 'unmanaged')
+    type_modifiers = (*type_modifiers_par, *type_modifiers_mem)
+
+    declarations = ('config', 'const', 'in', 'inout', 'out', 'param', 'ref',
+                    'type', 'var')
+
+    constants = ('false', 'nil', 'none', 'true')
+
+    other_keywords = ('align', 'as',
+                      'begin', 'break', 'by',
+                      'catch', 'cobegin', 'coforall', 'continue',
+                      'defer', 'delete', 'dmapped', 'do', 'domain',
+                      'else', 'enum', 'except', 'export', 'extern',
+                      'for', 'forall', 'foreach', 'forwarding',
+                      'if', 'implements', 'import', 'index', 'init', 'inline',
+                      'label', 'lambda', 'let', 'lifetime', 'local',
+                      'new', 'noinit',
+                      'on', 'only', 'otherwise', 'override',
+                      'pragma', 'primitive', 'private', 'prototype', 'public',
+                      'reduce', 'require', 'return',
+                      'scan', 'select', 'serial', 'sparse', 'subdomain',
+                      'then', 'this', 'throw', 'throws', 'try',
+                      'use',
+                      'when', 'where', 'while', 'with',
+                      'yield',
+                      'zip')
 
     tokens = {
         'root': [
-            (r'\n', Text),
-            (r'\s+', Text),
+            (r'\n', Whitespace),
+            (r'\s+', Whitespace),
             (r'\\\n', Text),
 
             (r'//(.*?)\n', Comment.Single),
             (r'/(\\\n)?[*](.|\n)*?[*](\\\n)?/', Comment.Multiline),
 
-            (r'(config|const|in|inout|out|param|ref|type|var)\b',
-             Keyword.Declaration),
-            (r'(false|nil|none|true)\b', Keyword.Constant),
-            (r'(bool|bytes|complex|imag|int|nothing|opaque|range|real|string|uint|void)\b',
-             Keyword.Type),
-            (words((
-                'align', 'as', 'atomic',
-                'begin', 'borrowed', 'break', 'by',
-                'catch', 'cobegin', 'coforall', 'continue',
-                'defer', 'delete', 'dmapped', 'do', 'domain',
-                'else', 'enum', 'except', 'export', 'extern',
-                'for', 'forall', 'forwarding',
-                'if', 'import', 'index', 'init', 'inline',
-                'label', 'lambda', 'let', 'lifetime', 'local', 'locale'
-                'new', 'noinit',
-                'on', 'only', 'otherwise', 'override', 'owned',
-                'pragma', 'private', 'prototype', 'public',
-                'reduce', 'require', 'return',
-                'scan', 'select', 'serial', 'shared', 'single', 'sparse', 'subdomain', 'sync',
-                'then', 'this', 'throw', 'throws', 'try',
-                'unmanaged', 'use',
-                'when', 'where', 'while', 'with',
-                'yield',
-                'zip'), suffix=r'\b'),
-             Keyword),
-            (r'(iter)((?:\s)+)', bygroups(Keyword, Text), 'procname'),
-            (r'(proc)((?:\s)+)', bygroups(Keyword, Text), 'procname'),
-            (r'(class|module|record|union)(\s+)', bygroups(Keyword, Text),
+            (words(declarations, suffix=r'\b'), Keyword.Declaration),
+            (words(constants, suffix=r'\b'), Keyword.Constant),
+            (words(known_types, suffix=r'\b'), Keyword.Type),
+            (words((*type_modifiers, *other_keywords), suffix=r'\b'), Keyword),
+
+            (r'@', Keyword, 'attributename'),
+            (r'(iter)(\s+)', bygroups(Keyword, Whitespace), 'procname'),
+            (r'(proc)(\s+)', bygroups(Keyword, Whitespace), 'procname'),
+            (r'(operator)(\s+)', bygroups(Keyword, Whitespace), 'procname'),
+            (r'(class|interface|module|record|union)(\s+)', bygroups(Keyword, Whitespace),
              'classname'),
 
             # imaginary integers
@@ -88,8 +101,8 @@ class ChapelLexer(RegexLexer):
             (r'[0-9]+', Number.Integer),
 
             # strings
-            (r'"(\\\\|\\[^\\]|[^"\\])*"', String.Double),
-            (r"'(\\\\|\\[^\\]|[^'\\])*'", String.Single),
+            (r'"(\\\\|\\"|[^"])*"', String),
+            (r"'(\\\\|\\'|[^'])*'", String),
 
             # tokens
             (r'(=|\+=|-=|\*=|/=|\*\*=|%=|&=|\|=|\^=|&&=|\|\|=|<<=|>>=|'
@@ -106,7 +119,21 @@ class ChapelLexer(RegexLexer):
             (r'[a-zA-Z_][\w$]*', Name.Class, '#pop'),
         ],
         'procname': [
-            (r'([a-zA-Z_][.\w$]*|\~[a-zA-Z_][.\w$]*|[+*/!~%<>=&^|\-]{1,2})',
+            (r'([a-zA-Z_][.\w$]*|'  # regular function name, including secondary
+             r'\~[a-zA-Z_][.\w$]*|'  # support for legacy destructors
+             r'[+*/!~%<>=&^|\-:]{1,2})',  # operators
              Name.Function, '#pop'),
+
+            # allow `proc (atomic T).foo`
+            (r'\(', Punctuation, "receivertype"),
+            (r'\)+\.', Punctuation),
+        ],
+        'receivertype': [
+            (words(type_modifiers, suffix=r'\b'), Keyword),
+            (words(known_types, suffix=r'\b'), Keyword.Type),
+            (r'[^()]*', Name.Other, '#pop'),
+        ],
+        'attributename': [
+            (r'[a-zA-Z_][.\w$]*', Name.Decorator, '#pop'),
         ],
     }

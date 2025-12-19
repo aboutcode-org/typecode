@@ -1,26 +1,28 @@
-# -*- coding: utf-8 -*-
 """
     pygments.styles.emacs
     ~~~~~~~~~~~~~~~~~~~~~
 
     A highlighting style for Pygments, inspired by Emacs.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
-from typecode._vendor.pygments.style import Style
-from typecode._vendor.pygments.token import Keyword, Name, Comment, String, Error, \
+from src.typecode._vendor.pygments.style import Style
+from src.typecode._vendor.pygments.token import Keyword, Name, Comment, String, Error, \
      Number, Operator, Generic, Whitespace
+
+
+__all__ = ['EmacsStyle']
 
 
 class EmacsStyle(Style):
     """
     The default style (inspired by Emacs 22).
     """
+    name = 'emacs'
 
     background_color = "#f8f8f8"
-    default_style = ""
 
     styles = {
         Whitespace:                "#bbbbbb",
@@ -64,6 +66,7 @@ class EmacsStyle(Style):
         Generic.Error:             "#FF0000",
         Generic.Emph:              "italic",
         Generic.Strong:            "bold",
+        Generic.EmphStrong:        "bold italic",
         Generic.Prompt:            "bold #000080",
         Generic.Output:            "#888",
         Generic.Traceback:         "#04D",

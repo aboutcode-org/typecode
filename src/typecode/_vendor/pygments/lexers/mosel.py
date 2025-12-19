@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
     pygments.lexers.mosel
     ~~~~~~~~~~~~~~~~~~~~~
@@ -6,12 +5,12 @@
     Lexers for the mosel language.
     http://www.fico.com/en/products/fico-xpress-optimization
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
-from typecode._vendor.pygments.lexer import RegexLexer, words
-from typecode._vendor.pygments.token import Text, Comment, Operator, Keyword, Name, String, \
+from src.typecode._vendor.pygments.lexer import RegexLexer, words
+from src.typecode._vendor.pygments.token import Text, Comment, Operator, Keyword, Name, String, \
     Number, Punctuation
 
 __all__ = ['MoselLexer']
@@ -392,12 +391,12 @@ FUNCTIONS = (
 class MoselLexer(RegexLexer):
     """
     For the Mosel optimization language.
-
-    .. versionadded:: 2.6
     """
     name = 'Mosel'
     aliases = ['mosel']
     filenames = ['*.mos']
+    url = 'https://www.fico.com/fico-xpress-optimization/docs/latest/mosel/mosel_lang/dhtml/moselreflang.html'
+    version_added = '2.6'
 
     tokens = {
         'root': [

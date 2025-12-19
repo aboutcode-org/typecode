@@ -1,31 +1,28 @@
-# -*- coding: utf-8 -*-
 """
     pygments.lexers.trafficscript
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     Lexer for RiverBed's TrafficScript (RTS) language.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
-import re
-
-from typecode._vendor.pygments.lexer import RegexLexer
-from typecode._vendor.pygments.token import String, Number, Name, Keyword, Operator, Text, Comment
+from src.typecode._vendor.pygments.lexer import RegexLexer
+from src.typecode._vendor.pygments.token import String, Number, Name, Keyword, Operator, Text, Comment
 
 __all__ = ['RtsLexer']
 
 
 class RtsLexer(RegexLexer):
     """
-    For `Riverbed Stingray Traffic Manager <http://www.riverbed.com/stingray>`_
-
-    .. versionadded:: 2.1
+    For Riverbed Stingray Traffic Manager
     """
     name = 'TrafficScript'
-    aliases = ['rts','trafficscript']
+    aliases = ['trafficscript', 'rts']
     filenames = ['*.rts']
+    url = 'https://riverbed.com'
+    version_added = '2.1'
 
     tokens = {
         'root' : [

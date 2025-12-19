@@ -1,30 +1,29 @@
-# -*- coding: utf-8 -*-
 """
     pygments.lexers.yang
     ~~~~~~~~~~~~~~~~~~~~
 
     Lexer for the YANG 1.1 modeling language. See :rfc:`7950`.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
-from typecode._vendor.pygments.lexer import (RegexLexer, bygroups, words)
-from typecode._vendor.pygments.token import (Text, Token, Name, String, Comment,
-                            Number)
+from src.typecode._vendor.pygments.lexer import RegexLexer, bygroups, words
+from src.typecode._vendor.pygments.token import Text, Token, Name, String, Comment, Number
 
 __all__ = ['YangLexer']
 
+
 class YangLexer(RegexLexer):
     """
-    Lexer for `YANG <https://tools.ietf.org/html/rfc7950/>`_, based on RFC7950
-
-    .. versionadded:: 2.7
+    Lexer for YANG, based on RFC7950.
     """
     name = 'YANG'
+    url = 'https://tools.ietf.org/html/rfc7950/'
     aliases = ['yang']
     filenames = ['*.yang']
     mimetypes = ['application/yang']
+    version_added = '2.7'
 
     #Keywords from RFC7950 ; oriented at BNF style
     TOP_STMTS_KEYWORDS = ("module", "submodule")

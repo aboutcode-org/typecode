@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
     pygments.styles.solarized
     ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -8,13 +7,16 @@
     A Pygments style for the Solarized themes (licensed under MIT).
     See: https://github.com/altercation/solarized
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
-from typecode._vendor.pygments.style import Style
-from typecode._vendor.pygments.token import Comment, Error, Generic, Keyword, Name, Number, \
+from src.typecode._vendor.pygments.style import Style
+from src.typecode._vendor.pygments.token import Comment, Error, Generic, Keyword, Name, Number, \
     Operator, String, Token
+
+
+__all__ = ['SolarizedLightStyle', 'SolarizedDarkStyle']
 
 
 def make_style(colors):
@@ -58,13 +60,17 @@ def make_style(colors):
 
         Number:              colors['cyan'],
 
+        Generic:             colors['base0'],
         Generic.Deleted:     colors['red'],
         Generic.Emph:        'italic',
         Generic.Error:       colors['red'],
         Generic.Heading:     'bold',
         Generic.Subheading:  'underline',
         Generic.Inserted:    colors['green'],
+        Generic.Output:      colors['base0'],
+        Generic.Prompt:      'bold ' + colors['blue'],
         Generic.Strong:      'bold',
+        Generic.EmphStrong:  'bold italic',
         Generic.Traceback:   colors['blue'],
 
         Error:               'bg:' + colors['red'],
@@ -115,6 +121,8 @@ class SolarizedDarkStyle(Style):
     The solarized style, dark.
     """
 
+    name = 'solarized-dark'
+    
     styles = make_style(DARK_COLORS)
     background_color = DARK_COLORS['base03']
     highlight_color = DARK_COLORS['base02']
@@ -127,6 +135,8 @@ class SolarizedLightStyle(SolarizedDarkStyle):
     The solarized style, light.
     """
 
+    name = 'solarized-light'
+    
     styles = make_style(LIGHT_COLORS)
     background_color = LIGHT_COLORS['base03']
     highlight_color = LIGHT_COLORS['base02']

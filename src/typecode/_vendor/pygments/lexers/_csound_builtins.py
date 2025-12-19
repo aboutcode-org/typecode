@@ -1,13 +1,40 @@
-# -*- coding: utf-8 -*-
 """
     pygments.lexers._csound_builtins
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
-# Opcodes in Csound 6.14.0 using:
+REMOVED_OPCODES = set('''
+OSCsendA
+beadsynt
+beosc
+buchla
+getrowlin
+lua_exec
+lua_iaopcall
+lua_iaopcall_off
+lua_ikopcall
+lua_ikopcall_off
+lua_iopcall
+lua_iopcall_off
+lua_opdef
+mp3scal_check
+mp3scal_load
+mp3scal_load2
+mp3scal_play
+mp3scal_play2
+pvsgendy
+socksend_k
+signalflowgraph
+sumTableFilter
+systime
+tabrowlin
+vbap1move
+'''.split())
+
+# Opcodes in Csound 6.18.0 using:
 #   python3 -c "
 #   import re
 #   from subprocess import Popen, PIPE
@@ -210,6 +237,7 @@ ampmidicurve
 ampmidid
 apoleparams
 arduinoRead
+arduinoReadF
 arduinoStart
 arduinoStop
 areson
@@ -217,6 +245,7 @@ aresonk
 atone
 atonek
 atonex
+autocorr
 babo
 balance
 balance2
@@ -224,11 +253,10 @@ bamboo
 barmodel
 bbcutm
 bbcuts
-beadsynt
-beosc
 betarand
 bexprnd
 bformdec1
+bformdec2
 bformenc1
 binit
 biquad
@@ -260,6 +288,7 @@ centroid
 ceps
 cepsinv
 chanctrl
+changed
 changed2
 chani
 chano
@@ -294,6 +323,8 @@ cmp
 cmplxprod
 cntCreate
 cntCycles
+cntDelete
+cntDelete_i
 cntRead
 cntReset
 cntState
@@ -343,6 +374,11 @@ ctrl14
 ctrl21
 ctrl7
 ctrlinit
+ctrlpreset
+ctrlprint
+ctrlprintpresets
+ctrlsave
+ctrlselect
 cuserrnd
 dam
 date
@@ -395,6 +431,8 @@ dumpk4
 duserrnd
 dust
 dust2
+elapsedcycles
+elapsedtime
 envlpx
 envlpxr
 ephasor
@@ -402,6 +440,8 @@ eqfil
 evalstr
 event
 event_i
+eventcycles
+eventtime
 exciter
 exitnow
 exp
@@ -524,13 +564,13 @@ getcfg
 getcol
 getftargs
 getrow
-getrowlin
 getseed
 gogobel
 grain
 grain2
 grain3
 granule
+gtadsr
 gtf
 guiro
 harmon
@@ -777,6 +817,7 @@ lagud
 lastcycle
 lenarray
 lfo
+lfsr
 limit
 limit1
 lincos
@@ -837,14 +878,6 @@ lpreson
 lpshold
 lpsholdp
 lpslot
-lua_exec
-lua_iaopcall
-lua_iaopcall_off
-lua_ikopcall
-lua_ikopcall_off
-lua_iopcall
-lua_iopcall_off
-lua_opdef
 lufs
 mac
 maca
@@ -869,6 +902,7 @@ median
 mediank
 metro
 metro2
+metrobpm
 mfb
 midglobal
 midiarp
@@ -917,10 +951,12 @@ mp3bitrate
 mp3in
 mp3len
 mp3nchnls
+mp3out
 mp3scal
 mp3sr
 mpulse
 mrtmsg
+ms2st
 mtof
 mton
 multitap
@@ -930,6 +966,7 @@ mvclpf1
 mvclpf2
 mvclpf3
 mvclpf4
+mvmfilter
 mxadsr
 nchnls_hw
 nestedap
@@ -973,6 +1010,7 @@ oscils
 oscilx
 out
 out32
+outall
 outc
 outch
 outh
@@ -1117,6 +1155,7 @@ pvsftr
 pvsftw
 pvsfwrite
 pvsgain
+pvsgendy
 pvshift
 pvsifd
 pvsin
@@ -1280,11 +1319,15 @@ sc_lagud
 sc_phasor
 sc_trig
 scale
+scale2
 scalearray
 scanhammer
+scanmap
 scans
+scansmap
 scantable
 scanu
+scanu2
 schedkwhen
 schedkwhennamed
 schedule
@@ -1300,6 +1343,8 @@ sense
 sensekey
 seqtime
 seqtime2
+sequ
+sequstate
 serialBegin
 serialEnd
 serialFlush
@@ -1334,6 +1379,7 @@ sin
 sinh
 sininv
 sinsyn
+skf
 sleighbells
 slicearray
 slicearray_i
@@ -1369,12 +1415,14 @@ spat3d
 spat3di
 spat3dt
 spdist
+spf
 splitrig
 sprintf
 sprintfk
 spsend
 sqrt
 squinewave
+st2ms
 statevar
 sterrain
 stix
@@ -1415,6 +1463,7 @@ subinstrinit
 sum
 sumarray
 svfilter
+svn
 syncgrain
 syncloop
 syncphasor
@@ -1455,7 +1504,6 @@ tabmorphak
 tabmorphi
 tabplay
 tabrec
-tabrowlin
 tabsum
 tabw
 tabw_i
@@ -1487,8 +1535,12 @@ transegr
 trcross
 trfilter
 trhighest
+trigExpseg
+trigLinseg
+trigexpseg
 trigger
 trighold
+triglinseg
 trigphasor
 trigseq
 trim
@@ -1501,6 +1553,8 @@ trshift
 trsplit
 turnoff
 turnoff2
+turnoff2_i
+turnoff3
 turnon
 tvconv
 unirand
@@ -1524,6 +1578,7 @@ vbapmove
 vbapz
 vbapzmove
 vcella
+vclpf
 vco
 vco2
 vco2ft
@@ -1612,13 +1667,10 @@ window
 wrap
 writescratch
 wterrain
+wterrain2
 xadsr
 xin
 xout
-xscanmap
-xscans
-xscansmap
-xscanu
 xtratim
 xyscale
 zacl
@@ -1648,7 +1700,6 @@ DEPRECATED_OPCODES = set('''
 array
 bformdec
 bformenc
-changed
 copy2ftab
 copy2ttab
 hrtfer
@@ -1721,5 +1772,9 @@ vbap4
 vbap4move
 vbap8
 vbap8move
+xscanmap
+xscans
+xscansmap
+xscanu
 xyin
 '''.split())

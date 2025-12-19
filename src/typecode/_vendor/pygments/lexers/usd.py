@@ -1,19 +1,18 @@
-# -*- coding: utf-8 -*-
 """
     pygments.lexers.usd
     ~~~~~~~~~~~~~~~~~~~
 
     The module that parses Pixar's Universal Scene Description file format.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
-from typecode._vendor.pygments.lexer import RegexLexer, bygroups
-from typecode._vendor.pygments.lexer import words as words_
-from typecode._vendor.pygments.lexers._usd_builtins import COMMON_ATTRIBUTES, KEYWORDS, \
+from src.typecode._vendor.pygments.lexer import RegexLexer, bygroups
+from src.typecode._vendor.pygments.lexer import words as words_
+from src.typecode._vendor.pygments.lexers._usd_builtins import COMMON_ATTRIBUTES, KEYWORDS, \
     OPERATORS, SPECIAL_NAMES, TYPES
-from typecode._vendor.pygments.token import Comment, Keyword, Name, Number, Operator, \
+from src.typecode._vendor.pygments.token import Comment, Keyword, Name, Number, Operator, \
     Punctuation, String, Text, Whitespace
 
 __all__ = ["UsdLexer"]
@@ -31,33 +30,29 @@ _WHITESPACE = r"([ \t]+)"
 class UsdLexer(RegexLexer):
     """
     A lexer that parses Pixar's Universal Scene Description file format.
-
-    .. versionadded:: 2.6
     """
 
     name = "USD"
+    url = 'https://graphics.pixar.com/usd/release/index.html'
     aliases = ["usd", "usda"]
     filenames = ["*.usd", "*.usda"]
+    version_added = '2.6'
 
     tokens = {
         "root": [
-            (r"(custom){_WHITESPACE}(uniform)(\s+){}(\s+){}(\s*)(=)".format(
-                _TYPE, _BASE_ATTRIBUTE, _WHITESPACE=_WHITESPACE),
+            (rf"(custom){_WHITESPACE}(uniform)(\s+){_TYPE}(\s+){_BASE_ATTRIBUTE}(\s*)(=)",
              bygroups(Keyword.Token, Whitespace, Keyword.Token, Whitespace,
                       Keyword.Type, Whitespace, Name.Attribute, Text,
                       Name.Keyword.Tokens, Whitespace, Operator)),
-            (r"(custom){_WHITESPACE}{}(\s+){}(\s*)(=)".format(
-                _TYPE, _BASE_ATTRIBUTE, _WHITESPACE=_WHITESPACE),
+            (rf"(custom){_WHITESPACE}{_TYPE}(\s+){_BASE_ATTRIBUTE}(\s*)(=)",
              bygroups(Keyword.Token, Whitespace, Keyword.Type, Whitespace,
                       Name.Attribute, Text, Name.Keyword.Tokens, Whitespace,
                       Operator)),
-            (r"(uniform){_WHITESPACE}{}(\s+){}(\s*)(=)".format(
-                _TYPE, _BASE_ATTRIBUTE, _WHITESPACE=_WHITESPACE),
+            (rf"(uniform){_WHITESPACE}{_TYPE}(\s+){_BASE_ATTRIBUTE}(\s*)(=)",
              bygroups(Keyword.Token, Whitespace, Keyword.Type, Whitespace,
                       Name.Attribute, Text, Name.Keyword.Tokens, Whitespace,
                       Operator)),
-            (r"{}{_WHITESPACE}{}(\s*)(=)".format(
-                _TYPE, _BASE_ATTRIBUTE, _WHITESPACE=_WHITESPACE),
+            (rf"{_TYPE}{_WHITESPACE}{_BASE_ATTRIBUTE}(\s*)(=)",
              bygroups(Keyword.Type, Whitespace, Name.Attribute, Text,
                       Name.Keyword.Tokens, Whitespace, Operator)),
         ] +

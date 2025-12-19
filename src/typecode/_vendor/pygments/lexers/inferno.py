@@ -1,44 +1,43 @@
-# -*- coding: utf-8 -*-
 """
     pygments.lexers.inferno
     ~~~~~~~~~~~~~~~~~~~~~~~
 
     Lexers for Inferno os and all the related stuff.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
 import re
 
-from typecode._vendor.pygments.lexer import RegexLexer, include, bygroups, default
-from typecode._vendor.pygments.token import Punctuation, Text, Comment, Operator, Keyword, \
-    Name, String, Number
+from src.typecode._vendor.pygments.lexer import RegexLexer, include, bygroups, default
+from src.typecode._vendor.pygments.token import Punctuation, Comment, Operator, Keyword, \
+    Name, String, Number, Whitespace
 
 __all__ = ['LimboLexer']
 
 
 class LimboLexer(RegexLexer):
     """
-    Lexer for `Limbo programming language <http://www.vitanuova.com/inferno/limbo.html>`_
+    Lexer for Limbo programming language
 
     TODO:
         - maybe implement better var declaration highlighting
         - some simple syntax error highlighting
-
-    .. versionadded:: 2.0
     """
     name = 'Limbo'
+    url = 'http://www.vitanuova.com/inferno/limbo.html'
     aliases = ['limbo']
     filenames = ['*.b']
     mimetypes = ['text/limbo']
+    version_added = '2.0'
 
     tokens = {
         'whitespace': [
-            (r'^(\s*)([a-zA-Z_]\w*:(\s*)\n)',
-             bygroups(Text, Name.Label)),
-            (r'\n', Text),
-            (r'\s+', Text),
+            (r'^(\s*)([a-zA-Z_]\w*:)(\s*\n)',
+             bygroups(Whitespace, Name.Label, Whitespace)),
+            (r'\n', Whitespace),
+            (r'\s+', Whitespace),
             (r'#(\n|(.|\n)*?[^\\]\n)', Comment.Single),
         ],
         'string': [

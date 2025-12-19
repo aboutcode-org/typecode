@@ -1,18 +1,17 @@
-# -*- coding: utf-8 -*-
 """
     pygments.lexers.supercollider
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     Lexer for SuperCollider
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
 import re
 
-from typecode._vendor.pygments.lexer import RegexLexer, include, words, default
-from typecode._vendor.pygments.token import Text, Comment, Operator, Keyword, Name, String, \
+from src.typecode._vendor.pygments.lexer import RegexLexer, include, words, default
+from src.typecode._vendor.pygments.token import Text, Comment, Operator, Keyword, Name, String, \
     Number, Punctuation
 
 __all__ = ['SuperColliderLexer']
@@ -20,15 +19,15 @@ __all__ = ['SuperColliderLexer']
 
 class SuperColliderLexer(RegexLexer):
     """
-    For `SuperCollider <http://supercollider.github.io/>`_ source code.
-
-    .. versionadded:: 2.1
+    For SuperCollider source code.
     """
 
     name = 'SuperCollider'
-    aliases = ['sc', 'supercollider']
+    url = 'http://supercollider.github.io/'
+    aliases = ['supercollider', 'sc']
     filenames = ['*.sc', '*.scd']
-    mimetypes = ['application/supercollider', 'text/supercollider', ]
+    mimetypes = ['application/supercollider', 'text/supercollider']
+    version_added = '2.1'
 
     flags = re.DOTALL | re.MULTILINE
     tokens = {

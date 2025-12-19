@@ -1,15 +1,14 @@
-# -*- coding: utf-8 -*-
 """
     pygments.style
     ~~~~~~~~~~~~~~
 
     Basic style object.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
-from typecode._vendor.pygments.token import Token, STANDARD_TYPES
+from src.typecode._vendor.pygments.token import Token, STANDARD_TYPES
 
 # Default mapping of ansixxx to RGB colors.
 _ansimap = {
@@ -77,7 +76,7 @@ class StyleMeta(type):
                 return ''
             elif text.startswith('var') or text.startswith('calc'):
                 return text
-            assert False, "wrong color format %r" % text
+            assert False, f"wrong color format {text!r}"
 
         _styles = obj._styles = {}
 
@@ -135,7 +134,7 @@ class StyleMeta(type):
             color = _ansimap[color]
         bgcolor = t[4]
         if bgcolor in _deprecated_ansicolors:
-            bgcolor = _deprecated_ansicolors[color]
+            bgcolor = _deprecated_ansicolors[bgcolor]
         if bgcolor in ansicolors:
             bgansicolor = bgcolor
             bgcolor = _ansimap[bgcolor]
@@ -177,10 +176,10 @@ class Style(metaclass=StyleMeta):
     highlight_color = '#ffffcc'
 
     #: line number font color
-    line_number_color = '#000000'
+    line_number_color = 'inherit'
 
     #: line number background color
-    line_number_background_color = '#f0f0f0'
+    line_number_background_color = 'transparent'
 
     #: special line number font color
     line_number_special_color = '#000000'
@@ -190,3 +189,15 @@ class Style(metaclass=StyleMeta):
 
     #: Style definitions for individual token types.
     styles = {}
+
+    #: user-friendly style name (used when selecting the style, so this
+    # should be all-lowercase, no spaces, hyphens)
+    name = 'unnamed'
+
+    aliases = []
+
+    # Attribute for lexers defined within Pygments. If set
+    # to True, the style is not shown in the style gallery
+    # on the website. This is intended for language-specific
+    # styles.
+    web_style_gallery_exclude = False

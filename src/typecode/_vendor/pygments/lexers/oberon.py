@@ -1,18 +1,17 @@
-# -*- coding: utf-8 -*-
 """
     pygments.lexers.oberon
     ~~~~~~~~~~~~~~~~~~~~~~
 
     Lexers for Oberon family languages.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
 import re
 
-from typecode._vendor.pygments.lexer import RegexLexer, include, words
-from typecode._vendor.pygments.token import Text, Comment, Operator, Keyword, Name, String, \
+from src.typecode._vendor.pygments.lexer import RegexLexer, include, words
+from src.typecode._vendor.pygments.token import Text, Comment, Operator, Keyword, Name, String, \
     Number, Punctuation
 
 __all__ = ['ComponentPascalLexer']
@@ -20,14 +19,14 @@ __all__ = ['ComponentPascalLexer']
 
 class ComponentPascalLexer(RegexLexer):
     """
-    For `Component Pascal <http://www.oberon.ch/pdf/CP-Lang.pdf>`_ source code.
-
-    .. versionadded:: 2.1
+    For Component Pascal source code.
     """
     name = 'Component Pascal'
     aliases = ['componentpascal', 'cp']
     filenames = ['*.cp', '*.cps']
     mimetypes = ['text/x-component-pascal']
+    url = 'https://blackboxframework.org'
+    version_added = '2.1'
 
     flags = re.MULTILINE | re.DOTALL
 

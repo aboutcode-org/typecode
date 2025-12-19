@@ -1,22 +1,21 @@
-# -*- coding: utf-8 -*-
 """
     pygments.lexers.asm
     ~~~~~~~~~~~~~~~~~~~
 
     Lexers for assembly languages.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
 import re
 
-from typecode._vendor.pygments.lexer import RegexLexer, include, bygroups, using, words, \
+from src.typecode._vendor.pygments.lexer import RegexLexer, include, bygroups, using, words, \
     DelegatingLexer, default
-from typecode._vendor.pygments.lexers.c_cpp import CppLexer, CLexer
-from typecode._vendor.pygments.lexers.d import DLexer
-from typecode._vendor.pygments.token import Text, Name, Number, String, Comment, Punctuation, \
-    Other, Keyword, Operator, Literal
+from src.typecode._vendor.pygments.lexers.c_cpp import CppLexer, CLexer
+from src.typecode._vendor.pygments.lexers.d import DLexer
+from src.typecode._vendor.pygments.token import Text, Name, Number, String, Comment, Punctuation, \
+    Other, Keyword, Operator, Whitespace
 
 __all__ = ['GasLexer', 'ObjdumpLexer', 'DObjdumpLexer', 'CppObjdumpLexer',
            'CObjdumpLexer', 'HsailLexer', 'LlvmLexer', 'LlvmMirBodyLexer',
@@ -32,13 +31,15 @@ class GasLexer(RegexLexer):
     aliases = ['gas', 'asm']
     filenames = ['*.s', '*.S']
     mimetypes = ['text/x-gas']
+    url = 'https://www.gnu.org/software/binutils'
+    version_added = ''
 
     #: optional Comment or Whitespace
     string = r'"(\\"|[^"])*"'
     char = r'[\w$.@-]'
     identifier = r'(?:[a-zA-Z$_]' + char + r'*|\.' + char + '+)'
     number = r'(?:0[xX][a-fA-F0-9]+|#?-?\d+)'
-    register = '%' + identifier
+    register = '%' + identifier + r'\b'
 
     tokens = {
         'root': [
@@ -55,7 +56,7 @@ class GasLexer(RegexLexer):
             ('@' + identifier, Name.Attribute),
             (number, Number.Integer),
             (register, Name.Variable),
-            (r'[\r\n]+', Text, '#pop'),
+            (r'[\r\n]+', Whitespace, '#pop'),
             (r'([;#]|//).*?\n', Comment.Single, '#pop'),
             (r'/[*].*?[*]/', Comment.Multiline),
             (r'/[*].*?\n[\w\W]*?[*]/', Comment.Multiline, '#pop'),
@@ -81,7 +82,7 @@ class GasLexer(RegexLexer):
             # Numeric constants
             ('$'+number, Number.Integer),
             (r"$'(.|\\')'", String.Char),
-            (r'[\r\n]+', Text, '#pop'),
+            (r'[\r\n]+', Whitespace, '#pop'),
             (r'([;#]|//).*?\n', Comment.Single, '#pop'),
             (r'/[*].*?[*]/', Comment.Multiline),
             (r'/[*].*?\n[\w\W]*?[*]/', Comment.Multiline, '#pop'),
@@ -90,13 +91,13 @@ class GasLexer(RegexLexer):
             include('whitespace')
         ],
         'whitespace': [
-            (r'\n', Text),
-            (r'\s+', Text),
+            (r'\n', Whitespace),
+            (r'\s+', Whitespace),
             (r'([;#]|//).*?\n', Comment.Single),
             (r'/[*][\w\W]*?[*]/', Comment.Multiline)
         ],
         'punctuation': [
-            (r'[-*,.()\[\]!:]+', Punctuation)
+            (r'[-*,.()\[\]!:{}]+', Punctuation)
         ]
     }
 
@@ -123,33 +124,37 @@ def _objdump_lexer_tokens(asm_lexer):
             # Function labels
             # (With offset)
             ('('+hex_re+'+)( )(<)(.*?)([-+])(0[xX][A-Za-z0-9]+)(>:)$',
-                bygroups(Number.Hex, Text, Punctuation, Name.Function,
+                bygroups(Number.Hex, Whitespace, Punctuation, Name.Function,
                          Punctuation, Number.Hex, Punctuation)),
             # (Without offset)
             ('('+hex_re+'+)( )(<)(.*?)(>:)$',
-                bygroups(Number.Hex, Text, Punctuation, Name.Function,
+                bygroups(Number.Hex, Whitespace, Punctuation, Name.Function,
                          Punctuation)),
             # Code line with disassembled instructions
             ('( *)('+hex_re+r'+:)(\t)((?:'+hex_re+hex_re+' )+)( *\t)([a-zA-Z].*?)$',
-                bygroups(Text, Name.Label, Text, Number.Hex, Text,
+                bygroups(Whitespace, Name.Label, Whitespace, Number.Hex, Whitespace,
+                         using(asm_lexer))),
+            # Code line without raw instructions (objdump --no-show-raw-insn)
+            ('( *)('+hex_re+r'+:)( *\t)([a-zA-Z].*?)$',
+                bygroups(Whitespace, Name.Label, Whitespace,
                          using(asm_lexer))),
             # Code line with ascii
             ('( *)('+hex_re+r'+:)(\t)((?:'+hex_re+hex_re+' )+)( *)(.*?)$',
-                bygroups(Text, Name.Label, Text, Number.Hex, Text, String)),
+                bygroups(Whitespace, Name.Label, Whitespace, Number.Hex, Whitespace, String)),
             # Continued code line, only raw opcodes without disassembled
             # instruction
             ('( *)('+hex_re+r'+:)(\t)((?:'+hex_re+hex_re+' )+)$',
-                bygroups(Text, Name.Label, Text, Number.Hex)),
+                bygroups(Whitespace, Name.Label, Whitespace, Number.Hex)),
             # Skipped a few bytes
             (r'\t\.\.\.$', Text),
             # Relocation line
             # (With offset)
             (r'(\t\t\t)('+hex_re+r'+:)( )([^\t]+)(\t)(.*?)([-+])(0x'+hex_re+'+)$',
-                bygroups(Text, Name.Label, Text, Name.Property, Text,
+                bygroups(Whitespace, Name.Label, Whitespace, Name.Property, Whitespace,
                          Name.Constant, Punctuation, Number.Hex)),
             # (Without offset)
             (r'(\t\t\t)('+hex_re+r'+:)( )([^\t]+)(\t)(.*?)$',
-                bygroups(Text, Name.Label, Text, Name.Property, Text,
+                bygroups(Whitespace, Name.Label, Whitespace, Name.Property, Whitespace,
                          Name.Constant)),
             (r'[^\n]+\n', Other)
         ]
@@ -164,6 +169,8 @@ class ObjdumpLexer(RegexLexer):
     aliases = ['objdump']
     filenames = ['*.objdump']
     mimetypes = ['text/x-objdump']
+    url = 'https://www.gnu.org/software/binutils'
+    version_added = ''
 
     tokens = _objdump_lexer_tokens(GasLexer)
 
@@ -176,6 +183,8 @@ class DObjdumpLexer(DelegatingLexer):
     aliases = ['d-objdump']
     filenames = ['*.d-objdump']
     mimetypes = ['text/x-d-objdump']
+    url = 'https://www.gnu.org/software/binutils'
+    version_added = ''
 
     def __init__(self, **options):
         super().__init__(DLexer, ObjdumpLexer, **options)
@@ -189,6 +198,8 @@ class CppObjdumpLexer(DelegatingLexer):
     aliases = ['cpp-objdump', 'c++-objdumb', 'cxx-objdump']
     filenames = ['*.cpp-objdump', '*.c++-objdump', '*.cxx-objdump']
     mimetypes = ['text/x-cpp-objdump']
+    url = 'https://www.gnu.org/software/binutils'
+    version_added = ''
 
     def __init__(self, **options):
         super().__init__(CppLexer, ObjdumpLexer, **options)
@@ -202,6 +213,9 @@ class CObjdumpLexer(DelegatingLexer):
     aliases = ['c-objdump']
     filenames = ['*.c-objdump']
     mimetypes = ['text/x-c-objdump']
+    url = 'https://www.gnu.org/software/binutils'
+    version_added = ''
+
 
     def __init__(self, **options):
         super().__init__(CLexer, ObjdumpLexer, **options)
@@ -210,19 +224,19 @@ class CObjdumpLexer(DelegatingLexer):
 class HsailLexer(RegexLexer):
     """
     For HSAIL assembly code.
-
-    .. versionadded:: 2.2
     """
     name = 'HSAIL'
     aliases = ['hsail', 'hsa']
     filenames = ['*.hsail']
     mimetypes = ['text/x-hsail']
+    url = 'https://en.wikipedia.org/wiki/Heterogeneous_System_Architecture#HSA_Intermediate_Layer'
+    version_added = '2.2'
 
     string = r'"[^"]*?"'
     identifier = r'[a-zA-Z_][\w.]*'
     # Registers
     register_number = r'[0-9]+'
-    register = r'(\$(c|s|d|q)' + register_number + ')'
+    register = r'(\$(c|s|d|q)' + register_number + r')\b'
     # Qualifiers
     alignQual = r'(align\(\d+\))'
     widthQual = r'(width\((\d+|all)\))'
@@ -271,7 +285,7 @@ class HsailLexer(RegexLexer):
             (r'[=<>{}\[\]()*.,:;!]|x\b', Punctuation)
         ],
         'whitespace': [
-            (r'(\n|\s)+', Text),
+            (r'(\n|\s)+', Whitespace),
         ],
         'comments': [
             (r'/\*.*?\*/', Comment.Multiline),
@@ -347,20 +361,23 @@ class LlvmLexer(RegexLexer):
     For LLVM assembly code.
     """
     name = 'LLVM'
+    url = 'https://llvm.org/docs/LangRef.html'
     aliases = ['llvm']
     filenames = ['*.ll']
     mimetypes = ['text/x-llvm']
+    version_added = ''
 
     #: optional Comment or Whitespace
     string = r'"[^"]*?"'
     identifier = r'([-a-zA-Z$._][\w\-$.]*|' + string + ')'
+    block_label = r'(' + identifier + r'|(\d+))'
 
     tokens = {
         'root': [
             include('whitespace'),
 
             # Before keywords, because keywords are valid label names :(...
-            (identifier + r'\s*:', Name.Label),
+            (block_label + r'\s*:', Name.Label),
 
             include('keyword'),
 
@@ -373,80 +390,108 @@ class LlvmLexer(RegexLexer):
             (r'!\d+', Name.Variable.Anonymous),
             (r'c?' + string, String),
 
-            (r'0[xX][a-fA-F0-9]+', Number),
+            (r'0[xX][KLMHR]?[a-fA-F0-9]+', Number),
             (r'-?\d+(?:[.]\d+)?(?:[eE][-+]?\d+(?:[.]\d+)?)?', Number),
 
             (r'[=<>{}\[\]()*.,!]|x\b', Punctuation)
         ],
         'whitespace': [
-            (r'(\n|\s)+', Text),
+            (r'(\n|\s+)+', Whitespace),
             (r';.*?\n', Comment)
         ],
         'keyword': [
             # Regular keywords
             (words((
-                'acq_rel', 'acquire', 'add', 'addrspace', 'addrspacecast', 'afn', 'alias',
-                'aliasee', 'align', 'alignLog2', 'alignstack', 'alloca', 'allocsize', 'allOnes',
-                'alwaysinline', 'amdgpu_cs', 'amdgpu_es', 'amdgpu_gs', 'amdgpu_hs',
-                'amdgpu_kernel', 'amdgpu_ls', 'amdgpu_ps', 'amdgpu_vs', 'and', 'any',
-                'anyregcc', 'appending', 'arcp', 'argmemonly', 'args', 'arm_aapcs_vfpcc',
-                'arm_aapcscc', 'arm_apcscc', 'ashr', 'asm', 'atomic', 'atomicrmw', 'attributes',
-                'available_externally', 'avr_intrcc', 'avr_signalcc', 'bit', 'bitcast',
-                'bitMask', 'blockaddress', 'br', 'branchFunnel', 'builtin', 'byArg', 'byte',
-                'byteArray', 'byval', 'c', 'call', 'callee', 'caller', 'calls', 'catch',
-                'catchpad', 'catchret', 'catchswitch', 'cc', 'ccc', 'cleanup', 'cleanuppad',
-                'cleanupret', 'cmpxchg', 'cold', 'coldcc', 'comdat', 'common', 'constant',
-                'contract', 'convergent', 'critical', 'cxx_fast_tlscc', 'datalayout', 'declare',
-                'default', 'define', 'deplibs', 'dereferenceable', 'dereferenceable_or_null',
-                'distinct', 'dllexport', 'dllimport', 'dso_local', 'dso_preemptable',
-                'dsoLocal', 'eq', 'exact', 'exactmatch', 'extern_weak', 'external',
-                'externally_initialized', 'extractelement', 'extractvalue', 'fadd', 'false',
-                'fast', 'fastcc', 'fcmp', 'fdiv', 'fence', 'filter', 'flags', 'fmul',
-                'fpext', 'fptosi', 'fptoui', 'fptrunc', 'freeze', 'frem', 'from', 'fsub',
-                'funcFlags', 'function', 'gc', 'getelementptr', 'ghccc', 'global', 'guid', 'gv',
-                'hash', 'hhvm_ccc', 'hhvmcc', 'hidden', 'hot', 'hotness', 'icmp',
-                'ifunc', 'inaccessiblemem_or_argmemonly', 'inaccessiblememonly', 'inalloca',
-                'inbounds', 'indir', 'indirectbr', 'info', 'initialexec', 'inline',
-                'inlineBits', 'inlinehint', 'inrange', 'inreg', 'insertelement', 'insertvalue',
-                'insts', 'intel_ocl_bicc', 'inteldialect', 'internal', 'inttoptr', 'invoke',
-                'jumptable', 'kind', 'landingpad', 'largest', 'linkage', 'linkonce',
-                'linkonce_odr', 'live', 'load', 'local_unnamed_addr', 'localdynamic',
-                'localexec', 'lshr', 'max', 'metadata', 'min', 'minsize', 'module', 'monotonic',
-                'msp430_intrcc', 'mul', 'musttail', 'naked', 'name', 'nand', 'ne', 'nest',
-                'ninf', 'nnan', 'noalias', 'nobuiltin', 'nocapture', 'nocf_check',
-                'noduplicate', 'noduplicates', 'noimplicitfloat', 'noinline', 'none',
-                'nonlazybind', 'nonnull', 'norecurse', 'noRecurse', 'noredzone', 'noreturn',
-                'notail', 'notEligibleToImport', 'nounwind', 'nsw', 'nsz', 'null', 'nuw', 'oeq',
-                'offset', 'oge', 'ogt', 'ole', 'olt', 'one', 'opaque', 'optforfuzzing',
-                'optnone', 'optsize', 'or', 'ord', 'path', 'personality', 'phi', 'poison',
-                'prefix', 'preserve_allcc', 'preserve_mostcc', 'private', 'prologue',
-                'protected', 'ptrtoint', 'ptx_device', 'ptx_kernel', 'readnone', 'readNone',
-                'readonly', 'readOnly', 'reassoc', 'refs', 'relbf', 'release', 'resByArg',
-                'resume', 'ret', 'returnDoesNotAlias', 'returned', 'returns_twice', 'safestack',
-                'samesize', 'sanitize_address', 'sanitize_hwaddress', 'sanitize_memory',
-                'sanitize_thread', 'sdiv', 'section', 'select', 'seq_cst', 'sext', 'sge', 'sgt',
-                'shadowcallstack', 'shl', 'shufflevector', 'sideeffect', 'signext', 'single',
-                'singleImpl', 'singleImplName', 'sitofp', 'sizeM1', 'sizeM1BitWidth', 'sle',
-                'slt', 'source_filename', 'speculatable', 'spir_func', 'spir_kernel', 'srem',
-                'sret', 'ssp', 'sspreq', 'sspstrong', 'store', 'strictfp', 'sub', 'summaries',
-                'summary', 'swiftcc', 'swifterror', 'swiftself', 'switch', 'syncscope', 'tail',
-                'target', 'thread_local', 'to', 'token', 'triple', 'true', 'trunc', 'type',
-                'typeCheckedLoadConstVCalls', 'typeCheckedLoadVCalls', 'typeid', 'typeIdInfo',
-                'typeTestAssumeConstVCalls', 'typeTestAssumeVCalls', 'typeTestRes', 'typeTests',
-                'udiv', 'ueq', 'uge', 'ugt', 'uitofp', 'ule', 'ult', 'umax', 'umin', 'undef',
-                'une', 'uniformRetVal', 'uniqueRetVal', 'unknown', 'unnamed_addr', 'uno',
-                'unordered', 'unreachable', 'unsat', 'unwind', 'urem', 'uselistorder',
-                'uselistorder_bb', 'uwtable', 'va_arg', 'variable', 'vFuncId',
-                'virtualConstProp', 'void', 'volatile', 'weak', 'weak_odr', 'webkit_jscc',
-                'win64cc', 'within', 'wpdRes', 'wpdResolutions', 'writeonly',
+                'aarch64_sve_vector_pcs', 'aarch64_vector_pcs', 'acq_rel',
+                'acquire', 'add', 'addrspace', 'addrspacecast', 'afn', 'alias',
+                'aliasee', 'align', 'alignLog2', 'alignstack', 'alloca',
+                'allocsize', 'allOnes', 'alwaysinline', 'alwaysInline',
+                'amdgpu_cs', 'amdgpu_es', 'amdgpu_gfx', 'amdgpu_gs',
+                'amdgpu_hs', 'amdgpu_kernel', 'amdgpu_ls', 'amdgpu_ps',
+                'amdgpu_vs', 'and', 'any', 'anyregcc', 'appending', 'arcp',
+                'argmemonly', 'args', 'arm_aapcs_vfpcc', 'arm_aapcscc',
+                'arm_apcscc', 'ashr', 'asm', 'atomic', 'atomicrmw',
+                'attributes', 'available_externally', 'avr_intrcc',
+                'avr_signalcc', 'bit', 'bitcast', 'bitMask', 'blockaddress',
+                'blockcount', 'br', 'branchFunnel', 'builtin', 'byArg',
+                'byref', 'byte', 'byteArray', 'byval', 'c', 'call', 'callbr',
+                'callee', 'caller', 'calls', 'canAutoHide', 'catch',
+                'catchpad', 'catchret', 'catchswitch', 'cc', 'ccc',
+                'cfguard_checkcc', 'cleanup', 'cleanuppad', 'cleanupret',
+                'cmpxchg', 'cold', 'coldcc', 'comdat', 'common', 'constant',
+                'contract', 'convergent', 'critical', 'cxx_fast_tlscc',
+                'datalayout', 'declare', 'default', 'define', 'deplibs',
+                'dereferenceable', 'dereferenceable_or_null', 'distinct',
+                'dllexport', 'dllimport', 'dso_local', 'dso_local_equivalent',
+                'dso_preemptable', 'dsoLocal', 'eq', 'exact', 'exactmatch',
+                'extern_weak', 'external', 'externally_initialized',
+                'extractelement', 'extractvalue', 'fadd', 'false', 'fast',
+                'fastcc', 'fcmp', 'fdiv', 'fence', 'filter', 'flags', 'fmul',
+                'fneg', 'fpext', 'fptosi', 'fptoui', 'fptrunc', 'freeze',
+                'frem', 'from', 'fsub', 'funcFlags', 'function', 'gc',
+                'getelementptr', 'ghccc', 'global', 'guid', 'gv', 'hash',
+                'hhvm_ccc', 'hhvmcc', 'hidden', 'hot', 'hotness', 'icmp',
+                'ifunc', 'inaccessiblemem_or_argmemonly',
+                'inaccessiblememonly', 'inalloca', 'inbounds', 'indir',
+                'indirectbr', 'info', 'initialexec', 'inline', 'inlineBits',
+                'inlinehint', 'inrange', 'inreg', 'insertelement',
+                'insertvalue', 'insts', 'intel_ocl_bicc', 'inteldialect',
+                'internal', 'inttoptr', 'invoke', 'jumptable', 'kind',
+                'landingpad', 'largest', 'linkage', 'linkonce', 'linkonce_odr',
+                'live', 'load', 'local_unnamed_addr', 'localdynamic',
+                'localexec', 'lshr', 'max', 'metadata', 'min', 'minsize',
+                'module', 'monotonic', 'msp430_intrcc', 'mul', 'mustprogress',
+                'musttail', 'naked', 'name', 'nand', 'ne', 'nest', 'ninf',
+                'nnan', 'noalias', 'nobuiltin', 'nocallback', 'nocapture',
+                'nocf_check', 'noduplicate', 'noduplicates', 'nofree',
+                'noimplicitfloat', 'noinline', 'noInline', 'nomerge', 'none',
+                'nonlazybind', 'nonnull', 'noprofile', 'norecurse',
+                'noRecurse', 'noredzone', 'noreturn', 'nosync', 'notail',
+                'notEligibleToImport', 'noundef', 'nounwind', 'nsw',
+                'nsz', 'null', 'null_pointer_is_valid', 'nuw', 'oeq', 'offset',
+                'oge', 'ogt', 'ole', 'olt', 'one', 'opaque', 'optforfuzzing',
+                'optnone', 'optsize', 'or', 'ord', 'param', 'params',
+                'partition', 'path', 'personality', 'phi', 'poison',
+                'preallocated', 'prefix', 'preserve_allcc', 'preserve_mostcc',
+                'private', 'prologue', 'protected', 'ptrtoint', 'ptx_device',
+                'ptx_kernel', 'readnone', 'readNone', 'readonly', 'readOnly',
+                'reassoc', 'refs', 'relbf', 'release', 'resByArg', 'resume',
+                'ret', 'returnDoesNotAlias', 'returned', 'returns_twice',
+                'safestack', 'samesize', 'sanitize_address',
+                'sanitize_hwaddress', 'sanitize_memory', 'sanitize_memtag',
+                'sanitize_thread', 'sdiv', 'section', 'select', 'seq_cst',
+                'sext', 'sge', 'sgt', 'shadowcallstack', 'shl',
+                'shufflevector', 'sideeffect', 'signext', 'single',
+                'singleImpl', 'singleImplName', 'sitofp', 'sizeM1',
+                'sizeM1BitWidth', 'sle', 'slt', 'source_filename',
+                'speculatable', 'speculative_load_hardening', 'spir_func',
+                'spir_kernel', 'splat', 'srem', 'sret', 'ssp', 'sspreq',
+                'sspstrong', 'store', 'strictfp', 'sub', 'summaries',
+                'summary', 'swiftcc', 'swifterror', 'swiftself', 'switch',
+                'syncscope', 'tail', 'tailcc', 'target', 'thread_local', 'to',
+                'token', 'triple', 'true', 'trunc', 'type',
+                'typeCheckedLoadConstVCalls', 'typeCheckedLoadVCalls',
+                'typeid', 'typeidCompatibleVTable', 'typeIdInfo',
+                'typeTestAssumeConstVCalls', 'typeTestAssumeVCalls',
+                'typeTestRes', 'typeTests', 'udiv', 'ueq', 'uge', 'ugt',
+                'uitofp', 'ule', 'ult', 'umax', 'umin', 'undef', 'une',
+                'uniformRetVal', 'uniqueRetVal', 'unknown', 'unnamed_addr',
+                'uno', 'unordered', 'unreachable', 'unsat', 'unwind', 'urem',
+                'uselistorder', 'uselistorder_bb', 'uwtable', 'va_arg',
+                'varFlags', 'variable', 'vcall_visibility', 'vFuncId',
+                'virtFunc', 'virtualConstProp', 'void', 'volatile', 'vscale',
+                'vTableFuncs', 'weak', 'weak_odr', 'webkit_jscc', 'win64cc',
+                'within', 'wpdRes', 'wpdResolutions', 'writeonly', 'x',
                 'x86_64_sysvcc', 'x86_fastcallcc', 'x86_intrcc', 'x86_mmx',
-                'x86_regcallcc', 'x86_stdcallcc', 'x86_thiscallcc', 'x86_vectorcallcc', 'xchg',
-                'xor', 'zeroext', 'zeroinitializer', 'zext', 'immarg', 'willreturn'),
+                'x86_regcallcc', 'x86_stdcallcc', 'x86_thiscallcc',
+                'x86_vectorcallcc', 'xchg', 'xor', 'zeroext',
+                'zeroinitializer', 'zext', 'immarg', 'willreturn'),
                 suffix=r'\b'), Keyword),
 
             # Types
             (words(('void', 'half', 'bfloat', 'float', 'double', 'fp128',
-                    'x86_fp80', 'ppc_fp128', 'label', 'metadata', 'token')),
+                    'x86_fp80', 'ppc_fp128', 'label', 'metadata', 'x86_mmx',
+                    'x86_amx', 'token', 'ptr')),
                    Keyword.Type),
 
             # Integer types
@@ -458,15 +503,13 @@ class LlvmLexer(RegexLexer):
 class LlvmMirBodyLexer(RegexLexer):
     """
     For LLVM MIR examples without the YAML wrapper.
-
-    For more information on LLVM MIR see https://llvm.org/docs/MIRLangRef.html.
-
-    .. versionadded:: 2.6
     """
     name = 'LLVM-MIR Body'
+    url = 'https://llvm.org/docs/MIRLangRef.html'
     aliases = ['llvm-mir-body']
     filenames = []
     mimetypes = []
+    version_added = '2.6'
 
     tokens = {
         'root': [
@@ -528,13 +571,13 @@ class LlvmMirBodyLexer(RegexLexer):
             # Flags
             (words(('killed', 'implicit')), Keyword),
             # ConstantInt values
-            (r'i[0-9]+ +', Keyword.Type, 'constantint'),
+            (r'(i[0-9]+)( +)', bygroups(Keyword.Type, Whitespace), 'constantint'),
             # ConstantFloat values
             (r'(half|float|double) +', Keyword.Type, 'constantfloat'),
             # Bare immediates
             include('integer'),
             # MMO's
-            (r':: *', Operator, 'mmo'),
+            (r'(::)( *)', bygroups(Operator, Whitespace), 'mmo'),
             # MIR Comments
             (r';.*', Comment),
             # If we get here, assume it's a target instruction
@@ -554,29 +597,29 @@ class LlvmMirBodyLexer(RegexLexer):
         ],
         'vreg': [
             # The bank or class if there is one
-            (r' *:(?!:)', Keyword, ('#pop', 'vreg_bank_or_class')),
+            (r'( *)(:(?!:))', bygroups(Whitespace, Keyword), ('#pop', 'vreg_bank_or_class')),
             # The LLT if there is one
-            (r' *\(', Text, 'vreg_type'),
+            (r'( *)(\()', bygroups(Whitespace, Text), 'vreg_type'),
             (r'(?=.)', Text, '#pop'),
         ],
         'vreg_bank_or_class': [
             # The unassigned bank/class
-            (r' *_', Name.Variable.Magic),
-            (r' *[a-zA-Z0-9_]+', Name.Variable),
+            (r'( *)(_)', bygroups(Whitespace, Name.Variable.Magic)),
+            (r'( *)([a-zA-Z0-9_]+)', bygroups(Whitespace, Name.Variable)),
             # The LLT if there is one
-            (r' *\(', Text, 'vreg_type'),
+            (r'( *)(\()', bygroups(Whitespace, Text), 'vreg_type'),
             (r'(?=.)', Text, '#pop'),
         ],
         'vreg_type': [
             # Scalar and pointer types
-            (r' *[sp][0-9]+', Keyword.Type),
-            (r' *<[0-9]+ *x *[sp][0-9]+>', Keyword.Type),
+            (r'( *)([sp][0-9]+)', bygroups(Whitespace, Keyword.Type)),
+            (r'( *)(<[0-9]+ *x *[sp][0-9]+>)', bygroups(Whitespace, Keyword.Type)),
             (r'\)', Text, '#pop'),
             (r'(?=.)', Text, '#pop'),
         ],
         'mmo': [
             (r'\(', Text),
-            (r' +', Text),
+            (r' +', Whitespace),
             (words(('load', 'store', 'on', 'into', 'from', 'align', 'monotonic',
                     'acquire', 'release', 'acq_rel', 'seq_cst')),
              Keyword),
@@ -604,14 +647,12 @@ class LlvmMirLexer(RegexLexer):
     machine specific intermediate representation. It allows LLVM's developers to
     see the state of the compilation process at various points, as well as test
     individual pieces of the compiler.
-
-    For more information on LLVM MIR see https://llvm.org/docs/MIRLangRef.html.
-
-    .. versionadded:: 2.6
     """
     name = 'LLVM-MIR'
+    url = 'https://llvm.org/docs/MIRLangRef.html'
     aliases = ['llvm-mir']
     filenames = ['*.mir']
+    version_added = '2.6'
 
     tokens = {
         'root': [
@@ -650,7 +691,7 @@ class LlvmMirLexer(RegexLexer):
             (r'body: *\|', Keyword, 'llvm_mir_body'),
             # Consume everything else
             (r'.+', Text),
-            (r'\n', Text),
+            (r'\n', Whitespace),
         ],
         'name': [
             (r'[^\n]+', Name),
@@ -683,8 +724,10 @@ class NasmLexer(RegexLexer):
     """
     name = 'NASM'
     aliases = ['nasm']
-    filenames = ['*.asm', '*.ASM']
+    filenames = ['*.asm', '*.ASM', '*.nasm']
     mimetypes = ['text/x-nasm']
+    url = 'https://nasm.us'
+    version_added = ''
 
     # Tasm uses the same file endings, but TASM is not as common as NASM, so
     # we prioritize NASM higher by default
@@ -698,16 +741,17 @@ class NasmLexer(RegexLexer):
     floatn = decn + r'\.e?' + decn
     string = r'"(\\"|[^"\n])*"|' + r"'(\\'|[^'\n])*'|" + r"`(\\`|[^`\n])*`"
     declkw = r'(?:res|d)[bwdqt]|times'
-    register = (r'r[0-9][0-5]?[bwd]?|'
+    register = (r'(r[0-9][0-5]?[bwd]?|'
                 r'[a-d][lh]|[er]?[a-d]x|[er]?[sb]p|[er]?[sd]i|[c-gs]s|st[0-7]|'
-                r'mm[0-7]|cr[0-4]|dr[0-367]|tr[3-7]')
-    wordop = r'seg|wrt|strict'
+                r'mm[0-7]|cr[0-4]|dr[0-367]|tr[3-7]|k[0-7]|'
+                r'[xyz]mm(?:[12][0-9]?|3[01]?|[04-9]))\b')
+    wordop = r'seg|wrt|strict|rel|abs'
     type = r'byte|[dq]?word'
     # Directives must be followed by whitespace, otherwise CPU will match
     # cpuid for instance.
     directives = (r'(?:BITS|USE16|USE32|SECTION|SEGMENT|ABSOLUTE|EXTERN|GLOBAL|'
                   r'ORG|ALIGN|STRUC|ENDSTRUC|COMMON|CPU|GROUP|UPPERCASE|IMPORT|'
-                  r'EXPORT|LIBRARY|MODULE)\s+')
+                  r'EXPORT|LIBRARY|MODULE)(?=\s)')
 
     flags = re.IGNORECASE | re.MULTILINE
     tokens = {
@@ -715,13 +759,13 @@ class NasmLexer(RegexLexer):
             (r'^\s*%', Comment.Preproc, 'preproc'),
             include('whitespace'),
             (identifier + ':', Name.Label),
-            (r'(%s)(\s+)(equ)' % identifier,
-                bygroups(Name.Constant, Keyword.Declaration, Keyword.Declaration),
+            (rf'({identifier})(\s+)(equ)',
+                bygroups(Name.Constant, Whitespace, Keyword.Declaration),
                 'instruction-args'),
             (directives, Keyword, 'instruction-args'),
             (declkw, Keyword.Declaration, 'instruction-args'),
             (identifier, Name.Function, 'instruction-args'),
-            (r'[\r\n]+', Text)
+            (r'[\r\n]+', Whitespace)
         ],
         'instruction-args': [
             (string, String),
@@ -733,7 +777,7 @@ class NasmLexer(RegexLexer):
             include('punctuation'),
             (register, Name.Builtin),
             (identifier, Name.Variable),
-            (r'[\r\n]+', Text, '#pop'),
+            (r'[\r\n]+', Whitespace, '#pop'),
             include('whitespace')
         ],
         'preproc': [
@@ -742,12 +786,13 @@ class NasmLexer(RegexLexer):
             (r'\n', Comment.Preproc, '#pop'),
         ],
         'whitespace': [
-            (r'\n', Text),
-            (r'[ \t]+', Text),
-            (r';.*', Comment.Single)
+            (r'\n', Whitespace),
+            (r'[ \t]+', Whitespace),
+            (r';.*', Comment.Single),
+            (r'#.*', Comment.Single)
         ],
         'punctuation': [
-            (r'[,():\[\]]+', Punctuation),
+            (r'[,{}():\[\]]+', Punctuation),
             (r'[&|^<>+*/%~-]+', Operator),
             (r'[$]+', Keyword.Constant),
             (wordop, Operator.Word),
@@ -764,13 +809,13 @@ class NasmLexer(RegexLexer):
 class NasmObjdumpLexer(ObjdumpLexer):
     """
     For the output of ``objdump -d -M intel``.
-
-    .. versionadded:: 2.0
     """
     name = 'objdump-nasm'
     aliases = ['objdump-nasm']
     filenames = ['*.objdump-intel']
     mimetypes = ['text/x-nasm-objdump']
+    url = 'https://www.gnu.org/software/binutils'
+    version_added = '2.0'
 
     tokens = _objdump_lexer_tokens(NasmLexer)
 
@@ -783,6 +828,8 @@ class TasmLexer(RegexLexer):
     aliases = ['tasm']
     filenames = ['*.asm', '*.ASM', '*.tasm']
     mimetypes = ['text/x-tasm']
+    url = 'https://en.wikipedia.org/wiki/Turbo_Assembler'
+    version_added = ''
 
     identifier = r'[@a-z$._?][\w$.?#@~]*'
     hexn = r'(?:0x[0-9a-f]+|$0[0-9a-f]*|[0-9]+[0-9a-f]*h)'
@@ -792,9 +839,9 @@ class TasmLexer(RegexLexer):
     floatn = decn + r'\.e?' + decn
     string = r'"(\\"|[^"\n])*"|' + r"'(\\'|[^'\n])*'|" + r"`(\\`|[^`\n])*`"
     declkw = r'(?:res|d)[bwdqt]|times'
-    register = (r'r[0-9][0-5]?[bwd]|'
+    register = (r'(r[0-9][0-5]?[bwd]|'
                 r'[a-d][lh]|[er]?[a-d]x|[er]?[sb]p|[er]?[sd]i|[c-gs]s|st[0-7]|'
-                r'mm[0-7]|cr[0-4]|dr[0-367]|tr[3-7]')
+                r'mm[0-7]|cr[0-4]|dr[0-367]|tr[3-7])\b')
     wordop = r'seg|wrt|strict'
     type = r'byte|[dq]?word'
     directives = (r'BITS|USE16|USE32|SECTION|SEGMENT|ABSOLUTE|EXTERN|GLOBAL|'
@@ -812,12 +859,12 @@ class TasmLexer(RegexLexer):
             include('whitespace'),
             (identifier + ':', Name.Label),
             (directives, Keyword, 'instruction-args'),
-            (r'(%s)(\s+)(%s)' % (identifier, datatype),
-                bygroups(Name.Constant, Keyword.Declaration, Keyword.Declaration),
+            (rf'({identifier})(\s+)({datatype})',
+                bygroups(Name.Constant, Whitespace, Keyword.Declaration),
                 'instruction-args'),
             (declkw, Keyword.Declaration, 'instruction-args'),
             (identifier, Name.Function, 'instruction-args'),
-            (r'[\r\n]+', Text)
+            (r'[\r\n]+', Whitespace)
         ],
         'instruction-args': [
             (string, String),
@@ -829,9 +876,10 @@ class TasmLexer(RegexLexer):
             include('punctuation'),
             (register, Name.Builtin),
             (identifier, Name.Variable),
-            # Do not match newline when it's preceeded by a backslash
-            (r'(\\\s*)(;.*)([\r\n])', bygroups(Text, Comment.Single, Text)),
-            (r'[\r\n]+', Text, '#pop'),
+            # Do not match newline when it's preceded by a backslash
+            (r'(\\)(\s*)(;.*)([\r\n])',
+             bygroups(Text, Whitespace, Comment.Single, Whitespace)),
+            (r'[\r\n]+', Whitespace, '#pop'),
             include('whitespace')
         ],
         'preproc': [
@@ -840,9 +888,9 @@ class TasmLexer(RegexLexer):
             (r'\n', Comment.Preproc, '#pop'),
         ],
         'whitespace': [
-            (r'[\n\r]', Text),
-            (r'\\[\n\r]', Text),
-            (r'[ \t]+', Text),
+            (r'[\n\r]', Whitespace),
+            (r'(\\)([\n\r])', bygroups(Text, Whitespace)),
+            (r'[ \t]+', Whitespace),
             (r';.*', Comment.Single)
         ],
         'punctuation': [
@@ -863,19 +911,19 @@ class TasmLexer(RegexLexer):
 class Ca65Lexer(RegexLexer):
     """
     For ca65 assembler sources.
-
-    .. versionadded:: 1.6
     """
     name = 'ca65 assembler'
     aliases = ['ca65']
     filenames = ['*.s']
+    url = 'https://cc65.github.io'
+    version_added = '1.6'
 
     flags = re.IGNORECASE
 
     tokens = {
         'root': [
             (r';.*', Comment.Single),
-            (r'\s+', Text),
+            (r'\s+', Whitespace),
             (r'[a-z_.@$][\w.@$]*:', Name.Label),
             (r'((ld|st)[axy]|(in|de)[cxy]|asl|lsr|ro[lr]|adc|sbc|cmp|cp[xy]'
              r'|cl[cvdi]|se[cdi]|jmp|jsr|bne|beq|bpl|bmi|bvc|bvs|bcc|bcs'
@@ -902,15 +950,13 @@ class Ca65Lexer(RegexLexer):
 class Dasm16Lexer(RegexLexer):
     """
     For DCPU-16 Assembly.
-
-    Check http://0x10c.com/doc/dcpu-16.txt
-
-    .. versionadded:: 2.4
     """
     name = 'DASM16'
+    url = 'http://0x10c.com/doc/dcpu-16.txt'
     aliases = ['dasm16']
     filenames = ['*.dasm16', '*.dasm']
     mimetypes = ['text/x-dasm16']
+    version_added = '2.4'
 
     INSTRUCTIONS = [
         'SET',
@@ -956,7 +1002,7 @@ class Dasm16Lexer(RegexLexer):
             (identifier + ':', Name.Label),
             (instruction, Name.Function, 'instruction-args'),
             (r'\.' + identifier, Name.Function, 'data-args'),
-            (r'[\r\n]+', Text)
+            (r'[\r\n]+', Whitespace)
         ],
 
         'numeric' : [
@@ -978,7 +1024,7 @@ class Dasm16Lexer(RegexLexer):
         ],
 
         'instruction-line' : [
-            (r'[\r\n]+', Text, '#pop'),
+            (r'[\r\n]+', Whitespace, '#pop'),
             (r';.*?$', Comment, '#pop'),
             include('whitespace')
         ],
@@ -998,8 +1044,8 @@ class Dasm16Lexer(RegexLexer):
         ],
 
         'whitespace': [
-            (r'\n', Text),
-            (r'\s+', Text),
+            (r'\n', Whitespace),
+            (r'\s+', Whitespace),
             (r';.*?\n', Comment)
         ],
     }

@@ -1,21 +1,24 @@
-# -*- coding: utf-8 -*-
 """
     pygments.styles.abap
     ~~~~~~~~~~~~~~~~~~~~
 
     ABAP workbench like style.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
-from typecode._vendor.pygments.style import Style
-from typecode._vendor.pygments.token import Keyword, Name, Comment, String, Error, \
+from src.typecode._vendor.pygments.style import Style
+from src.typecode._vendor.pygments.token import Keyword, Name, Comment, String, Error, \
     Number, Operator
 
 
+__all__ = ['AbapStyle']
+
+
 class AbapStyle(Style):
-    default_style = ""
+    name = 'abap'
+
     styles = {
         Comment:                'italic #888',
         Comment.Special:        '#888',

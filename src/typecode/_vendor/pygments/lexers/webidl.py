@@ -1,16 +1,15 @@
-# -*- coding: utf-8 -*-
 """
     pygments.lexers.webidl
     ~~~~~~~~~~~~~~~~~~~~~~
 
     Lexers for Web IDL, including some extensions.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
-from typecode._vendor.pygments.lexer import RegexLexer, default, include, words
-from typecode._vendor.pygments.token import Comment, Keyword, Name, Number, Punctuation, \
+from src.typecode._vendor.pygments.lexer import RegexLexer, default, include, words
+from src.typecode._vendor.pygments.token import Comment, Keyword, Name, Number, Punctuation, \
     String, Text
 
 __all__ = ['WebIDLLexer']
@@ -40,13 +39,13 @@ _string = r'"[^"]*"'
 class WebIDLLexer(RegexLexer):
     """
     For Web IDL.
-
-    .. versionadded:: 2.6
     """
 
     name = 'Web IDL'
+    url = 'https://www.w3.org/wiki/Web_IDL'
     aliases = ['webidl']
     filenames = ['*.webidl']
+    version_added = '2.6'
 
     tokens = {
         'common': [

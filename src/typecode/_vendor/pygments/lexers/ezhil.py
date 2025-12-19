@@ -1,40 +1,39 @@
-# -*- coding: utf-8 -*-
 """
     pygments.lexers.ezhil
     ~~~~~~~~~~~~~~~~~~~~~
 
     Pygments lexers for Ezhil language.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
 import re
-from typecode._vendor.pygments.lexer import RegexLexer, include, words
-from typecode._vendor.pygments.token import Keyword, Text, Comment, Name
-from typecode._vendor.pygments.token import String, Number, Punctuation, Operator
+
+from src.typecode._vendor.pygments.lexer import RegexLexer, include, words
+from src.typecode._vendor.pygments.token import Keyword, Comment, Name, String, Number, \
+    Punctuation, Operator, Whitespace
 
 __all__ = ['EzhilLexer']
 
 
 class EzhilLexer(RegexLexer):
     """
-    Lexer for `Ezhil, a Tamil script-based programming language <http://ezhillang.org>`_
-
-    .. versionadded:: 2.1
+    Lexer for Ezhil, a Tamil script-based programming language.
     """
     name = 'Ezhil'
+    url = 'http://ezhillang.org'
     aliases = ['ezhil']
     filenames = ['*.n']
     mimetypes = ['text/x-ezhil']
-    flags = re.MULTILINE | re.UNICODE
+    version_added = '2.1'
     # Refer to tamil.utf8.tamil_letters from open-tamil for a stricter version of this.
     # This much simpler version is close enough, and includes combining marks.
     _TALETTERS = '[a-zA-Z_]|[\u0b80-\u0bff]'
     tokens = {
         'root': [
             include('keywords'),
-            (r'#.*\n', Comment.Single),
+            (r'#.*$', Comment.Single),
             (r'[@+/*,^\-%]|[!<>=]=?|&&?|\|\|?', Operator),
             ('இல்', Operator.Word),
             (words(('assert', 'max', 'min',
@@ -46,7 +45,7 @@ class EzhilLexer(RegexLexer):
                     'exp', 'log', 'log10', 'exit',
                     ), suffix=r'\b'), Name.Builtin),
             (r'(True|False)\b', Keyword.Constant),
-            (r'[^\S\n]+', Text),
+            (r'[^\S\n]+', Whitespace),
             include('identifier'),
             include('literal'),
             (r'[(){}\[\]:;.]', Punctuation),
@@ -59,8 +58,8 @@ class EzhilLexer(RegexLexer):
         ],
         'literal': [
             (r'".*?"', String),
-            (r'(?u)\d+((\.\d*)?[eE][+-]?\d+|\.\d*)', Number.Float),
-            (r'(?u)\d+', Number.Integer),
+            (r'\d+((\.\d*)?[eE][+-]?\d+|\.\d*)', Number.Float),
+            (r'\d+', Number.Integer),
         ]
     }
 

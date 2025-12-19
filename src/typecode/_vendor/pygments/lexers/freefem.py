@@ -1,39 +1,34 @@
-# -*- coding: utf-8 -*-
 """
     pygments.lexers.freefem
     ~~~~~~~~~~~~~~~~~~~~~~~
 
     Lexer for FreeFem++ language.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
-from typecode._vendor.pygments.lexer import RegexLexer, include, bygroups, inherit, words, \
-    default
-from typecode._vendor.pygments.token import Text, Comment, Operator, Keyword, Name, String, \
-    Number, Punctuation
+from src.typecode._vendor.pygments.token import Comment, Operator, Keyword, Name
 
-from typecode._vendor.pygments.lexers.c_cpp import CLexer, CppLexer
-from typecode._vendor.pygments.lexers import _mql_builtins
+from src.typecode._vendor.pygments.lexers.c_cpp import CppLexer
 
 __all__ = ['FreeFemLexer']
 
 
 class FreeFemLexer(CppLexer):
     """
-    For `FreeFem++ <https://freefem.org/>`_ source.
+    For FreeFem++ source.
 
     This is an extension of the CppLexer, as the FreeFem Language is a superset
     of C++.
-
-    .. versionadded:: 2.4
     """
 
     name = 'Freefem'
+    url = 'https://freefem.org/'
     aliases = ['freefem']
     filenames = ['*.edp']
     mimetypes = ['text/x-freefem']
+    version_added = '2.4'
 
     # Language operators
     operators = {'+', '-', '*', '.*', '/', './', '%', '^', '^-1', ':', '\''}
@@ -876,8 +871,8 @@ class FreeFemLexer(CppLexer):
                 'using'
     }
 
-    def get_tokens_unprocessed(self, text):
-        for index, token, value in CppLexer.get_tokens_unprocessed(self, text):
+    def get_tokens_unprocessed(self, text, stack=('root',)):
+        for index, token, value in CppLexer.get_tokens_unprocessed(self, text, stack):
             if value in self.operators:
                 yield index, Operator, value
             elif value in self.types:

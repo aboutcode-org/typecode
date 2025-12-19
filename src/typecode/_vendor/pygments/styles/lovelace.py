@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
     pygments.styles.lovelace
     ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -9,13 +8,16 @@
     A desaturated, somewhat subdued style created for the Lovelace interactive
     learning environment.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
-from typecode._vendor.pygments.style import Style
-from typecode._vendor.pygments.token import Keyword, Name, Comment, String, Error, \
+from src.typecode._vendor.pygments.style import Style
+from src.typecode._vendor.pygments.token import Keyword, Name, Comment, String, Error, \
     Number, Operator, Punctuation, Generic, Whitespace
+
+
+__all__ = ['LovelaceStyle']
 
 
 class LovelaceStyle(Style):
@@ -23,18 +25,18 @@ class LovelaceStyle(Style):
     The style used in Lovelace interactive learning environment. Tries to avoid
     the "angry fruit salad" effect with desaturated and dim colours.
     """
-    _KW_BLUE =       '#2838b0'
-    _NAME_GREEN =    '#388038'
-    _DOC_ORANGE =    '#b85820'
-    _OW_PURPLE =     '#a848a8'
-    _FUN_BROWN =     '#785840'
-    _STR_RED =       '#b83838'
-    _CLS_CYAN =      '#287088'
-    _ESCAPE_LIME =   '#709030'
-    _LABEL_CYAN =    '#289870'
-    _EXCEPT_YELLOW = '#908828'
+    name = 'lovelace'
 
-    default_style =  '#222222'
+    _KW_BLUE = '#2838b0'
+    _NAME_GREEN = '#388038'
+    _DOC_ORANGE = '#b85820'
+    _OW_PURPLE = '#a848a8'
+    _FUN_BROWN = '#785840'
+    _STR_RED = '#b83838'
+    _CLS_CYAN = '#287088'
+    _ESCAPE_LIME = '#709030'
+    _LABEL_CYAN = '#289870'
+    _EXCEPT_YELLOW = '#908828'
 
     styles = {
         Whitespace:          '#a89028',
@@ -91,6 +93,7 @@ class LovelaceStyle(Style):
         Generic.Output:      '#666666',
         Generic.Prompt:      '#444444',
         Generic.Strong:      'bold',
+        Generic.EmphStrong:  'bold italic',
         Generic.Traceback:   _KW_BLUE,
 
         Error:               'bg:'+_OW_PURPLE,

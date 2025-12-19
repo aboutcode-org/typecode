@@ -1,16 +1,15 @@
-# -*- coding: utf-8 -*-
 """
     pygments.lexers.pony
     ~~~~~~~~~~~~~~~~~~~~
 
     Lexers for Pony and related languages.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
-from typecode._vendor.pygments.lexer import RegexLexer, bygroups, words
-from typecode._vendor.pygments.token import Text, Comment, Operator, Keyword, Name, String, \
+from src.typecode._vendor.pygments.lexer import RegexLexer, bygroups, words
+from src.typecode._vendor.pygments.token import Text, Comment, Operator, Keyword, Name, String, \
     Number, Punctuation
 
 __all__ = ['PonyLexer']
@@ -19,13 +18,13 @@ __all__ = ['PonyLexer']
 class PonyLexer(RegexLexer):
     """
     For Pony source code.
-
-    .. versionadded:: 2.4
     """
 
     name = 'Pony'
     aliases = ['pony']
     filenames = ['*.pony']
+    url = 'https://www.ponylang.io'
+    version_added = '2.4'
 
     _caps = r'(iso|trn|ref|val|box|tag)'
 

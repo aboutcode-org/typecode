@@ -1,18 +1,17 @@
-# -*- coding: utf-8 -*-
 """
     pygments.lexers.parasail
     ~~~~~~~~~~~~~~~~~~~~~~~~
 
     Lexer for ParaSail.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
 import re
 
-from typecode._vendor.pygments.lexer import RegexLexer, include
-from typecode._vendor.pygments.token import Text, Comment, Operator, Keyword, Name, String, \
+from src.typecode._vendor.pygments.lexer import RegexLexer, include
+from src.typecode._vendor.pygments.token import Text, Comment, Operator, Keyword, Name, String, \
     Number, Punctuation, Literal
 
 __all__ = ['ParaSailLexer']
@@ -20,15 +19,15 @@ __all__ = ['ParaSailLexer']
 
 class ParaSailLexer(RegexLexer):
     """
-    For `ParaSail <http://www.parasail-lang.org>`_ source code.
-
-    .. versionadded:: 2.1
+    For ParaSail source code.
     """
 
     name = 'ParaSail'
+    url = 'http://www.parasail-lang.org'
     aliases = ['parasail']
     filenames = ['*.psi', '*.psl']
     mimetypes = ['text/x-parasail']
+    version_added = '2.1'
 
     flags = re.MULTILINE
 

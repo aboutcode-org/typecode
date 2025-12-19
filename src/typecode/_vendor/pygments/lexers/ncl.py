@@ -1,18 +1,17 @@
-# -*- coding: utf-8 -*-
 """
     pygments.lexers.ncl
     ~~~~~~~~~~~~~~~~~~~
 
     Lexers for NCAR Command Language.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
 import re
 
-from typecode._vendor.pygments.lexer import RegexLexer, include, words
-from typecode._vendor.pygments.token import Text, Comment, Operator, Keyword, Name, String, \
+from src.typecode._vendor.pygments.lexer import RegexLexer, include, words
+from src.typecode._vendor.pygments.token import Text, Comment, Operator, Keyword, Name, String, \
     Number, Punctuation
 
 __all__ = ['NCLLexer']
@@ -21,13 +20,14 @@ __all__ = ['NCLLexer']
 class NCLLexer(RegexLexer):
     """
     Lexer for NCL code.
-
-    .. versionadded:: 2.2
     """
     name = 'NCL'
     aliases = ['ncl']
     filenames = ['*.ncl']
     mimetypes = ['text/ncl']
+    url = 'https://www.ncl.ucar.edu'
+    version_added = '2.2'
+
     flags = re.MULTILINE
 
     tokens = {

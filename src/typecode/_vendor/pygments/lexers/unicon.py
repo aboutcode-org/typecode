@@ -1,18 +1,17 @@
-# -*- coding: utf-8 -*-
 """
     pygments.lexers.unicon
     ~~~~~~~~~~~~~~~~~~~~~~
 
     Lexers for the Icon and Unicon languages, including ucode VM.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
 import re
 
-from typecode._vendor.pygments.lexer import RegexLexer, include, bygroups, words, using, this
-from typecode._vendor.pygments.token import Text, Comment, Operator, Keyword, Name, String, \
+from src.typecode._vendor.pygments.lexer import RegexLexer, include, bygroups, words, using, this
+from src.typecode._vendor.pygments.token import Text, Comment, Operator, Keyword, Name, String, \
     Number, Punctuation
 
 __all__ = ['IconLexer', 'UcodeLexer', 'UniconLexer']
@@ -21,14 +20,14 @@ __all__ = ['IconLexer', 'UcodeLexer', 'UniconLexer']
 class UniconLexer(RegexLexer):
     """
     For Unicon source code.
-
-    .. versionadded:: 2.4
     """
 
     name = 'Unicon'
     aliases = ['unicon']
     filenames = ['*.icn']
     mimetypes = ['text/unicon']
+    url = 'https://www.unicon.org'
+    version_added = '2.4'
 
     flags = re.MULTILINE
 
@@ -167,13 +166,14 @@ class UniconLexer(RegexLexer):
 class IconLexer(RegexLexer):
     """
     Lexer for Icon.
-
-    .. versionadded:: 1.6
     """
     name = 'Icon'
     aliases = ['icon']
     filenames = ['*.icon', '*.ICON']
     mimetypes = []
+    url = 'https://www2.cs.arizona.edu/icon'
+    version_added = '1.6'
+
     flags = re.MULTILINE
 
     tokens = {
@@ -307,13 +307,14 @@ class IconLexer(RegexLexer):
 class UcodeLexer(RegexLexer):
     """
     Lexer for Icon ucode files.
-
-    .. versionadded:: 2.4
     """
     name = 'ucode'
     aliases = ['ucode']
     filenames = ['*.u', '*.u1', '*.u2']
     mimetypes = []
+    url = 'http://www.unicon.org'
+    version_added = '2.4'
+
     flags = re.MULTILINE
 
     tokens = {

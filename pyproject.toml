@@ -54,7 +54,7 @@ addopts = [
 ]
 
 [tool.vendy]
-target = 'typecode'
+target = 'src/typecode/'
 packages = [
-    "pygments==2.9.0",
+    "pygments==2.19.2",
 ]
