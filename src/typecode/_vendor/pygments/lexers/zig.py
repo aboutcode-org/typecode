@@ -1,16 +1,15 @@
-# -*- coding: utf-8 -*-
 """
     pygments.lexers.zig
     ~~~~~~~~~~~~~~~~~~~
 
     Lexers for Zig.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
-from typecode._vendor.pygments.lexer import RegexLexer, words
-from typecode._vendor.pygments.token import Comment, Operator, Keyword, Name, String, \
+from src.typecode._vendor.pygments.lexer import RegexLexer, words
+from src.typecode._vendor.pygments.token import Comment, Operator, Keyword, Name, String, \
     Number, Punctuation, Whitespace
 
 __all__ = ['ZigLexer']
@@ -18,14 +17,16 @@ __all__ = ['ZigLexer']
 
 class ZigLexer(RegexLexer):
     """
-    For `Zig <http://www.ziglang.org>`_ source code.
+    Lexer for the Zig language.
 
     grammar: https://ziglang.org/documentation/master/#Grammar
     """
     name = 'Zig'
+    url = 'http://www.ziglang.org'
     aliases = ['zig']
     filenames = ['*.zig']
     mimetypes = ['text/zig']
+    version_added = ''
 
     type_keywords = (
         words(('bool', 'f16', 'f32', 'f64', 'f128', 'void', 'noreturn', 'type',

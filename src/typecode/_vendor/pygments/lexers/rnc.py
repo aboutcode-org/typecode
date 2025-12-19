@@ -1,16 +1,15 @@
-# -*- coding: utf-8 -*-
 """
     pygments.lexers.rnc
     ~~~~~~~~~~~~~~~~~~~
 
     Lexer for Relax-NG Compact syntax
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
-from typecode._vendor.pygments.lexer import RegexLexer
-from typecode._vendor.pygments.token import Text, Comment, Operator, Keyword, Name, String, \
+from src.typecode._vendor.pygments.lexer import RegexLexer
+from src.typecode._vendor.pygments.token import Text, Comment, Operator, Keyword, Name, String, \
     Punctuation
 
 __all__ = ['RNCCompactLexer']
@@ -18,14 +17,14 @@ __all__ = ['RNCCompactLexer']
 
 class RNCCompactLexer(RegexLexer):
     """
-    For `RelaxNG-compact <http://relaxng.org>`_ syntax.
-
-    .. versionadded:: 2.2
+    For RelaxNG-compact syntax.
     """
 
     name = 'Relax-NG Compact'
-    aliases = ['rnc', 'rng-compact']
+    url = 'http://relaxng.org'
+    aliases = ['rng-compact', 'rnc']
     filenames = ['*.rnc']
+    version_added = '2.2'
 
     tokens = {
         'root': [

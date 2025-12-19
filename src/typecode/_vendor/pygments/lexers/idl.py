@@ -1,18 +1,18 @@
-# -*- coding: utf-8 -*-
 """
     pygments.lexers.idl
     ~~~~~~~~~~~~~~~~~~~
 
     Lexers for IDL.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
 import re
 
-from typecode._vendor.pygments.lexer import RegexLexer, words
-from typecode._vendor.pygments.token import Text, Comment, Operator, Keyword, Name, Number, String
+from src.typecode._vendor.pygments.lexer import RegexLexer, words, bygroups
+from src.typecode._vendor.pygments.token import Text, Comment, Operator, Keyword, Name, Number, \
+    String, Whitespace
 
 __all__ = ['IDLLexer']
 
@@ -20,13 +20,13 @@ __all__ = ['IDLLexer']
 class IDLLexer(RegexLexer):
     """
     Pygments Lexer for IDL (Interactive Data Language).
-
-    .. versionadded:: 1.6
     """
     name = 'IDL'
+    url = 'https://www.l3harrisgeospatial.com/Software-Technology/IDL'
     aliases = ['idl']
     filenames = ['*.pro']
     mimetypes = ['text/idl']
+    version_added = '1.6'
 
     flags = re.IGNORECASE | re.MULTILINE
 
@@ -249,7 +249,8 @@ class IDLLexer(RegexLexer):
 
     tokens = {
         'root': [
-            (r'^\s*;.*?\n', Comment.Single),
+            (r'(^\s*)(;.*?)(\n)', bygroups(Whitespace, Comment.Single,
+                Whitespace)),
             (words(_RESERVED, prefix=r'\b', suffix=r'\b'), Keyword),
             (words(_BUILTIN_LIB, prefix=r'\b', suffix=r'\b'), Name.Builtin),
             (r'\+=|-=|\^=|\*=|/=|#=|##=|<=|>=|=', Operator),
@@ -265,6 +266,8 @@ class IDLLexer(RegexLexer):
             (r'\b[+\-]?[0-9]+U?L{1,2}\b', Number.Integer.Long),
             (r'\b[+\-]?[0-9]+U?S?\b', Number.Integer),
             (r'\b[+\-]?[0-9]+B\b', Number),
+            (r'[ \t]+', Whitespace),
+            (r'\n', Whitespace),
             (r'.', Text),
         ]
     }

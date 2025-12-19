@@ -1,16 +1,15 @@
-# -*- coding: utf-8 -*-
 """
     pygments.lexers.smv
     ~~~~~~~~~~~~~~~~~~~
 
     Lexers for the SMV languages.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
-from typecode._vendor.pygments.lexer import RegexLexer, words
-from typecode._vendor.pygments.token import Comment, Keyword, Name, Number, Operator, \
+from src.typecode._vendor.pygments.lexer import RegexLexer, words
+from src.typecode._vendor.pygments.token import Comment, Keyword, Name, Number, Operator, \
     Punctuation, Text
 
 __all__ = ['NuSMVLexer']
@@ -19,14 +18,14 @@ __all__ = ['NuSMVLexer']
 class NuSMVLexer(RegexLexer):
     """
     Lexer for the NuSMV language.
-
-    .. versionadded:: 2.2
     """
 
     name = 'NuSMV'
     aliases = ['nusmv']
     filenames = ['*.smv']
     mimetypes = []
+    url = 'https://nusmv.fbk.eu'
+    version_added = '2.2'
 
     tokens = {
         'root': [
@@ -69,7 +68,7 @@ class NuSMVLexer(RegexLexer):
             (r'\-?\d+\b', Number.Integer),
             (r'0[su][bB]\d*_[01_]+', Number.Bin),
             (r'0[su][oO]\d*_[0-7_]+', Number.Oct),
-            (r'0[su][dD]\d*_[\d_]+', Number.Dec),
+            (r'0[su][dD]\d*_[\d_]+', Number.Decimal),
             (r'0[su][hH]\d*_[\da-fA-F_]+', Number.Hex),
 
             # Whitespace, punctuation and the rest

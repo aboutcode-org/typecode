@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
     pygments.styles.algol
     ~~~~~~~~~~~~~~~~~~~~~
@@ -26,18 +25,21 @@
 
     [1] `Revised Report on the Algorithmic Language Algol-60 <http://www.masswerk.at/algol60/report.htm>`
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
-from typecode._vendor.pygments.style import Style
-from typecode._vendor.pygments.token import Keyword, Name, Comment, String, Error, Operator
+from src.typecode._vendor.pygments.style import Style
+from src.typecode._vendor.pygments.token import Keyword, Name, Comment, String, Error, Operator
+
+
+__all__ = ['AlgolStyle']
 
 
 class AlgolStyle(Style):
+    name = 'algol'
 
     background_color = "#ffffff"
-    default_style = ""
 
     styles = {
         Comment:                   "italic #888",

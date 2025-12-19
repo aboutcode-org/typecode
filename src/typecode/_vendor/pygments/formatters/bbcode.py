@@ -1,17 +1,16 @@
-# -*- coding: utf-8 -*-
 """
     pygments.formatters.bbcode
     ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     BBcode formatter.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
 
-from typecode._vendor.pygments.formatter import Formatter
-from typecode._vendor.pygments.util import get_bool_opt
+from src.typecode._vendor.pygments.formatter import Formatter
+from src.typecode._vendor.pygments.util import get_bool_opt
 
 __all__ = ['BBCodeFormatter']
 
@@ -61,7 +60,7 @@ class BBCodeFormatter(Formatter):
         for ttype, ndef in self.style:
             start = end = ''
             if ndef['color']:
-                start += '[color=#%s]' % ndef['color']
+                start += '[color=#{}]'.format(ndef['color'])
                 end = '[/color]' + end
             if ndef['bold']:
                 start += '[b]'

@@ -1,18 +1,17 @@
-# -*- coding: utf-8 -*-
 """
     pygments.lexers.prolog
     ~~~~~~~~~~~~~~~~~~~~~~
 
     Lexers for Prolog and Prolog-like languages.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
 import re
 
-from typecode._vendor.pygments.lexer import RegexLexer, bygroups
-from typecode._vendor.pygments.token import Text, Comment, Operator, Keyword, Name, String, \
+from src.typecode._vendor.pygments.lexer import RegexLexer, bygroups
+from src.typecode._vendor.pygments.token import Text, Comment, Operator, Keyword, Name, String, \
     Number, Punctuation
 
 __all__ = ['PrologLexer', 'LogtalkLexer']
@@ -26,8 +25,8 @@ class PrologLexer(RegexLexer):
     aliases = ['prolog']
     filenames = ['*.ecl', '*.prolog', '*.pro', '*.pl']
     mimetypes = ['text/x-prolog']
-
-    flags = re.UNICODE | re.MULTILINE
+    url = 'https://en.wikipedia.org/wiki/Prolog'
+    version_added = ''
 
     tokens = {
         'root': [
@@ -45,7 +44,7 @@ class PrologLexer(RegexLexer):
             (r'[\[\](){}|.,;!]', Punctuation),
             (r':-|-->', Punctuation),
             (r'"(?:\\x[0-9a-fA-F]+\\|\\u[0-9a-fA-F]{4}|\\U[0-9a-fA-F]{8}|'
-             r'\\[0-7]+\\|\\["\nabcefnrstv]|[^\\"])*"', String.Double),
+             r'\\[0-7]+\\|\\["\\abcefnrstv]|[^\\"])*"', String.Double),
             (r"'(?:''|[^'])*'", String.Atom),  # quoted atom
             # Needs to not be followed by an atom.
             # (r'=(?=\s|[a-zA-Z\[])', Operator),
@@ -81,20 +80,25 @@ class PrologLexer(RegexLexer):
     }
 
     def analyse_text(text):
-        return ':-' in text
+        """Competes with IDL and Visual Prolog on *.pro"""
+        if ':-' in text:
+            # Visual Prolog also uses :-
+            return 0.5
+        else:
+            return 0
 
 
 class LogtalkLexer(RegexLexer):
     """
-    For `Logtalk <http://logtalk.org/>`_ source code.
-
-    .. versionadded:: 0.10
+    For Logtalk source code.
     """
 
     name = 'Logtalk'
+    url = 'http://logtalk.org/'
     aliases = ['logtalk']
     filenames = ['*.lgt', '*.logtalk']
     mimetypes = ['text/x-logtalk']
+    version_added = '0.10'
 
     tokens = {
         'root': [
@@ -145,7 +149,7 @@ class LogtalkLexer(RegexLexer):
             # Control constructs
             (r'(ca(ll|tch)|throw)(?=[(])', Keyword),
             (r'(fa(il|lse)|true|(instantiation|system)_error)\b', Keyword),
-            (r'(type|domain|existence|permission|representation|evaluation|resource|syntax)_error(?=[(])', Keyword),
+            (r'(uninstantiation|type|domain|existence|permission|representation|evaluation|resource|syntax)_error(?=[(])', Keyword),
             # All solutions
             (r'((bag|set)of|f(ind|or)all)(?=[(])', Keyword),
             # Multi-threading predicates
@@ -201,9 +205,9 @@ class LogtalkLexer(RegexLexer):
             (r'(>>|<<|/\\|\\\\|\\)', Operator),
             # Predicate aliases
             (r'\bas\b', Operator),
-            # Arithemtic evaluation
+            # Arithmetic evaluation
             (r'\bis\b', Keyword),
-            # Arithemtic comparison
+            # Arithmetic comparison
             (r'(=:=|=\\=|<|=<|>=|>)', Operator),
             # Term creation and decomposition
             (r'=\.\.', Operator),
@@ -214,7 +218,7 @@ class LogtalkLexer(RegexLexer):
             # Evaluable functors
             (r'(//|[-+*/])', Operator),
             (r'\b(e|pi|div|mod|rem)\b', Operator),
-            # Other arithemtic functors
+            # Other arithmetic functors
             (r'\b\*\*\b', Operator),
             # DCG rules
             (r'-->', Operator),
@@ -226,13 +230,13 @@ class LogtalkLexer(RegexLexer):
             (r'[?@]', Operator),
             # Existential quantifier
             (r'\^', Operator),
-            # Strings
-            (r'"(\\\\|\\[^\\]|[^"\\])*"', String),
             # Punctuation
             (r'[()\[\],.|]', Text),
             # Atoms
             (r"[a-z][a-zA-Z0-9_]*", Text),
             (r"'", String, 'quoted_atom'),
+            # Double-quoted terms
+            (r'"', String, 'double_quoted_term'),
         ],
 
         'quoted_atom': [
@@ -240,6 +244,14 @@ class LogtalkLexer(RegexLexer):
             (r"'", String, '#pop'),
             (r'\\([\\abfnrtv"\']|(x[a-fA-F0-9]+|[0-7]+)\\)', String.Escape),
             (r"[^\\'\n]+", String),
+            (r'\\', String),
+        ],
+
+        'double_quoted_term': [
+            (r'""', String),
+            (r'"', String, '#pop'),
+            (r'\\([\\abfnrtv"\']|(x[a-fA-F0-9]+|[0-7]+)\\)', String.Escape),
+            (r'[^\\"\n]+', String),
             (r'\\', String),
         ],
 
@@ -276,8 +288,8 @@ class LogtalkLexer(RegexLexer):
             # Atoms
             (r"[a-z][a-zA-Z0-9_]*", Text),
             (r"'", String, 'quoted_atom'),
-            # Strings
-            (r'"(\\\\|\\[^\\]|[^"\\])*"', String),
+            # Double-quoted terms
+            (r'"', String, 'double_quoted_term'),
             # End of entity-opening directive
             (r'([)]\.)', Text, 'root'),
             # Scope operator

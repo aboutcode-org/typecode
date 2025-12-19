@@ -1,21 +1,20 @@
-# -*- coding: utf-8 -*-
 """
     pygments.lexers.textfmts
     ~~~~~~~~~~~~~~~~~~~~~~~~
 
     Lexers for various text formats.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
 import re
 
-from typecode._vendor.pygments.lexers import guess_lexer, get_lexer_by_name
-from typecode._vendor.pygments.lexer import RegexLexer, bygroups, default, include
-from typecode._vendor.pygments.token import Text, Comment, Operator, Keyword, Name, String, \
+from src.typecode._vendor.pygments.lexers import guess_lexer, get_lexer_by_name
+from src.typecode._vendor.pygments.lexer import RegexLexer, bygroups, default, include
+from src.typecode._vendor.pygments.token import Text, Comment, Operator, Keyword, Name, String, \
     Number, Generic, Literal, Punctuation
-from typecode._vendor.pygments.util import ClassNotFound
+from src.typecode._vendor.pygments.util import ClassNotFound
 
 __all__ = ['IrcLogsLexer', 'TodotxtLexer', 'HttpLexer', 'GettextLexer',
            'NotmuchLexer', 'KernelLogLexer']
@@ -30,6 +29,8 @@ class IrcLogsLexer(RegexLexer):
     aliases = ['irc']
     filenames = ['*.weechatlog']
     mimetypes = ['text/x-irclog']
+    url = 'https://en.wikipedia.org/wiki/Internet_Relay_Chat'
+    version_added = ''
 
     flags = re.VERBOSE | re.MULTILINE
     timestamp = r"""
@@ -87,13 +88,13 @@ class IrcLogsLexer(RegexLexer):
 class GettextLexer(RegexLexer):
     """
     Lexer for Gettext catalog files.
-
-    .. versionadded:: 0.9
     """
     name = 'Gettext Catalog'
     aliases = ['pot', 'po']
     filenames = ['*.pot', '*.po']
     mimetypes = ['application/x-gettext', 'text/x-gettext', 'text/gettext']
+    url = 'https://www.gnu.org/software/gettext'
+    version_added = '0.9'
 
     tokens = {
         'root': [
@@ -115,12 +116,12 @@ class GettextLexer(RegexLexer):
 class HttpLexer(RegexLexer):
     """
     Lexer for HTTP sessions.
-
-    .. versionadded:: 1.5
     """
 
     name = 'HTTP'
     aliases = ['http']
+    url = 'https://httpwg.org/specs'
+    version_added = '1.5'
 
     flags = re.DOTALL
 
@@ -152,7 +153,7 @@ class HttpLexer(RegexLexer):
         content = match.group()
         offset = match.start()
         if content_type:
-            from typecode._vendor.pygments.lexers import get_lexer_for_mimetype
+            from src.typecode._vendor.pygments.lexers import get_lexer_for_mimetype
             possible_lexer_mimetypes = [content_type]
             if '+' in content_type:
                 # application/calendar+xml can be treated as application/xml
@@ -174,7 +175,7 @@ class HttpLexer(RegexLexer):
 
     tokens = {
         'root': [
-            (r'(GET|POST|PUT|DELETE|HEAD|OPTIONS|TRACE|PATCH)( +)([^ ]+)( +)'
+            (r'([a-zA-Z][-_a-zA-Z]+)( +)([^ ]+)( +)'
              r'(HTTP)(/)(1\.[01]|2(?:\.0)?|3)(\r?\n|\Z)',
              bygroups(Name.Function, Text, Name.Namespace, Text,
                       Keyword.Reserved, Operator, Number, Text),
@@ -185,7 +186,7 @@ class HttpLexer(RegexLexer):
              'headers'),
         ],
         'headers': [
-            (r'([^\s:]+)( *)(:)( *)([^\r\n]+)(\r?\n|\Z)', header_callback),
+            (r'([^\s:]+)( *)(:)( *)([^\r\n]*)(\r?\n|\Z)', header_callback),
             (r'([\t ]+)([^\r\n]+)(\r?\n|\Z)', continuous_header_callback),
             (r'\r?\n', Text, 'content')
         ],
@@ -195,19 +196,24 @@ class HttpLexer(RegexLexer):
     }
 
     def analyse_text(text):
-        return text.startswith(('GET /', 'POST /', 'PUT /', 'DELETE /', 'HEAD /',
-                                'OPTIONS /', 'TRACE /', 'PATCH /'))
+        return any (
+            re.search(pattern, text) is not None
+            for pattern in (
+                r'^([a-zA-Z][-_a-zA-Z]+)( +)([^ ]+)( +)(HTTP)(/)(1\.[01]|2(?:\.0)?|3)(\r?\n|\Z)',
+                r'^(HTTP)(/)(1\.[01]|2(?:\.0)?|3)( +)(\d{3})(?:( +)([^\r\n]*))?(\r?\n|\Z)',
+            )
+        )
 
 
 class TodotxtLexer(RegexLexer):
     """
-    Lexer for `Todo.txt <http://todotxt.com/>`_ todo list format.
-
-    .. versionadded:: 2.0
+    Lexer for Todo.txt todo list format.
     """
 
     name = 'Todotxt'
+    url = 'http://todotxt.com/'
     aliases = ['todotxt']
+    version_added = '2.0'
     # *.todotxt is not a standard extension for Todo.txt files; including it
     # makes testing easier, and also makes autodetecting file type easier.
     filenames = ['todo.txt', '*.todotxt']
@@ -301,9 +307,7 @@ class TodotxtLexer(RegexLexer):
 
 class NotmuchLexer(RegexLexer):
     """
-    For `Notmuch <https://notmuchmail.org/>`_ email text format.
-
-    .. versionadded:: 2.5
+    For Notmuch email text format.
 
     Additional options accepted:
 
@@ -313,7 +317,9 @@ class NotmuchLexer(RegexLexer):
     """
 
     name = 'Notmuch'
+    url = 'https://notmuchmail.org/'
     aliases = ['notmuch']
+    version_added = '2.5'
 
     def _highlight_code(self, match):
         code = match.group(1)
@@ -384,12 +390,12 @@ class NotmuchLexer(RegexLexer):
 class KernelLogLexer(RegexLexer):
     """
     For Linux Kernel log ("dmesg") output.
-
-    .. versionadded:: 2.6
     """
     name = 'Kernel log'
     aliases = ['kmsg', 'dmesg']
     filenames = ['*.kmsg', '*.dmesg']
+    url = 'https://fr.wikipedia.org/wiki/Dmesg'
+    version_added = '2.6'
 
     tokens = {
         'root': [

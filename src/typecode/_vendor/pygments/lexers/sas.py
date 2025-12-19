@@ -1,17 +1,16 @@
-# -*- coding: utf-8 -*-
 """
     pygments.lexers.sas
     ~~~~~~~~~~~~~~~~~~~
 
     Lexer for SAS.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
 import re
-from typecode._vendor.pygments.lexer import RegexLexer, include, words
-from typecode._vendor.pygments.token import Comment, Keyword, Name, Number, String, Text, \
+from src.typecode._vendor.pygments.lexer import RegexLexer, include, words
+from src.typecode._vendor.pygments.token import Comment, Keyword, Name, Number, String, Text, \
     Other, Generic
 
 __all__ = ['SASLexer']
@@ -19,9 +18,7 @@ __all__ = ['SASLexer']
 
 class SASLexer(RegexLexer):
     """
-    For `SAS <http://www.sas.com/>`_ files.
-
-    .. versionadded:: 2.2
+    For SAS files.
     """
     # Syntax from syntax/sas.vim by James Kidd <james.kidd@covance.com>
 
@@ -29,6 +26,8 @@ class SASLexer(RegexLexer):
     aliases   = ['sas']
     filenames = ['*.SAS', '*.sas']
     mimetypes = ['text/x-sas', 'text/sas', 'application/x-sas']
+    url = 'https://en.wikipedia.org/wiki/SAS_(software)'
+    version_added = '2.2'
     flags     = re.IGNORECASE | re.MULTILINE
 
     builtins_macros = (

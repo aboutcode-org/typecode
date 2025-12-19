@@ -1,19 +1,18 @@
-# -*- coding: utf-8 -*-
 """
     pygments.lexers.haxe
     ~~~~~~~~~~~~~~~~~~~~
 
     Lexers for Haxe and related stuff.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
 import re
 
-from typecode._vendor.pygments.lexer import ExtendedRegexLexer, RegexLexer, include, bygroups, \
+from src.typecode._vendor.pygments.lexer import ExtendedRegexLexer, RegexLexer, include, bygroups, \
     default
-from typecode._vendor.pygments.token import Text, Comment, Operator, Keyword, Name, String, \
+from src.typecode._vendor.pygments.token import Text, Comment, Operator, Keyword, Name, String, \
     Number, Punctuation, Generic, Whitespace
 
 __all__ = ['HaxeLexer', 'HxmlLexer']
@@ -21,15 +20,15 @@ __all__ = ['HaxeLexer', 'HxmlLexer']
 
 class HaxeLexer(ExtendedRegexLexer):
     """
-    For Haxe source code (http://haxe.org/).
-
-    .. versionadded:: 1.3
+    For Haxe source code.
     """
 
     name = 'Haxe'
-    aliases = ['hx', 'haxe', 'hxsl']
+    url = 'http://haxe.org/'
+    aliases = ['haxe', 'hxsl', 'hx']
     filenames = ['*.hx', '*.hxsl']
     mimetypes = ['text/haxe', 'text/x-haxe', 'text/x-hx']
+    version_added = '1.3'
 
     # keywords extracted from lexer.mll in the haxe compiler source
     keyword = (r'(?:function|class|static|var|if|else|while|do|for|'
@@ -104,7 +103,7 @@ class HaxeLexer(ExtendedRegexLexer):
 
         # space/tab/comment/preproc
         'spaces': [
-            (r'\s+', Text),
+            (r'\s+', Whitespace),
             (r'//[^\n\r]*', Comment.Single),
             (r'/\*.*?\*/', Comment.Multiline),
             (r'(#)(if|elseif|else|end|error)\b', preproc_callback),
@@ -164,14 +163,14 @@ class HaxeLexer(ExtendedRegexLexer):
         ],
 
         'preproc-error': [
-            (r'\s+', Comment.Preproc),
+            (r'\s+', Whitespace),
             (r"'", String.Single, ('#pop', 'string-single')),
             (r'"', String.Double, ('#pop', 'string-double')),
             default('#pop'),
         ],
 
         'preproc-expr': [
-            (r'\s+', Comment.Preproc),
+            (r'\s+', Whitespace),
             (r'\!', Comment.Preproc),
             (r'\(', Comment.Preproc, ('#pop', 'preproc-parenthesis')),
 
@@ -194,20 +193,20 @@ class HaxeLexer(ExtendedRegexLexer):
         ],
 
         'preproc-parenthesis': [
-            (r'\s+', Comment.Preproc),
+            (r'\s+', Whitespace),
             (r'\)', Comment.Preproc, '#pop'),
             default('preproc-expr-in-parenthesis'),
         ],
 
         'preproc-expr-chain': [
-            (r'\s+', Comment.Preproc),
+            (r'\s+', Whitespace),
             (binop, Comment.Preproc, ('#pop', 'preproc-expr-in-parenthesis')),
             default('#pop'),
         ],
 
         # same as 'preproc-expr' but able to chain 'preproc-expr-chain'
         'preproc-expr-in-parenthesis': [
-            (r'\s+', Comment.Preproc),
+            (r'\s+', Whitespace),
             (r'\!', Comment.Preproc),
             (r'\(', Comment.Preproc,
              ('#pop', 'preproc-expr-chain', 'preproc-parenthesis')),
@@ -897,17 +896,17 @@ class HaxeLexer(ExtendedRegexLexer):
 
 class HxmlLexer(RegexLexer):
     """
-    Lexer for `haXe build <http://haxe.org/doc/compiler>`_ files.
-
-    .. versionadded:: 1.6
+    Lexer for haXe build files.
     """
     name = 'Hxml'
+    url = 'https://haxe.org/manual/compiler-usage-hxml.html'
     aliases = ['haxeml', 'hxml']
     filenames = ['*.hxml']
+    version_added = '1.6'
 
     tokens = {
         'root': [
-            # Seperator
+            # Separator
             (r'(--)(next)', bygroups(Punctuation, Generic.Heading)),
             # Compiler switches with one dash
             (r'(-)(prompt|debug|v)', bygroups(Punctuation, Keyword.Keyword)),
@@ -920,7 +919,7 @@ class HxmlLexer(RegexLexer):
              bygroups(Punctuation, Keyword, Whitespace, String)),
             # Options that take only numerical arguments
             (r'(-)(swf-version)( +)(\d+)',
-             bygroups(Punctuation, Keyword, Number.Integer)),
+             bygroups(Punctuation, Keyword, Whitespace, Number.Integer)),
             # An Option that defines the size, the fps and the background
             # color of an flash movie
             (r'(-)(swf-header)( +)(\d+)(:)(\d+)(:)(\d+)(:)([A-Fa-f0-9]{6})',

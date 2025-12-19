@@ -1,16 +1,15 @@
-# -*- coding: utf-8 -*-
 """
     pygments.lexers.verification
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     Lexer for Intermediate Verification Languages (IVLs).
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
-from typecode._vendor.pygments.lexer import RegexLexer, include, words
-from typecode._vendor.pygments.token import Comment, Operator, Keyword, Name, Number, \
+from src.typecode._vendor.pygments.lexer import RegexLexer, include, words
+from src.typecode._vendor.pygments.token import Comment, Operator, Keyword, Name, Number, \
     Punctuation, Text, Generic
 
 __all__ = ['BoogieLexer', 'SilverLexer']
@@ -18,13 +17,13 @@ __all__ = ['BoogieLexer', 'SilverLexer']
 
 class BoogieLexer(RegexLexer):
     """
-    For `Boogie <https://boogie.codeplex.com/>`_ source code.
-
-    .. versionadded:: 2.1
+    For Boogie source code.
     """
     name = 'Boogie'
+    url = 'https://boogie-docs.readthedocs.io/en/latest/'
     aliases = ['boogie']
     filenames = ['*.bpl']
+    version_added = '2.1'
 
     tokens = {
         'root': [
@@ -65,13 +64,13 @@ class BoogieLexer(RegexLexer):
 
 class SilverLexer(RegexLexer):
     """
-    For `Silver <https://bitbucket.org/viperproject/silver>`_ source code.
-
-    .. versionadded:: 2.2
+    For Silver source code.
     """
     name = 'Silver'
     aliases = ['silver']
     filenames = ['*.sil', '*.vpr']
+    url = 'https://github.com/viperproject/silver'
+    version_added = '2.2'
 
     tokens = {
         'root': [

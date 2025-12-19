@@ -1,23 +1,26 @@
-# -*- coding: utf-8 -*-
 """
     pygments.styles.igor
     ~~~~~~~~~~~~~~~~~~~~
 
     Igor Pro default style.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
-from typecode._vendor.pygments.style import Style
-from typecode._vendor.pygments.token import Keyword, Name, Comment, String
+from src.typecode._vendor.pygments.style import Style
+from src.typecode._vendor.pygments.token import Keyword, Name, Comment, String
+
+
+__all__ = ['IgorStyle']
 
 
 class IgorStyle(Style):
     """
     Pygments version of the official colors for Igor Pro procedures.
     """
-    default_style = ""
+
+    name = 'igor'
 
     styles = {
         Comment:                'italic #FF0000',

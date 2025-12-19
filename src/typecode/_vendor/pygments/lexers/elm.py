@@ -1,31 +1,31 @@
-# -*- coding: utf-8 -*-
 """
     pygments.lexers.elm
     ~~~~~~~~~~~~~~~~~~~
 
     Lexer for the Elm programming language.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
-from typecode._vendor.pygments.lexer import RegexLexer, words, include
-from typecode._vendor.pygments.token import Comment, Keyword, Name, Number, Punctuation, String, Text
+from src.typecode._vendor.pygments.lexer import RegexLexer, words, include, bygroups
+from src.typecode._vendor.pygments.token import Comment, Keyword, Name, Number, Punctuation, \
+    String, Whitespace
 
 __all__ = ['ElmLexer']
 
 
 class ElmLexer(RegexLexer):
     """
-    For `Elm <http://elm-lang.org/>`_ source code.
-
-    .. versionadded:: 2.1
+    For Elm source code.
     """
 
     name = 'Elm'
+    url = 'https://elm-lang.org/'
     aliases = ['elm']
     filenames = ['*.elm']
     mimetypes = ['text/x-elm']
+    version_added = '2.1'
 
     validName = r'[a-z_][a-zA-Z0-9_\']*'
 
@@ -50,16 +50,18 @@ class ElmLexer(RegexLexer):
             (r'--.*', Comment.Single),
 
             # Whitespace
-            (r'\s+', Text),
+            (r'\s+', Whitespace),
 
             # Strings
             (r'"', String, 'doublequote'),
 
             # Modules
-            (r'^\s*module\s*', Keyword.Namespace, 'imports'),
+            (r'^(\s*)(module)(\s*)', bygroups(Whitespace, Keyword.Namespace,
+                Whitespace), 'imports'),
 
             # Imports
-            (r'^\s*import\s*', Keyword.Namespace, 'imports'),
+            (r'^(\s*)(import)(\s*)', bygroups(Whitespace, Keyword.Namespace,
+                Whitespace), 'imports'),
 
             # Shaders
             (r'\[glsl\|.*', Name.Entity, 'shader'),
@@ -116,6 +118,6 @@ class ElmLexer(RegexLexer):
         'shader': [
             (r'\|(?!\])', Name.Entity),
             (r'\|\]', Name.Entity, '#pop'),
-            (r'.*\n', Name.Entity),
+            (r'(.*)(\n)', bygroups(Name.Entity, Whitespace)),
         ],
     }

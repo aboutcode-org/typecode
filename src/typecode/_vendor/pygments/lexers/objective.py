@@ -1,22 +1,21 @@
-# -*- coding: utf-8 -*-
 """
     pygments.lexers.objective
     ~~~~~~~~~~~~~~~~~~~~~~~~~
 
     Lexers for Objective-C family languages.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
 import re
 
-from typecode._vendor.pygments.lexer import RegexLexer, include, bygroups, using, this, words, \
+from src.typecode._vendor.pygments.lexer import RegexLexer, include, bygroups, using, this, words, \
     inherit, default
-from typecode._vendor.pygments.token import Text, Keyword, Name, String, Operator, \
-    Number, Punctuation, Literal, Comment
+from src.typecode._vendor.pygments.token import Text, Keyword, Name, String, Operator, \
+    Number, Punctuation, Literal, Comment, Whitespace
 
-from typecode._vendor.pygments.lexers.c_cpp import CLexer, CppLexer
+from src.typecode._vendor.pygments.lexers.c_cpp import CLexer, CppLexer
 
 __all__ = ['ObjectiveCLexer', 'ObjectiveCppLexer', 'LogosLexer', 'SwiftLexer']
 
@@ -176,12 +175,12 @@ def objective(baselexer):
                 return 0.8
             return 0
 
-        def get_tokens_unprocessed(self, text):
-            from typecode._vendor.pygments.lexers._cocoa_builtins import COCOA_INTERFACES, \
+        def get_tokens_unprocessed(self, text, stack=('root',)):
+            from src.typecode._vendor.pygments.lexers._cocoa_builtins import COCOA_INTERFACES, \
                 COCOA_PROTOCOLS, COCOA_PRIMITIVES
 
             for index, token, value in \
-                    baselexer.get_tokens_unprocessed(self, text):
+                    baselexer.get_tokens_unprocessed(self, text, stack):
                 if token is Name or token is Name.Class:
                     if value in COCOA_INTERFACES or value in COCOA_PROTOCOLS \
                        or value in COCOA_PRIMITIVES:
@@ -198,9 +197,11 @@ class ObjectiveCLexer(objective(CLexer)):
     """
 
     name = 'Objective-C'
+    url = 'https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ProgrammingWithObjectiveC/Introduction/Introduction.html'
     aliases = ['objective-c', 'objectivec', 'obj-c', 'objc']
     filenames = ['*.m', '*.h']
     mimetypes = ['text/x-objective-c']
+    version_added = ''
     priority = 0.05    # Lower than C
 
 
@@ -213,20 +214,20 @@ class ObjectiveCppLexer(objective(CppLexer)):
     aliases = ['objective-c++', 'objectivec++', 'obj-c++', 'objc++']
     filenames = ['*.mm', '*.hh']
     mimetypes = ['text/x-objective-c++']
+    version_added = ''
     priority = 0.05    # Lower than C++
 
 
 class LogosLexer(ObjectiveCppLexer):
     """
     For Logos + Objective-C source code with preprocessor directives.
-
-    .. versionadded:: 1.6
     """
 
     name = 'Logos'
     aliases = ['logos']
     filenames = ['*.x', '*.xi', '*.xm', '*.xmi']
     mimetypes = ['text/x-logos']
+    version_added = '1.6'
     priority = 0.25
 
     tokens = {
@@ -282,20 +283,20 @@ class LogosLexer(ObjectiveCppLexer):
 
 class SwiftLexer(RegexLexer):
     """
-    For `Swift <https://developer.apple.com/swift/>`_ source.
-
-    .. versionadded:: 2.0
+    For Swift source.
     """
     name = 'Swift'
+    url = 'https://www.swift.org/'
     filenames = ['*.swift']
     aliases = ['swift']
     mimetypes = ['text/x-swift']
+    version_added = '2.0'
 
     tokens = {
         'root': [
             # Whitespace and Comments
             (r'\n', Text),
-            (r'\s+', Text),
+            (r'\s+', Whitespace),
             (r'//', Comment.Single, 'comment-single'),
             (r'/\*', Comment.Multiline, 'comment-multi'),
             (r'#(if|elseif|else|endif|available)\b', Comment.Preproc, 'preproc'),
@@ -402,6 +403,7 @@ class SwiftLexer(RegexLexer):
              r'\.[0-9_]*|[eE][+\-]?[0-9_]+)', Number.Float),
             (r'[0-9][0-9_]*', Number.Integer),
             # String Literal
+            (r'"""', String, 'string-multi'),
             (r'"', String, 'string'),
 
             # Operators and Punctuation
@@ -413,7 +415,7 @@ class SwiftLexer(RegexLexer):
         ],
         'keywords': [
             (words((
-                'as', 'break', 'case', 'catch', 'continue', 'default', 'defer',
+                'as', 'async', 'await', 'break', 'case', 'catch', 'continue', 'default', 'defer',
                 'do', 'else', 'fallthrough', 'for', 'guard', 'if', 'in', 'is',
                 'repeat', 'return', '#selector', 'switch', 'throw', 'try',
                 'where', 'while'), suffix=r'\b'),
@@ -435,14 +437,14 @@ class SwiftLexer(RegexLexer):
              r'|#(?:file|line|column|function))\b', Keyword.Constant),
             (r'import\b', Keyword.Declaration, 'module'),
             (r'(class|enum|extension|struct|protocol)(\s+)([a-zA-Z_]\w*)',
-             bygroups(Keyword.Declaration, Text, Name.Class)),
+             bygroups(Keyword.Declaration, Whitespace, Name.Class)),
             (r'(func)(\s+)([a-zA-Z_]\w*)',
-             bygroups(Keyword.Declaration, Text, Name.Function)),
+             bygroups(Keyword.Declaration, Whitespace, Name.Function)),
             (r'(var|let)(\s+)([a-zA-Z_]\w*)', bygroups(Keyword.Declaration,
-             Text, Name.Variable)),
+             Whitespace, Name.Variable)),
             (words((
-                'class', 'deinit', 'enum', 'extension', 'func', 'import', 'init',
-                'internal', 'let', 'operator', 'private', 'protocol', 'public',
+                'actor', 'associatedtype', 'class', 'deinit', 'enum', 'extension', 'func', 'import',
+                'init', 'internal', 'let', 'operator', 'private', 'protocol', 'public',
                 'static', 'struct', 'subscript', 'typealias', 'var'), suffix=r'\b'),
              Keyword.Declaration)
         ],
@@ -453,31 +455,38 @@ class SwiftLexer(RegexLexer):
 
         # Nested
         'comment-single': [
-            (r'\n', Text, '#pop'),
+            (r'\n', Whitespace, '#pop'),
             include('comment'),
-            (r'[^\n]', Comment.Single)
+            (r'[^\n]+', Comment.Single)
         ],
         'comment-multi': [
             include('comment'),
-            (r'[^*/]', Comment.Multiline),
+            (r'[^*/]+', Comment.Multiline),
             (r'/\*', Comment.Multiline, '#push'),
             (r'\*/', Comment.Multiline, '#pop'),
-            (r'[*/]', Comment.Multiline)
+            (r'[*/]+', Comment.Multiline)
         ],
         'module': [
-            (r'\n', Text, '#pop'),
+            (r'\n', Whitespace, '#pop'),
             (r'[a-zA-Z_]\w*', Name.Class),
             include('root')
         ],
         'preproc': [
-            (r'\n', Text, '#pop'),
+            (r'\n', Whitespace, '#pop'),
             include('keywords'),
             (r'[A-Za-z]\w*', Comment.Preproc),
             include('root')
         ],
         'string': [
-            (r'\\\(', String.Interpol, 'string-intp'),
             (r'"', String, '#pop'),
+            include("string-common"),
+        ],
+        'string-multi': [
+            (r'"""', String, '#pop'),
+            include("string-common"),
+        ],
+        'string-common': [
+            (r'\\\(', String.Interpol, 'string-intp'),
             (r"""\\['"\\nrt]|\\x[0-9a-fA-F]{2}|\\[0-7]{1,3}"""
              r"""|\\u[0-9a-fA-F]{4}|\\U[0-9a-fA-F]{8}""", String.Escape),
             (r'[^\\"]+', String),
@@ -491,7 +500,7 @@ class SwiftLexer(RegexLexer):
     }
 
     def get_tokens_unprocessed(self, text):
-        from typecode._vendor.pygments.lexers._cocoa_builtins import COCOA_INTERFACES, \
+        from src.typecode._vendor.pygments.lexers._cocoa_builtins import COCOA_INTERFACES, \
             COCOA_PROTOCOLS, COCOA_PRIMITIVES
 
         for index, token, value in \

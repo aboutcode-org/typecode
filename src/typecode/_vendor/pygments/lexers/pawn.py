@@ -1,18 +1,17 @@
-# -*- coding: utf-8 -*-
 """
     pygments.lexers.pawn
     ~~~~~~~~~~~~~~~~~~~~
 
     Lexers for the Pawn languages.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
-from typecode._vendor.pygments.lexer import RegexLexer
-from typecode._vendor.pygments.token import Text, Comment, Operator, Keyword, Name, String, \
-    Number, Punctuation, Error
-from typecode._vendor.pygments.util import get_bool_opt
+from src.typecode._vendor.pygments.lexer import RegexLexer
+from src.typecode._vendor.pygments.token import Text, Comment, Operator, Keyword, Name, String, \
+    Number, Punctuation
+from src.typecode._vendor.pygments.util import get_bool_opt
 
 __all__ = ['SourcePawnLexer', 'PawnLexer']
 
@@ -20,13 +19,13 @@ __all__ = ['SourcePawnLexer', 'PawnLexer']
 class SourcePawnLexer(RegexLexer):
     """
     For SourcePawn source code with preprocessor directives.
-
-    .. versionadded:: 1.6
     """
     name = 'SourcePawn'
     aliases = ['sp']
     filenames = ['*.sp']
     mimetypes = ['text/x-sourcepawn']
+    url = 'https://github.com/alliedmodders/sourcepawn'
+    version_added = '1.6'
 
     #: optional Comment or Whitespace
     _ws = r'(?:\s|//.*?\n|/\*.*?\*/)+'
@@ -54,7 +53,6 @@ class SourcePawnLexer(RegexLexer):
             (r'0x[0-9a-fA-F]+[LlUu]*', Number.Hex),
             (r'0[0-7]+[LlUu]*', Number.Oct),
             (r'\d+[LlUu]*', Number.Integer),
-            (r'\*/', Error),
             (r'[~!%^&*+=|?:<>/-]', Operator),
             (r'[()\[\],.;]', Punctuation),
             (r'(case|const|continue|native|'
@@ -112,7 +110,7 @@ class SourcePawnLexer(RegexLexer):
 
         self._functions = set()
         if self.smhighlighting:
-            from typecode._vendor.pygments.lexers._sourcemod_builtins import FUNCTIONS
+            from src.typecode._vendor.pygments.lexers._sourcemod_builtins import FUNCTIONS
             self._functions.update(FUNCTIONS)
         RegexLexer.__init__(self, **options)
 
@@ -131,14 +129,14 @@ class SourcePawnLexer(RegexLexer):
 class PawnLexer(RegexLexer):
     """
     For Pawn source code.
-
-    .. versionadded:: 2.0
     """
 
     name = 'Pawn'
     aliases = ['pawn']
     filenames = ['*.p', '*.pwn', '*.inc']
     mimetypes = ['text/x-pawn']
+    url = 'https://www.compuphase.com/pawn/pawn.htm'
+    version_added = '2.0'
 
     #: optional Comment or Whitespace
     _ws = r'(?:\s|//.*?\n|/[*][\w\W]*?[*]/)+'
@@ -166,7 +164,6 @@ class PawnLexer(RegexLexer):
             (r'0x[0-9a-fA-F]+[LlUu]*', Number.Hex),
             (r'0[0-7]+[LlUu]*', Number.Oct),
             (r'\d+[LlUu]*', Number.Integer),
-            (r'\*/', Error),
             (r'[~!%^&*+=|?:<>/-]', Operator),
             (r'[()\[\],.;]', Punctuation),
             (r'(switch|case|default|const|new|static|char|continue|break|'

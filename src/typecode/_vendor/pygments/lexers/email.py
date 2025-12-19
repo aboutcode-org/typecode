@@ -1,18 +1,17 @@
-# -*- coding: utf-8 -*-
 """
     pygments.lexers.email
     ~~~~~~~~~~~~~~~~~~~~~
 
     Lexer for the raw E-mail.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
-from typecode._vendor.pygments.lexer import RegexLexer, DelegatingLexer, bygroups
-from typecode._vendor.pygments.lexers.mime import MIMELexer
-from typecode._vendor.pygments.token import Text, Keyword, Name, String, Number, Comment
-from typecode._vendor.pygments.util import get_bool_opt
+from src.typecode._vendor.pygments.lexer import RegexLexer, DelegatingLexer, bygroups
+from src.typecode._vendor.pygments.lexers.mime import MIMELexer
+from src.typecode._vendor.pygments.token import Text, Keyword, Name, String, Number, Comment
+from src.typecode._vendor.pygments.util import get_bool_opt
 
 __all__ = ["EmailLexer"]
 
@@ -64,11 +63,9 @@ class EmailHeaderLexer(RegexLexer):
             (r"\b(\w[\w\.-]*\.[\w\.-]*\w[a-zA-Z]+)\b", Name.Function),
 
             # IPv4
-            (
-                r"(?<=\b)(?:(?:25[0-5]|2[0-4][0-9]|1?[0-9][0-9]?)\.){3}(?:25[0"
-                r"-5]|2[0-4][0-9]|1?[0-9][0-9]?)(?=\b)",
-                Number.Integer,
-            ),
+            (r"(?<=\b)(?:(?:25[0-5]|2[0-4][0-9]|1?[0-9][0-9]?)\.){3}(?:25[0"
+             r"-5]|2[0-4][0-9]|1?[0-9][0-9]?)(?=\b)",
+             Number.Integer),
 
             # IPv6
             (r"(?<=\b)([0-9a-fA-F]{1,4}:){1,7}:(?!\b)", Number.Hex),
@@ -84,43 +81,27 @@ class EmailHeaderLexer(RegexLexer):
              Number.Hex),
             (r"(?<=\b)([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}(?=\b)",
              Number.Hex),
-            (
-                r"(?<=\b)::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}"
-                r"[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}"
-                r"[0-9])(?=\b)",
-                Number.Hex,
-            ),
-            (
-                r"(?<=\b)([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-"
-                r"9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-"
-                r"9])(?=\b)",
-                Number.Hex,
-            ),
+            (r"(?<=\b)::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}"
+             r"[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}"
+             r"[0-9])(?=\b)",
+             Number.Hex),
+            (r"(?<=\b)([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9])"
+             r"{0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])(?=\b)",
+             Number.Hex),
 
             # Date time
-            (
-                r"(?:(Sun|Mon|Tue|Wed|Thu|Fri|Sat),\s+)?(0[1-9]|[1-2]?[0-9]|3["
-                r"01])\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+("
-                r"19[0-9]{2}|[2-9][0-9]{3})\s+(2[0-3]|[0-1][0-9]):([0-5][0-9])"
-                r"(?::(60|[0-5][0-9]))?(?:\.\d{1,5})?\s+([-\+][0-9]{2}[0-5][0-"
-                r"9]|\(?(?:UTC?|GMT|(?:E|C|M|P)(?:ST|ET|DT)|[A-IK-Z])\)?)",
-                Name.Decorator,
-            ),
+            (r"(?:(Sun|Mon|Tue|Wed|Thu|Fri|Sat),\s+)?(0[1-9]|[1-2]?[0-9]|3["
+             r"01])\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+("
+             r"19[0-9]{2}|[2-9][0-9]{3})\s+(2[0-3]|[0-1][0-9]):([0-5][0-9])"
+             r"(?::(60|[0-5][0-9]))?(?:\.\d{1,5})?\s+([-\+][0-9]{2}[0-5][0-"
+             r"9]|\(?(?:UTC?|GMT|(?:E|C|M|P)(?:ST|ET|DT)|[A-IK-Z])\)?)",
+             Name.Decorator),
 
             # RFC-2047 encoded string
-            (
-                r"(=\?)([\w-]+)(\?)([BbQq])(\?)([\[\w!\"#$%&\'()*+,-./:;<=>@[\\"
-                r"\]^_`{|}~]+)(\?=)",
-                bygroups(
-                    String.Affix,
-                    Name.Constant,
-                    String.Affix,
-                    Keyword.Constant,
-                    String.Affix,
-                    Number.Hex,
-                    String.Affix
-                )
-            ),
+            (r"(=\?)([\w-]+)(\?)([BbQq])(\?)([\[\w!\"#$%&\'()*+,-./:;<=>@[\\"
+             r"\]^_`{|}~]+)(\?=)",
+             bygroups(String.Affix, Name.Constant, String.Affix, Keyword.Constant,
+                      String.Affix, Number.Hex, String.Affix)),
 
             # others
             (r'[\s]+', Text.Whitespace),
@@ -138,14 +119,14 @@ class EmailLexer(DelegatingLexer):
     `highlight-X-header`
         Highlight the fields of ``X-`` user-defined email header. (default:
         ``False``).
-
-    .. versionadded:: 2.5
     """
 
     name = "E-mail"
     aliases = ["email", "eml"]
     filenames = ["*.eml"]
     mimetypes = ["message/rfc822"]
+    url = "https://en.wikipedia.org/wiki/Email#Message_format"
+    version_added = '2.5'
 
     def __init__(self, **options):
         super().__init__(EmailHeaderLexer, MIMELexer, Comment, **options)

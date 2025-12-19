@@ -1,18 +1,17 @@
-# -*- coding: utf-8 -*-
 """
     pygments.lexers.rebol
     ~~~~~~~~~~~~~~~~~~~~~
 
     Lexers for the REBOL and related languages.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
 import re
 
-from typecode._vendor.pygments.lexer import RegexLexer, bygroups
-from typecode._vendor.pygments.token import Text, Comment, Operator, Keyword, Name, String, \
+from src.typecode._vendor.pygments.lexer import RegexLexer, bygroups
+from src.typecode._vendor.pygments.token import Text, Comment, Operator, Keyword, Name, String, \
     Number, Generic, Whitespace
 
 __all__ = ['RebolLexer', 'RedLexer']
@@ -20,14 +19,14 @@ __all__ = ['RebolLexer', 'RedLexer']
 
 class RebolLexer(RegexLexer):
     """
-    A `REBOL <http://www.rebol.com/>`_ lexer.
-
-    .. versionadded:: 1.1
+    A REBOL lexer.
     """
     name = 'REBOL'
     aliases = ['rebol']
     filenames = ['*.r', '*.r3', '*.reb']
     mimetypes = ['text/x-rebol']
+    url = 'http://www.rebol.com'
+    version_added = '1.1'
 
     flags = re.IGNORECASE | re.MULTILINE
 
@@ -120,11 +119,6 @@ class RebolLexer(RegexLexer):
 
     tokens = {
         'root': [
-            (r'[^R]+', Comment),
-            (r'REBOL\s+\[', Generic.Strong, 'script'),
-            (r'R', Comment)
-        ],
-        'script': [
             (r'\s+', Text),
             (r'#"', String.Char, 'char'),
             (r'#\{[0-9a-f]*\}', Number.Hex),
@@ -246,14 +240,14 @@ class RebolLexer(RegexLexer):
 
 class RedLexer(RegexLexer):
     """
-    A `Red-language <http://www.red-lang.org/>`_ lexer.
-
-    .. versionadded:: 2.0
+    A Red-language lexer.
     """
     name = 'Red'
     aliases = ['red', 'red/system']
     filenames = ['*.red', '*.reds']
     mimetypes = ['text/x-red', 'text/x-red-system']
+    url = 'https://www.red-lang.org'
+    version_added = '2.0'
 
     flags = re.IGNORECASE | re.MULTILINE
 
@@ -315,12 +309,6 @@ class RedLexer(RegexLexer):
 
     tokens = {
         'root': [
-            (r'[^R]+', Comment),
-            (r'Red/System\s+\[', Generic.Strong, 'script'),
-            (r'Red\s+\[', Generic.Strong, 'script'),
-            (r'R', Comment)
-        ],
-        'script': [
             (r'\s+', Text),
             (r'#"', String.Char, 'char'),
             (r'#\{[0-9a-f\s]*\}', Number.Hex),

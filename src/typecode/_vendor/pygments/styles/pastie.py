@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
     pygments.styles.pastie
     ~~~~~~~~~~~~~~~~~~~~~~
@@ -7,13 +6,16 @@
 
     .. _pastie: http://pastie.caboo.se/
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
-from typecode._vendor.pygments.style import Style
-from typecode._vendor.pygments.token import Keyword, Name, Comment, String, Error, \
+from src.typecode._vendor.pygments.style import Style
+from src.typecode._vendor.pygments.token import Keyword, Name, Comment, String, Error, \
      Number, Operator, Generic, Whitespace
+
+
+__all__ = ['PastieStyle']
 
 
 class PastieStyle(Style):
@@ -21,8 +23,8 @@ class PastieStyle(Style):
     Style similar to the pastie default style.
     """
 
-    default_style = ''
-
+    name = 'pastie'
+    
     styles = {
         Whitespace:             '#bbbbbb',
         Comment:                '#888888',
@@ -67,6 +69,7 @@ class PastieStyle(Style):
         Generic.Error:          '#aa0000',
         Generic.Emph:           'italic',
         Generic.Strong:         'bold',
+        Generic.EmphStrong:     'bold italic',
         Generic.Prompt:         '#555555',
         Generic.Output:         '#888888',
         Generic.Traceback:      '#aa0000',

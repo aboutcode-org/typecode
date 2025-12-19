@@ -1,11 +1,10 @@
-# -*- coding: utf-8 -*-
 """
     pygments.console
     ~~~~~~~~~~~~~~~~
 
     Format colored console output.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
@@ -28,12 +27,12 @@ light_colors = ["brightblack", "brightred", "brightgreen", "brightyellow", "brig
                 "brightmagenta", "brightcyan", "white"]
 
 x = 30
-for d, l in zip(dark_colors, light_colors):
-    codes[d] = esc + "%im" % x
-    codes[l] = esc + "%im" % (60 + x)
+for dark, light in zip(dark_colors, light_colors):
+    codes[dark] = esc + "%im" % x
+    codes[light] = esc + "%im" % (60 + x)
     x += 1
 
-del d, l, x
+del dark, light, x
 
 codes["white"] = codes["bold"]
 

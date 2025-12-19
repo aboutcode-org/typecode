@@ -1,18 +1,17 @@
-# -*- coding: utf-8 -*-
 """
     pygments.formatters.other
     ~~~~~~~~~~~~~~~~~~~~~~~~~
 
     Other formatters: NullFormatter, RawTokenFormatter.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
-from typecode._vendor.pygments.formatter import Formatter
-from typecode._vendor.pygments.util import get_choice_opt
-from typecode._vendor.pygments.token import Token
-from typecode._vendor.pygments.console import colorize
+from src.typecode._vendor.pygments.formatter import Formatter
+from src.typecode._vendor.pygments.util import get_choice_opt
+from src.typecode._vendor.pygments.token import Token
+from src.typecode._vendor.pygments.console import colorize
 
 __all__ = ['NullFormatter', 'RawTokenFormatter', 'TestcaseFormatter']
 
@@ -75,8 +74,7 @@ class RawTokenFormatter(Formatter):
             try:
                 colorize(self.error_color, '')
             except KeyError:
-                raise ValueError("Invalid color %r specified" %
-                                 self.error_color)
+                raise ValueError(f"Invalid color {self.error_color!r} specified")
 
     def format(self, tokensource, outfile):
         try:
@@ -88,34 +86,32 @@ class RawTokenFormatter(Formatter):
             import gzip
             outfile = gzip.GzipFile('', 'wb', 9, outfile)
 
-            def write(text):
-                outfile.write(text.encode())
-            flush = outfile.flush
+            write = outfile.write
+            flush = outfile.close
         elif self.compress == 'bz2':
             import bz2
             compressor = bz2.BZ2Compressor(9)
 
             def write(text):
-                outfile.write(compressor.compress(text.encode()))
+                outfile.write(compressor.compress(text))
 
             def flush():
                 outfile.write(compressor.flush())
                 outfile.flush()
         else:
-            def write(text):
-                outfile.write(text.encode())
+            write = outfile.write
             flush = outfile.flush
 
         if self.error_color:
             for ttype, value in tokensource:
-                line = "%s\t%r\n" % (ttype, value)
+                line = b"%r\t%r\n" % (ttype, value)
                 if ttype is Token.Error:
                     write(colorize(self.error_color, line))
                 else:
                     write(line)
         else:
             for ttype, value in tokensource:
-                write("%s\t%r\n" % (ttype, value))
+                write(b"%r\t%r\n" % (ttype, value))
         flush()
 
 
@@ -150,7 +146,7 @@ class TestcaseFormatter(Formatter):
         outbuf = []
         for ttype, value in tokensource:
             rawbuf.append(value)
-            outbuf.append('%s(%s, %r),\n' % (indentation, ttype, value))
+            outbuf.append(f'{indentation}({ttype}, {value!r}),\n')
 
         before = TESTCASE_BEFORE % (''.join(rawbuf),)
         during = ''.join(outbuf)

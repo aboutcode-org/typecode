@@ -1,22 +1,27 @@
-# -*- coding: utf-8 -*-
 """
     pygments.styles.fruity
     ~~~~~~~~~~~~~~~~~~~~~~
 
     pygments version of my "fruity" vim theme.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
-from typecode._vendor.pygments.style import Style
-from typecode._vendor.pygments.token import Token, Comment, Name, Keyword, \
+from src.typecode._vendor.pygments.style import Style
+from src.typecode._vendor.pygments.token import Token, Comment, Name, Keyword, \
     Generic, Number, String, Whitespace
+
+
+__all__ = ['FruityStyle']
+
 
 class FruityStyle(Style):
     """
     Pygments version of the "native" vim theme.
     """
+
+    name = 'fruity'
 
     background_color = '#111111'
     highlight_color = '#333333'

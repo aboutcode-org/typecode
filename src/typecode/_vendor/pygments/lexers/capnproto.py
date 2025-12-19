@@ -1,33 +1,28 @@
-# -*- coding: utf-8 -*-
 """
     pygments.lexers.capnproto
     ~~~~~~~~~~~~~~~~~~~~~~~~~
 
     Lexers for the Cap'n Proto schema language.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
-import re
-
-from typecode._vendor.pygments.lexer import RegexLexer, default
-from typecode._vendor.pygments.token import Text, Comment, Keyword, Name, Literal
+from src.typecode._vendor.pygments.lexer import RegexLexer, default
+from src.typecode._vendor.pygments.token import Text, Comment, Keyword, Name, Literal, Whitespace
 
 __all__ = ['CapnProtoLexer']
 
 
 class CapnProtoLexer(RegexLexer):
     """
-    For `Cap'n Proto <https://capnproto.org>`_ source.
-
-    .. versionadded:: 2.2
+    For Cap'n Proto source.
     """
     name = 'Cap\'n Proto'
+    url = 'https://capnproto.org'
     filenames = ['*.capnp']
     aliases = ['capnp']
-
-    flags = re.MULTILINE | re.UNICODE
+    version_added = '2.2'
 
     tokens = {
         'root': [
@@ -40,7 +35,8 @@ class CapnProtoLexer(RegexLexer):
              r'extends|in|of|on|as|with|from|fixed)\b',
              Keyword),
             (r'[\w.]+', Name),
-            (r'[^#@=:$\w]+', Text),
+            (r'[^#@=:$\w\s]+', Text),
+            (r'\s+', Whitespace),
         ],
         'type': [
             (r'[^][=;,(){}$]+', Name.Class),

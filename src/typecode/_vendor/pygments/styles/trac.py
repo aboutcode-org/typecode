@@ -1,17 +1,19 @@
-# -*- coding: utf-8 -*-
 """
     pygments.styles.trac
     ~~~~~~~~~~~~~~~~~~~~
 
     Port of the default trac highlighter design.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
-from typecode._vendor.pygments.style import Style
-from typecode._vendor.pygments.token import Keyword, Name, Comment, String, Error, \
+from src.typecode._vendor.pygments.style import Style
+from src.typecode._vendor.pygments.token import Keyword, Name, Comment, String, Error, \
      Number, Operator, Generic, Whitespace
+
+
+__all__ = ['TracStyle']
 
 
 class TracStyle(Style):
@@ -19,8 +21,8 @@ class TracStyle(Style):
     Port of the default trac highlighter design.
     """
 
-    default_style = ''
-
+    name = 'trac'
+    
     styles = {
         Whitespace:             '#bbbbbb',
         Comment:                'italic #999988',
@@ -55,6 +57,7 @@ class TracStyle(Style):
         Generic.Error:          '#aa0000',
         Generic.Emph:           'italic',
         Generic.Strong:         'bold',
+        Generic.EmphStrong:     'bold italic',
         Generic.Prompt:         '#555555',
         Generic.Output:         '#888888',
         Generic.Traceback:      '#aa0000',

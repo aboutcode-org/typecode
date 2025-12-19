@@ -1,18 +1,15 @@
-# -*- coding: utf-8 -*-
 """
     pygments.lexers.solidity
     ~~~~~~~~~~~~~~~~~~~~~~~~
 
     Lexers for Solidity.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
-import re
-
-from typecode._vendor.pygments.lexer import RegexLexer, bygroups, include, words
-from typecode._vendor.pygments.token import Text, Comment, Operator, Keyword, Name, String, \
+from src.typecode._vendor.pygments.lexer import RegexLexer, bygroups, include, words
+from src.typecode._vendor.pygments.token import Text, Comment, Operator, Keyword, Name, String, \
     Number, Punctuation, Whitespace
 
 __all__ = ['SolidityLexer']
@@ -21,16 +18,14 @@ __all__ = ['SolidityLexer']
 class SolidityLexer(RegexLexer):
     """
     For Solidity source code.
-
-    .. versionadded:: 2.5
     """
 
     name = 'Solidity'
     aliases = ['solidity']
     filenames = ['*.sol']
     mimetypes = []
-
-    flags = re.MULTILINE | re.UNICODE
+    url = 'https://soliditylang.org'
+    version_added = '2.5'
 
     datatype = (
         r'\b(address|bool|(?:(?:bytes|hash|int|string|uint)(?:8|16|24|32|40|48|56|64'
@@ -64,8 +59,8 @@ class SolidityLexer(RegexLexer):
             (datatype, Keyword.Type),
             include('constants'),
             (r'[a-zA-Z_]\w*', Text),
-            (r'[!<=>+*/-]', Operator),
-            (r'[.;:{}(),\[\]]', Punctuation)
+            (r'[~!%^&*+=|?:<>/-]', Operator),
+            (r'[.;{}(),\[\]]', Punctuation)
         ],
         'comments': [
             (r'//(\n|[\w\W]*?[^\\]\n)', Comment.Single),

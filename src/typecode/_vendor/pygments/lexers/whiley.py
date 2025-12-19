@@ -1,16 +1,15 @@
-# -*- coding: utf-8 -*-
 """
     pygments.lexers.whiley
     ~~~~~~~~~~~~~~~~~~~~~~
 
     Lexers for the Whiley language.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
-from typecode._vendor.pygments.lexer import RegexLexer, bygroups, words
-from typecode._vendor.pygments.token import Comment, Keyword, Name, Number, Operator, \
+from src.typecode._vendor.pygments.lexer import RegexLexer, bygroups, words
+from src.typecode._vendor.pygments.token import Comment, Keyword, Name, Number, Operator, \
     Punctuation, String, Text
 
 __all__ = ['WhileyLexer']
@@ -19,13 +18,13 @@ __all__ = ['WhileyLexer']
 class WhileyLexer(RegexLexer):
     """
     Lexer for the Whiley programming language.
-
-    .. versionadded:: 2.2
     """
     name = 'Whiley'
+    url = 'http://whiley.org/'
     filenames = ['*.whiley']
     aliases = ['whiley']
     mimetypes = ['text/x-whiley']
+    version_added = '2.2'
 
     # See the language specification:
     # http://whiley.org/download/WhileyLanguageSpec.pdf

@@ -1,17 +1,16 @@
-# -*- coding: utf-8 -*-
 """
     pygments.lexers.monte
     ~~~~~~~~~~~~~~~~~~~~~
 
     Lexer for the Monte programming language.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
-from typecode._vendor.pygments.token import Comment, Error, Keyword, Name, Number, Operator, \
+from src.typecode._vendor.pygments.token import Comment, Error, Keyword, Name, Number, Operator, \
     Punctuation, String, Whitespace
-from typecode._vendor.pygments.lexer import RegexLexer, include, words
+from src.typecode._vendor.pygments.lexer import RegexLexer, include, words
 
 __all__ = ['MonteLexer']
 
@@ -78,13 +77,13 @@ _safeScope = [
 
 class MonteLexer(RegexLexer):
     """
-    Lexer for the `Monte <https://monte.readthedocs.io/>`_ programming language.
-
-    .. versionadded:: 2.2
+    Lexer for the Monte programming language.
     """
     name = 'Monte'
+    url = 'https://monte.readthedocs.io/'
     aliases = ['monte']
     filenames = ['*.mt']
+    version_added = '2.2'
 
     tokens = {
         'root': [

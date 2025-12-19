@@ -1,17 +1,16 @@
-# -*- coding: utf-8 -*-
 """
     pygments.lexers.d
     ~~~~~~~~~~~~~~~~~
 
     Lexers for D languages.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
-from typecode._vendor.pygments.lexer import RegexLexer, include, words
-from typecode._vendor.pygments.token import Text, Comment, Keyword, Name, String, \
-    Number, Punctuation
+from src.typecode._vendor.pygments.lexer import RegexLexer, include, words, bygroups
+from src.typecode._vendor.pygments.token import Comment, Keyword, Name, String, Number, \
+    Punctuation, Whitespace
 
 __all__ = ['DLexer', 'CrocLexer', 'MiniDLexer']
 
@@ -19,21 +18,21 @@ __all__ = ['DLexer', 'CrocLexer', 'MiniDLexer']
 class DLexer(RegexLexer):
     """
     For D source.
-
-    .. versionadded:: 1.2
     """
     name = 'D'
+    url = 'https://dlang.org/'
     filenames = ['*.d', '*.di']
     aliases = ['d']
     mimetypes = ['text/x-dsrc']
+    version_added = '1.2'
 
     tokens = {
         'root': [
-            (r'\n', Text),
-            (r'\s+', Text),
+            (r'\n', Whitespace),
+            (r'\s+', Whitespace),
             # (r'\\\n', Text), # line continuations
             # Comments
-            (r'//(.*?)\n', Comment.Single),
+            (r'(//.*?)(\n)', bygroups(Comment.Single, Whitespace)),
             (r'/(\\\n)?[*](.|\n)*?[*](\\\n)?/', Comment.Multiline),
             (r'/\+', Comment.Multiline, 'nested_comment'),
             # Keywords
@@ -123,7 +122,8 @@ class DLexer(RegexLexer):
             # Identifier
             (r'[a-zA-Z_]\w*', Name),
             # Line
-            (r'#line\s.*\n', Comment.Special),
+            (r'(#line)(\s)(.*)(\n)', bygroups(Comment.Special, Whitespace,
+                Comment.Special, Whitespace)),
         ],
         'nested_comment': [
             (r'[^+/]+', Comment.Multiline),
@@ -186,19 +186,21 @@ class DLexer(RegexLexer):
 
 class CrocLexer(RegexLexer):
     """
-    For `Croc <http://jfbillingsley.com/croc>`_ source.
+    For Croc source.
     """
     name = 'Croc'
+    url = 'http://jfbillingsley.com/croc'
     filenames = ['*.croc']
     aliases = ['croc']
     mimetypes = ['text/x-crocsrc']
+    version_added = ''
 
     tokens = {
         'root': [
-            (r'\n', Text),
-            (r'\s+', Text),
+            (r'\n', Whitespace),
+            (r'\s+', Whitespace),
             # Comments
-            (r'//(.*?)\n', Comment.Single),
+            (r'(//.*?)(\n)', bygroups(Comment.Single, Whitespace)),
             (r'/\*', Comment.Multiline, 'nestedcomment'),
             # Keywords
             (words((
@@ -254,3 +256,4 @@ class MiniDLexer(CrocLexer):
     filenames = []  # don't lex .md as MiniD, reserve for Markdown
     aliases = ['minid']
     mimetypes = ['text/x-minidsrc']
+    version_added = ''
