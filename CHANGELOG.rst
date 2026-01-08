@@ -1,6 +1,15 @@
 Release notes
 =============
 
+
+Version 30.1.0
+-----------------
+
+ - Support python3.14 and other misc fixes
+   https://github.com/aboutcode-org/typecode/pull/46
+ - Replace pkg_resources with importlib.metadata
+   https://github.com/aboutcode-org/typecode/pull/45
+
 Version 30.0.2
 -----------------
 

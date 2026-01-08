@@ -69,31 +69,38 @@ if TRACE:
     logger.setLevel(logging.DEBUG)
 
     def logger_debug(*args):
-        return logger.debug(' '.join(isinstance(a, str) and a or repr(a) for a in args))
+        return logger.debug(" ".join(isinstance(a, str) and a or repr(a) for a in args))
+
 
 # Ensure that all dates are UTC, especially for fine free file.
-os.environ['TZ'] = 'UTC'
+os.environ["TZ"] = "UTC"
 
-ELF_EXE = 'executable'
-ELF_SHARED = 'shared object'
-ELF_RELOC = 'relocatable'
-ELF_UNKNOWN = 'unknown'
-elf_types = (ELF_EXE, ELF_SHARED, ELF_RELOC,)
+ELF_EXE = "executable"
+ELF_SHARED = "shared object"
+ELF_RELOC = "relocatable"
+ELF_UNKNOWN = "unknown"
+elf_types = (
+    ELF_EXE,
+    ELF_SHARED,
+    ELF_RELOC,
+)
 
 PLAIN_TEXT_EXTENSIONS = (
     # docs
-    '.rst', '.rest', '.md',
-    '.txt',
+    ".rst",
+    ".rest",
+    ".md",
+    ".txt",
     # This one is actually not handled by Pygments. There are probably more.
-    '.log',
+    ".log",
     # various data
-    '.json',
-    '.xml',
+    ".json",
+    ".xml",
 )
 
 MAKEFILE_EXTENSIONS = (
-    'Makefile',
-    'Makefile.inc',
+    "Makefile",
+    "Makefile.inc",
 )
 
 # Global registry of Type objects, keyed by location
@@ -113,6 +120,7 @@ def get_type(location):
         _registry[abs_loc] = t
         return t
 
+
 # TODO: simplify code using a cached property decorator
 
 
@@ -127,91 +135,94 @@ class Type(object):
 
     Raise an IOError if the location does not exists.
     """
+
     __slots__ = (
-        'location',
-        'is_file',
-        'is_dir',
-        'is_regular',
-        'is_special',
-        'date',
-        'is_link',
-        'is_broken_link',
-        '_size',
-        '_link_target',
-        '_mimetype_python',
-        '_filetype_file',
-        '_mimetype_file',
-        '_filetype_pygment',
-        '_is_pdf_with_text',
-        '_is_text',
-        '_is_text_with_long_lines',
-        '_is_compact_js',
-        '_is_js_map',
-        '_is_binary',
-        '_is_data',
-        '_is_archive',
-        '_contains_text',
+        "location",
+        "is_file",
+        "is_dir",
+        "is_regular",
+        "is_special",
+        "date",
+        "is_link",
+        "is_broken_link",
+        "_size",
+        "_link_target",
+        "_mimetype_python",
+        "_filetype_file",
+        "_mimetype_file",
+        "_filetype_pygment",
+        "_is_pdf_with_text",
+        "_is_text",
+        "_is_text_with_long_lines",
+        "_is_compact_js",
+        "_is_js_map",
+        "_is_binary",
+        "_is_data",
+        "_is_archive",
+        "_contains_text",
     )
 
     # FIXME: we should use an introspectable attrs class instead
     # ATTENTION: keep this in sync with sloats and properties
     text_attributes = [
-        'filetype_file',
-        'mimetype_file',
-        'mimetype_python',
-        'filetype_pygment',
-        'elf_type',
-        'programming_language',
-        'link_target',
+        "filetype_file",
+        "mimetype_file",
+        "mimetype_python",
+        "filetype_pygment",
+        "elf_type",
+        "programming_language",
+        "link_target",
     ]
 
-    numeric_attributes = ['size', ]
-    date_attributes = ['date', ]
+    numeric_attributes = [
+        "size",
+    ]
+    date_attributes = [
+        "date",
+    ]
 
     boolean_attributes = [
-        'is_file',
-        'is_dir',
-        'is_regular',
-        'is_special',
-        'is_link',
-        'is_broken_link',
-        'is_pdf_with_text',
-        'is_text',
-        'is_text_with_long_lines',
-        'is_compact_js',
-        'is_js_map',
-        'is_binary',
-        'is_data',
-        'is_archive',
-        'contains_text',
-        'is_compressed',
-        'is_c_source',
-        'is_c_source',
-        'is_elf',
-        'is_elf',
-        'is_filesystem',
-        'is_java_class',
-        'is_java_source',
-        'is_media',
-        'is_media_with_meta',
-        'is_office_doc',
-        'is_package',
-        'is_pdf',
-        'is_script',
-        'is_source',
-        'is_stripped_elf',
-        'is_winexe',
-        'is_makefile',
+        "is_file",
+        "is_dir",
+        "is_regular",
+        "is_special",
+        "is_link",
+        "is_broken_link",
+        "is_pdf_with_text",
+        "is_text",
+        "is_text_with_long_lines",
+        "is_compact_js",
+        "is_js_map",
+        "is_binary",
+        "is_data",
+        "is_archive",
+        "contains_text",
+        "is_compressed",
+        "is_c_source",
+        "is_c_source",
+        "is_elf",
+        "is_elf",
+        "is_filesystem",
+        "is_java_class",
+        "is_java_source",
+        "is_media",
+        "is_media_with_meta",
+        "is_office_doc",
+        "is_package",
+        "is_pdf",
+        "is_script",
+        "is_source",
+        "is_stripped_elf",
+        "is_winexe",
+        "is_makefile",
     ]
     exportable_attributes = (
-        text_attributes + numeric_attributes + date_attributes + boolean_attributes)
+        text_attributes + numeric_attributes + date_attributes + boolean_attributes
+    )
 
     def __init__(self, location):
-        if (not location
-            or (not os.path.exists(location)
-                and not filetype.is_broken_link(location))):
-            raise IOError("[Errno 2] No such file or directory: "
-                          "'%(location)r'" % locals())
+        if not location or (not os.path.exists(location) and not filetype.is_broken_link(location)):
+            raise IOError("[Errno 2] No such file or directory: '%(location)r'" % locals())
         self.location = location
         # flags and values
         self.is_file = filetype.is_file(location)
@@ -245,13 +256,12 @@ class Type(object):
         self._contains_text = None
 
     def __repr__(self):
-        return ('Type(ftf=%r, mtf=%r, ftpyg=%r, mtpy=%r)'
-            % (
-                self.filetype_file,
-                self.mimetype_file,
-                self.filetype_pygment,
-                self.mimetype_python
-        ))
+        return "Type(ftf=%r, mtf=%r, ftpyg=%r, mtpy=%r)" % (
+            self.filetype_file,
+            self.mimetype_file,
+            self.filetype_pygment,
+            self.mimetype_python,
+        )
 
     def to_dict(self, include_date=True):
         """
@@ -280,7 +290,7 @@ class Type(object):
         Return a link target for symlinks or an empty string otherwise.
         """
         if self._link_target is None:
-            self._link_target = ''
+            self._link_target = ""
             if self.is_link or self.is_broken_link:
                 self._link_target = filetype.get_link_target(self.location)
         return self._link_target
@@ -291,9 +301,9 @@ class Type(object):
         Return the mimetype using the a map of mimetypes by file extension.
         """
         if self._mimetype_python is None:
-            self._mimetype_python = ''
+            self._mimetype_python = ""
             if self.is_file is True:
-                self._mimetype_python = mimetypes.guess_type(self.location) or ''
+                self._mimetype_python = mimetypes.guess_type(self.location) or ""
         return self._mimetype_python
 
     @property
@@ -302,7 +312,7 @@ class Type(object):
         Return the filetype using the fine free file library.
         """
         if self._filetype_file is None:
-            self._filetype_file = ''
+            self._filetype_file = ""
             if self.is_file is True:
                 self._filetype_file = magic2.file_type(self.location)
         return self._filetype_file
@@ -313,7 +323,7 @@ class Type(object):
         Return the mimetype using the fine free file library.
         """
         if self._mimetype_file is None:
-            self._mimetype_file = ''
+            self._mimetype_file = ""
             if self.is_file is True:
                 self._mimetype_file = magic2.mime_type(self.location)
         return self._mimetype_file
@@ -324,13 +334,13 @@ class Type(object):
         Return the filetype guessed using Pygments lexer, mostly for source code.
         """
         if self._filetype_pygment is None:
-            self._filetype_pygment = ''
+            self._filetype_pygment = ""
             if self.is_text and not self.is_media:
                 lexer = get_pygments_lexer(self.location)
-                if lexer and not lexer.name.startswith('JSON'):
-                    self._filetype_pygment = lexer.name or ''
+                if lexer and not lexer.name.startswith("JSON"):
+                    self._filetype_pygment = lexer.name or ""
                 else:
-                    self._filetype_pygment = ''
+                    self._filetype_pygment = ""
         return self._filetype_pygment
 
     @property
@@ -370,8 +380,7 @@ class Type(object):
         """
         if self._is_text_with_long_lines is None:
             self._is_text_with_long_lines = (
-                self.is_text is True
-                and 'long lines' in self.filetype_file.lower()
+                self.is_text is True and "long lines" in self.filetype_file.lower()
             )
         return self._is_text_with_long_lines
 
@@ -383,17 +392,22 @@ class Type(object):
         """
         if self._is_compact_js is None:
             # FIXME: when moving to Python 3
-            extensions = ('.min.js', '.typeface.json',)
-            json_ext = '.json'
+            extensions = (
+                ".min.js",
+                ".typeface.json",
+            )
+            json_ext = ".json"
 
             self._is_compact_js = (
                 self.is_js_map
                 or (self.is_text is True and self.location.endswith(extensions))
-                or (self.filetype_file.lower() == 'data'
-                    and (self.programming_language == 'JavaScript'
-                         or self.location.endswith(json_ext)
-                         )
+                or (
+                    self.filetype_file.lower() == "data"
+                    and (
+                        self.programming_language == "JavaScript"
+                        or self.location.endswith(json_ext)
                     )
+                )
             )
         return self._is_compact_js
 
@@ -405,11 +419,11 @@ class Type(object):
         """
         if self._is_js_map is None:
             # FIXME: when moving to Python 3
-            extensions = '.js.map', '.css.map',
-            self._is_js_map = (
-                self.is_text is True
-                and self.location.endswith(extensions)
+            extensions = (
+                ".js.map",
+                ".css.map",
             )
+            self._is_js_map = self.is_text is True and self.location.endswith(extensions)
         return self._is_js_map
 
     @property
@@ -421,25 +435,25 @@ class Type(object):
             return self._is_archive
 
         self._is_archive = False
-        docx_type_end = '2007+'
+        docx_type_end = "2007+"
 
         ft = self.filetype_file.lower()
 
         if self.is_text:
             self._is_archive = False
-        elif ft.startswith('gem image data'):
+        elif ft.startswith("gem image data"):
             self._is_archive = False
         elif self.is_compressed:
             self._is_archive = True
-        elif 'archive' in ft:
+        elif "archive" in ft:
             self._is_archive = True
-        elif  self.is_package:
+        elif self.is_package:
             self._is_archive = True
         elif self.is_filesystem:
             self._is_archive = True
         elif self.is_office_doc and ft.endswith(docx_type_end):
             self._is_archive = True
-        elif '(zip)' in ft:
+        elif "(zip)" in ft:
             # FIXME: is this really correct???
             self._is_archive = True
         elif extractible.can_extract(self.location):
@@ -452,16 +466,19 @@ class Type(object):
         loc = self.location.lower()
         # FIXME: add open office extensions and other extensions for other docs
         msoffice_exts = (
-            '.doc', '.docx',
-            '.xlsx', '.xlsx',
-            '.ppt', '.pptx',
+            ".doc",
+            ".docx",
+            ".xlsx",
+            ".xlsx",
+            ".ppt",
+            ".pptx",
         )
 
         if loc.endswith(msoffice_exts):
             return True
         else:
             ft = self.filetype_file.lower()
-            if ft.startswith('microsoft') and ft.endswith('2007+'):
+            if ft.startswith("microsoft") and ft.endswith("2007+"):
                 return True
             return False
 
@@ -473,15 +490,19 @@ class Type(object):
         # FIXME: this should beased on proper package recognition, not this simplistic check
         ft = self.filetype_file.lower()
         loc = self.location.lower()
-        package_archive_extensions = '.jar', '.war', '.ear', '.zip', '.whl', '.egg'
-        gem_extension = '.gem'
+        package_archive_extensions = ".jar", ".war", ".ear", ".zip", ".whl", ".egg"
+        gem_extension = ".gem"
 
         # FIXME: this is grossly under specified and is missing many packages
-        if ('debian binary package' in ft
-        or ft.startswith('rpm ')
-        or (ft == 'posix tar archive' and loc.endswith(gem_extension))
-        or (ft.startswith(('zip archive', 'java archive'))
-            and loc.endswith(package_archive_extensions))):
+        if (
+            "debian binary package" in ft
+            or ft.startswith("rpm ")
+            or (ft == "posix tar archive" and loc.endswith(gem_extension))
+            or (
+                ft.startswith(("zip archive", "java archive"))
+                and loc.endswith(package_archive_extensions)
+            )
+        ):
             return True
         else:
             return False
@@ -493,16 +514,15 @@ class Type(object):
         """
         ft = self.filetype_file.lower()
 
-        docx_ext = 'x'
+        docx_ext = "x"
 
-        if (not self.is_text
-        and (
-            '(zip)' in ft
-            or ft.startswith(('zip archive', 'java archive'))
+        if not self.is_text and (
+            "(zip)" in ft
+            or ft.startswith(("zip archive", "java archive"))
             or self.is_package
-            or any(x in ft for x in ('squashfs filesystem', 'compressed'))
+            or any(x in ft for x in ("squashfs filesystem", "compressed"))
             or (self.is_office_doc and self.location.endswith(docx_ext))
-        )):
+        ):
             return True
         else:
             return False
@@ -513,7 +533,7 @@ class Type(object):
         Return True if the file is some kind of file system or disk image.
         """
         ft = self.filetype_file.lower()
-        if ('squashfs filesystem' in ft):
+        if "squashfs filesystem" in ft:
             return True
         else:
             return False
@@ -525,24 +545,52 @@ class Type(object):
         """
         # TODO: fonts?
         mt = self.mimetype_file
-        mimes = ('image', 'picture', 'audio', 'video', 'graphic', 'sound',)
+        mimes = (
+            "image",
+            "picture",
+            "audio",
+            "video",
+            "graphic",
+            "sound",
+        )
 
         ft = self.filetype_file.lower()
         types = (
-            'image data', 'graphics image', 'ms-windows metafont .wmf',
-            'windows enhanced metafile',
-            'png image', 'interleaved image', 'microsoft asf', 'image text',
-            'photoshop image', 'shop pro image', 'ogg data', 'vorbis', 'mpeg',
-            'theora', 'bitmap', 'audio', 'video', 'sound', 'riff', 'icon',
-            'pc bitmap', 'image data', 'netpbm'
+            "image data",
+            "graphics image",
+            "ms-windows metafont .wmf",
+            "windows enhanced metafile",
+            "png image",
+            "interleaved image",
+            "microsoft asf",
+            "image text",
+            "photoshop image",
+            "shop pro image",
+            "ogg data",
+            "vorbis",
+            "mpeg",
+            "theora",
+            "bitmap",
+            "audio",
+            "video",
+            "sound",
+            "riff",
+            "icon",
+            "pc bitmap",
+            "image data",
+            "netpbm",
         )
 
         if any(m in mt for m in mimes) or any(t in ft for t in types):
             return True
 
-        tga_ext = '.tga'
+        tga_ext = ".tga"
 
-        if ft == 'data' and mt == 'application/octet-stream' and self.location.lower().endswith(tga_ext):
+        if (
+            ft == "data"
+            and mt == "application/octet-stream"
+            and self.location.lower().endswith(tga_ext)
+        ):
             # there is a regression in libmagic 5.38 https://bugs.astron.com/view.php?id=161
             # this is a targe image
             return True
@@ -562,7 +610,7 @@ class Type(object):
         if not self.is_media:
             return False
         if self.filetype_file.lower().startswith(
-            ('gif image', 'png image', 'jpeg image', 'netpbm', 'mpeg')
+            ("gif image", "png image", "jpeg image", "netpbm", "mpeg")
         ):
             return False
         else:
@@ -573,7 +621,7 @@ class Type(object):
         """
         Return True if the file is highly likely to be a pdf file.
         """
-        if 'pdf' in self.mimetype_file:
+        if "pdf" in self.mimetype_file:
             return True
         else:
             return False
@@ -588,11 +636,11 @@ class Type(object):
             if not self.is_file is True and not self.is_pdf is True:
                 self._is_pdf_with_text = False
             else:
-                with open(self.location, 'rb') as pf:
+                with open(self.location, "rb") as pf:
                     try:
-                        with contextlib.closing(PDFParser(pf)) as parser:
-                            doc = PDFDocument(parser)
-                            self._is_pdf_with_text = doc.is_extractable
+                        parser = PDFParser(pf)
+                        doc = PDFDocument(parser)
+                        self._is_pdf_with_text = doc.is_extractable
                     except (PDFSyntaxError, PSSyntaxError, PDFException, PDFEncryptionError):
                         self._is_pdf_with_text = False
         return self._is_pdf_with_text
@@ -603,7 +651,7 @@ class Type(object):
         Return True if a file possibly contains some text.
         """
         if self._contains_text is None:
-            svg_ext = '.svg'
+            svg_ext = ".svg"
 
             if not self.is_file:
                 self._contains_text = False
@@ -649,13 +697,14 @@ class Type(object):
             size = self.size
             max_entropy = 1.3
 
-            if (ft == 'data'
-            or is_data(self.location)
-            or ('data' in ft and size > large_file)
-            or (self.is_text and size > large_text_file)
-            or (self.is_text and size > large_text_file)
-            or (entropy.entropy(self.location, length=5000) < max_entropy)):
-
+            if (
+                ft == "data"
+                or is_data(self.location)
+                or ("data" in ft and size > large_file)
+                or (self.is_text and size > large_text_file)
+                or (self.is_text and size > large_text_file)
+                or (entropy.entropy(self.location, length=5000) < max_entropy)
+            ):
                 self._is_data = True
             else:
                 self._is_data = False
@@ -667,7 +716,7 @@ class Type(object):
         Return True if the file is script-like.
         """
         ft = self.filetype_file.lower()
-        if self.is_text is True and 'script' in ft and not 'makefile' in ft:
+        if self.is_text is True and "script" in ft and not "makefile" in ft:
             return True
         else:
             return False
@@ -709,14 +758,31 @@ class Type(object):
         string.
         """
         if self.is_source:
-            return self.filetype_pygment or ''
-        return ''
+            return self.filetype_pygment or ""
+        return ""
 
     @property
     def is_c_source(self):
         C_EXTENSIONS = set(
-            ['.c', '.cc', '.cp', '.cpp', '.cxx', '.c++', '.h', '.hh',
-            '.s', '.asm', '.hpp', '.hxx', '.h++', '.i', '.ii', '.m'])
+            [
+                ".c",
+                ".cc",
+                ".cp",
+                ".cpp",
+                ".cxx",
+                ".c++",
+                ".h",
+                ".hh",
+                ".s",
+                ".asm",
+                ".hpp",
+                ".hxx",
+                ".h++",
+                ".i",
+                ".ii",
+                ".m",
+            ]
+        )
 
         ext = fileutils.file_extension(self.location)
         return self.is_text is True and ext.lower() in C_EXTENSIONS
@@ -727,16 +793,12 @@ class Type(object):
         Return True if a the file is a windows executable.
         """
         ft = self.filetype_file.lower()
-        return 'for ms windows' in ft or ft.startswith('pe32')
+        return "for ms windows" in ft or ft.startswith("pe32")
 
     @property
     def is_elf(self):
         ft = self.filetype_file.lower()
-        if (ft.startswith('elf')
-         and (ELF_EXE in ft
-          or ELF_SHARED in ft
-          or ELF_RELOC in ft)
-        ):
+        if ft.startswith("elf") and (ELF_EXE in ft or ELF_SHARED in ft or ELF_RELOC in ft):
             return True
         else:
             return False
@@ -750,12 +812,12 @@ class Type(object):
                     return t
             return ELF_UNKNOWN
         else:
-            return ''
+            return ""
 
     @property
     def is_stripped_elf(self):
         if self.is_elf is True:
-            return 'not stripped' not in self.filetype_file.lower()
+            return "not stripped" not in self.filetype_file.lower()
         else:
             return False
 
@@ -764,14 +826,14 @@ class Type(object):
         """
         FIXME: Check the filetype.
         """
-        return self.is_file and self.file_name.lower().endswith(('.java', '.aj', '.jad', '.ajt'))
+        return self.is_file and self.file_name.lower().endswith((".java", ".aj", ".jad", ".ajt"))
 
     @property
     def is_java_class(self):
         """
         FIXME: Check the filetype.
         """
-        return self.is_file and self.file_name.lower().endswith('.class')
+        return self.is_file and self.file_name.lower().endswith(".class")
 
 
 @attr.attributes
@@ -780,17 +842,24 @@ class TypeDefinition(object):
     filetypes = List(repr=True)
     mimetypes = List(repr=True)
     extensions = List(repr=True)
-    strict = Boolean(repr=True,
-        help=' if True, all criteria must be matched to select this detector.')
+    strict = Boolean(
+        repr=True, help=" if True, all criteria must be matched to select this detector."
+    )
 
 
-DATA_TYPE_DEFINITIONS = tuple([
-    TypeDefinition(
-        name='MySQL ARCHIVE Storage Engine data files',
-        filetypes=('mysql table definition file',),
-        extensions=('.arm', '.arz', '.arn',),
-    ),
-])
+DATA_TYPE_DEFINITIONS = tuple(
+    [
+        TypeDefinition(
+            name="MySQL ARCHIVE Storage Engine data files",
+            filetypes=("mysql table definition file",),
+            extensions=(
+                ".arm",
+                ".arz",
+                ".arn",
+            ),
+        ),
+    ]
+)
 
 
 def is_data(location, definitions=DATA_TYPE_DEFINITIONS):
@@ -813,15 +882,18 @@ def is_data(location, definitions=DATA_TYPE_DEFINITIONS):
             extension_matched = exts and location.lower().endswith(exts)
 
         if TRACE:
-            logger_debug('is_data: considering def: %(ddef)r for %(location)s' % locals())
-            logger_debug('matched type: %(type_matched)s, mime: %(mime_matched)s, ext: %(extension_matched)s' % locals())
+            logger_debug("is_data: considering def: %(ddef)r for %(location)s" % locals())
+            logger_debug(
+                "matched type: %(type_matched)s, mime: %(mime_matched)s, ext: %(extension_matched)s"
+                % locals()
+            )
 
         if ddef.strict and not all([type_matched, mime_matched, extension_matched]):
             continue
 
         if type_matched or mime_matched or extension_matched:
             if TRACE:
-                logger_debug('is_data: True: %(location)s: ' % locals())
+                logger_debug("is_data: True: %(location)s: " % locals())
             return True
 
     return False
@@ -871,11 +943,11 @@ def get_text_file_start(location, length=4096):
     content = None
     # read the first 4K of the file
     try:
-        with io.open(location, 'r') as f:
+        with io.open(location, "r") as f:
             content = f.read(length)
     except:
         # try again as bytes and force unicode
-        with open(location, 'rb') as f:
+        with open(location, "rb") as f:
             content = text.as_unicode(f.read(length))
     finally:
         return content
@@ -895,11 +967,14 @@ def is_standard_include(location):
     a standard C/C++ include.
     """
     STD_INCLUDES = (
-        '/usr/lib/gcc', '/usr/lib', '/usr/include',
-        '<built-in>', '/tmp/glibc-',
+        "/usr/lib/gcc",
+        "/usr/lib",
+        "/usr/include",
+        "<built-in>",
+        "/tmp/glibc-",
     )
 
-    if (location.startswith(STD_INCLUDES) or location.endswith(STD_INCLUDES)):
+    if location.startswith(STD_INCLUDES) or location.endswith(STD_INCLUDES):
         return True
     else:
         return False
@@ -910,8 +985,17 @@ def is_binary(location):
     Retrun True if the file at `location` is a binary file.
     """
     known_extensions = (
-        '.pyc', '.pgm', '.mp3', '.mp4', '.mpeg', '.mpg', '.emf',
-        '.pgm', '.pbm', '.ppm')
+        ".pyc",
+        ".pgm",
+        ".mp3",
+        ".mp4",
+        ".mpeg",
+        ".mpg",
+        ".emf",
+        ".pgm",
+        ".pbm",
+        ".ppm",
+    )
     if location.endswith(known_extensions):
         return True
     return is_binary_string(get_starting_chunk(location))

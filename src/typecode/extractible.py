@@ -37,6 +37,7 @@ is_bz2file = partial(_is_compressed, opener=bz2.BZ2File)
 
 try:
     import lzma
+
     is_lzmafile = partial(_is_compressed, opener=lzma.open)
 except ImportError:
     is_lzmafile = lambda _: False
@@ -44,13 +45,7 @@ except ImportError:
 
 # Each function accept a single location argument and return True if this is
 # an archive
-archive_handlers = [
-    zipfile.is_zipfile,
-    tarfile.is_tarfile,
-    is_gzipfile,
-    is_bz2file,
-    is_lzmafile
-]
+archive_handlers = [zipfile.is_zipfile, tarfile.is_tarfile, is_gzipfile, is_bz2file, is_lzmafile]
 
 
 def _can_extract(location):

@@ -28,7 +28,7 @@ Data-driven file type test utilities.
 """
 
 test_env = FileDrivenTesting()
-test_env.test_data_dir = path.join(path.dirname(__file__), 'data')
+test_env.test_data_dir = path.join(path.dirname(__file__), "data")
 
 
 @attr.s(slots=True)
@@ -51,12 +51,12 @@ class FileTypeTest(object):
     test_file = attr.ib(default=None)
 
     # ATTENTION: keep these attributes  in sync with typecode.contenttype.Type
-    filetype_file = attr.ib(default='')
-    mimetype_file = attr.ib(default='')
-    mimetype_python = attr.ib(default='')
-    filetype_pygment = attr.ib(default='')
-    elf_type = attr.ib(default='')
-    programming_language = attr.ib(default='')
+    filetype_file = attr.ib(default="")
+    mimetype_file = attr.ib(default="")
+    mimetype_python = attr.ib(default="")
+    filetype_pygment = attr.ib(default="")
+    elf_type = attr.ib(default="")
+    programming_language = attr.ib(default="")
 
     is_file = attr.ib(default=False)
     is_dir = attr.ib(default=False)
@@ -65,7 +65,7 @@ class FileTypeTest(object):
 
     is_link = attr.ib(default=False)
     is_broken_link = attr.ib(default=False)
-    link_target = attr.ib(default='')
+    link_target = attr.ib(default="")
     size = attr.ib(default=False)
     is_pdf_with_text = attr.ib(default=False)
     is_text = attr.ib(default=False)
@@ -101,13 +101,14 @@ class FileTypeTest(object):
     def __attrs_post_init__(self, *args, **kwargs):
         if self.data_file:
             try:
-                with io.open(self.data_file, encoding='utf-8') as df:
+                with io.open(self.data_file, encoding="utf-8") as df:
                     for key, value in saneyaml.load(df.read()).items():
                         if value:
                             setattr(self, key, value)
             except:
                 import traceback
-                msg = f'file://{self.data_file}\n{repr(self)}\n' + traceback.format_exc()
+
+                msg = f"file://{self.data_file}\n{repr(self)}\n" + traceback.format_exc()
                 raise Exception(msg)
         if isinstance(self.size, str):
             self.size = int(self.size)
@@ -116,8 +117,9 @@ class FileTypeTest(object):
         """
         Serialize self to an ordered mapping.
         """
-        filtered = [field for field in attr.fields(FileTypeTest)
-                    if field.name in ('data_file', 'test_file')]
+        filtered = [
+            field for field in attr.fields(FileTypeTest) if field.name in ("data_file", "test_file")
+        ]
         fields_filter = attr.filters.exclude(*filtered)
         data = attr.asdict(self, filter=fields_filter, dict_factory=OrderedDict)
         data = data.items()
@@ -125,9 +127,9 @@ class FileTypeTest(object):
             # skip empty fields
             data = ((k, v) for k, v in data if v)
         if filter_extra:
-            data = ((k, v) for k, v in data if k not in ('expected_failure', 'notes'))
+            data = ((k, v) for k, v in data if k not in ("expected_failure", "notes"))
 
-        return OrderedDict(data)
+        return dict(OrderedDict(data))
 
     def dumps(self):
         """
@@ -141,7 +143,7 @@ class FileTypeTest(object):
         """
         if check_exists and path.exists(self.data_file):
             raise Exception(self.data_file)
-        with io.open(self.data_file, 'w', encoding='utf-8') as df:
+        with io.open(self.data_file, "w", encoding="utf-8") as df:
             df.write(self.dumps())
 
 
@@ -181,7 +183,6 @@ def check_types_equal(expected, result):
         # we have either number, date, None or boolean value and
         # we want both values to be both trueish or falsish
         else:
-
             if bool(result_value) != bool(expected_value):
                 return False
     return True
@@ -211,25 +212,24 @@ def make_filetype_test_functions(
 
         # this is done to display slightly eaier to handle error traces
         if not passing:
-            expected['data file'] = 'file://' + data_file
-            expected['test_file'] = 'file://' + test_file
+            expected["data file"] = "file://" + data_file
+            expected["test_file"] = "file://" + test_file
             assert dict(results) == dict(expected)
 
     data_file = test.data_file
     test_file = test.test_file
 
-    tfn = test_file.replace(test_data_dir, '').strip('\\/\\')
-    test_name = 'test_%(tfn)s_%(index)s' % locals()
+    tfn = test_file.replace(test_data_dir, "").strip("\\/\\")
+    test_name = "test_%(tfn)s_%(index)s" % locals()
     test_name = python_safe_name(test_name)
 
     closure_test_function.__name__ = test_name
 
-    if (test.expected_failure is True
-        or (isinstance(test.expected_failure, str)
-            and (
-                ('windows' in test.expected_failure and on_windows)
-                or ('macos' in test.expected_failure and on_mac)
-            )
+    if test.expected_failure is True or (
+        isinstance(test.expected_failure, str)
+        and (
+            ("windows" in test.expected_failure and on_windows)
+            or ("macos" in test.expected_failure and on_mac)
         )
     ):
         closure_test_function = pytest.mark.xfail(closure_test_function)
@@ -247,13 +247,12 @@ def build_tests(
     Dynamically build test methods from a sequence of FileTypeTest and attach
     these method to the clazz test class.
     """
-    for i, test in enumerate(sorted(filetype_tests, key=lambda x:x.test_file)):
+    for i, test in enumerate(sorted(filetype_tests, key=lambda x: x.test_file)):
         # closure on the test params
         if test.expected_failure:
             actual_regen = False
         else:
             actual_regen = regen
-        method, name = make_filetype_test_functions(
-            test, i, test_data_dir, actual_regen)
+        method, name = make_filetype_test_functions(test, i, test_data_dir, actual_regen)
         # attach that method to our test class
         setattr(clazz, name, method)
