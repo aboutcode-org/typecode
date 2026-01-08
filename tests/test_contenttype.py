@@ -261,6 +261,7 @@ class TestContentTypeComplex(FileBasedTesting):
             "application/octet-stream",
             # libmagic 5.39
             "application/x-bytecode.python",
+            "text/x-bytecode.python",
         )
         assert get_mimetype_file(test_file) in expected_mime
         assert get_filetype_pygment(test_file) == ""
