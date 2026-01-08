@@ -1,4 +1,4 @@
-filetype_file: Java source, ASCII text
+filetype_file: Java source
 mimetype_file: text/x-java
 mimetype_python: text/x-java-source
 filetype_pygment: Java
@@ -8,4 +8,5 @@ is_regular: yes
 size: 6800
 is_text: yes
 contains_text: yes
+is_java_source: yes
 is_source: yes

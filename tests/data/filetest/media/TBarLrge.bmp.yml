@@ -1,5 +1,4 @@
-filetype_file: PC bitmap, Windows 3.x format, 400 x 32 x 4, image size 6400, resolution 4730
-  x 4720 px/m, cbSize 6518, bits offset 118
+filetype_file: PC bitmap
 mimetype_file: image/bmp
 mimetype_python: image/bmp
 is_file: yes

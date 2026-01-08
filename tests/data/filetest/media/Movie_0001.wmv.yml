@@ -1,9 +1,4 @@
-filetype_file: Microsoft ASF ASF_Extended_Content_Description_Object, Audio Media (Codec Id
-  353, Number of channels 2, Samples Per Second 44100, Average Number of Bytes Per Second 11112,
-  Block Alignment 1053035, Bits Per Sample 10, Error correction type ASF_Audio_Spread), Video
-  Media (Encoded Image Width 320, Encoded Image Height 240, Image Width 320, Image Height 240,
-  Bits Per Pixel Count 24, Error correction type ASF_No_Error_Correction) ASF_Stream_Bitrate_Properties_Object
-  ASF_Index_Object ASF_Index_Object
+filetype_file: Microsoft ASF ASF_Extended_Content_Description_Object
 mimetype_file: video/x-ms-asf
 mimetype_python: video/x-ms-wmv
 is_file: yes

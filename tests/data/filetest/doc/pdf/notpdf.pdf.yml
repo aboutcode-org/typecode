@@ -1,4 +1,4 @@
-filetype_file: CSV text
+filetype_file: CSV
 mimetype_file: application/csv
 mimetype_python: application/pdf
 is_file: yes

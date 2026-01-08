@@ -1,5 +1,4 @@
-filetype_file: 'Ogg data, Vorbis audio, mono, 44100 Hz, ~96000 bps, created by: Xiph.Org libVorbis
-  I (1.2.0)'
+filetype_file: Ogg data
 mimetype_file: audio/ogg
 mimetype_python: audio/ogg
 is_file: yes
