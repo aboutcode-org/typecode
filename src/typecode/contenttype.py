@@ -638,9 +638,9 @@ class Type(object):
             else:
                 with open(self.location, "rb") as pf:
                     try:
-                        with contextlib.closing(PDFParser(pf)) as parser:
-                            doc = PDFDocument(parser)
-                            self._is_pdf_with_text = doc.is_extractable
+                        parser = PDFParser(pf)
+                        doc = PDFDocument(parser)
+                        self._is_pdf_with_text = doc.is_extractable
                     except (PDFSyntaxError, PSSyntaxError, PDFException, PDFEncryptionError):
                         self._is_pdf_with_text = False
         return self._is_pdf_with_text
