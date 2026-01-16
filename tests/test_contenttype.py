@@ -395,3 +395,10 @@ class TestContentTypeComplex(FileBasedTesting):
         test_dir = self.get_test_loc("contenttype/size")
         result = size(test_dir)
         assert result == 18
+
+    def test_is_binary_handles_pdf_signature(self):
+        test_dir = self.get_temp_dir()
+        test_file = os.path.join(test_dir, "test_pdf.pdf")
+        with open(test_file, "wb") as f:
+            f.write(b"%PDF-1.4\nSome binary content \x00\xff")
+        assert is_binary(test_file) is True
