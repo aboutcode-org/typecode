@@ -362,6 +362,14 @@ class Type(object):
             self._is_binary = False
             if self.is_file is True:
                 self._is_binary = is_binary(self.location)
+                if not self._is_binary:
+                    try:
+                        with open(self.location, "rb") as f:
+                            if f.read(5) == b"%PDF-":
+                                self._is_binary = True
+                    except Exception:
+                        pass
+
         return self._is_binary
 
     @property
