@@ -230,6 +230,17 @@ class TestContentTypeComplex(FileBasedTesting):
         assert get_filetype(test_file) in expected
         assert get_filetype_pygment(test_file) == ""
 
+    def test_programming_language_detection_for_julia(self):
+        # Create a temporary julia file
+        test_file = self.get_temp_file("test.jl")
+        with open(test_file, "w") as f:
+            f.write('println("Hello Julia")')
+
+        # Get the type and check identification
+        T = get_type(test_file)
+        assert is_source(test_file)
+        assert T.programming_language == "Julia"
+
     @pytest.mark.xfail(
         on_mac or on_windows,
         reason="Somehow we get really weird results on macOS with libmagic 5.38 and mac, win32 on libmagic 5.39: "
