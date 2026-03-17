@@ -13,3 +13,4 @@ The following organizations or individuals have contributed to this repo:
 - Sharikzama @ZamaSharik
 - Steven Esser @majurg
 - Thomas Druez @tdruez
+- Kushagar Garg @Dreamstick9
