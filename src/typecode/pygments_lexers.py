@@ -4,13 +4,13 @@
 # Copyright (c)  Pygments authors
 
 """
-    pygments.lexers
-    ~~~~~~~~~~~~~~~
+pygments.lexers
+~~~~~~~~~~~~~~~
 
-    Pygments lexers.
+Pygments lexers.
 
-    :copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
-    :license: BSD, see LICENSE for details.
+:copyright: Copyright 2006-2021 by the Pygments team, see AUTHORS.
+:license: BSD, see LICENSE for details.
 """
 
 import re
@@ -25,12 +25,21 @@ from typecode._vendor.pygments.plugin import find_plugin_lexers
 from typecode._vendor.pygments.util import ClassNotFound, guess_decode
 
 COMPAT = {
-    'Python3Lexer': 'PythonLexer',
-    'Python3TracebackLexer': 'PythonTracebackLexer',
+    "Python3Lexer": "PythonLexer",
+    "Python3TracebackLexer": "PythonTracebackLexer",
 }
 
-__all__ = ['get_lexer_by_name', 'get_lexer_for_filename', 'find_lexer_class',
-           'guess_lexer', 'load_lexer_from_file'] + list(LEXERS) + list(COMPAT)
+__all__ = (
+    [
+        "get_lexer_by_name",
+        "get_lexer_for_filename",
+        "find_lexer_class",
+        "guess_lexer",
+        "load_lexer_from_file",
+    ]
+    + list(LEXERS)
+    + list(COMPAT)
+)
 
 _lexer_cache = {}
 _pattern_cache = {}
@@ -46,14 +55,15 @@ def _fn_matches(fn, glob):
 
 def _load_lexers(module_name):
     """Load a lexer (and all others in the module too)."""
-    mod = __import__(module_name, None, None, ['__all__'])
+    mod = __import__(module_name, None, None, ["__all__"])
     for lexer_name in mod.__all__:
         cls = getattr(mod, lexer_name)
         _lexer_cache[cls.name] = cls
 
 
 def get_all_lexers():
-    """Return a generator of tuples in the form ``(name, aliases,
+    """
+    Return a generator of tuples in the form ``(name, aliases,
     filenames, mimetypes)`` of all know lexers.
     """
     for item in LEXERS.values():
@@ -63,7 +73,8 @@ def get_all_lexers():
 
 
 def find_lexer_class(name):
-    """Lookup a lexer class by name.
+    """
+    Lookup a lexer class by name.
 
     Return None if not found.
     """
@@ -81,14 +92,15 @@ def find_lexer_class(name):
 
 
 def find_lexer_class_by_name(_alias):
-    """Lookup a lexer class by alias.
+    """
+    Lookup a lexer class by alias.
 
     Like `get_lexer_by_name`, but does not instantiate the class.
 
     .. versionadded:: 2.2
     """
     if not _alias:
-        raise ClassNotFound('no lexer for alias %r found' % _alias)
+        raise ClassNotFound("no lexer for alias %r found" % _alias)
     # lookup builtin lexers
     for module_name, name, aliases, _, _ in LEXERS.values():
         if _alias.lower() in aliases:
@@ -99,16 +111,17 @@ def find_lexer_class_by_name(_alias):
     for cls in find_plugin_lexers():
         if _alias.lower() in cls.aliases:
             return cls
-    raise ClassNotFound('no lexer for alias %r found' % _alias)
+    raise ClassNotFound("no lexer for alias %r found" % _alias)
 
 
 def get_lexer_by_name(_alias, **options):
-    """Get a lexer by an alias.
+    """
+    Get a lexer by an alias.
 
     Raises ClassNotFound if not found.
     """
     if not _alias:
-        raise ClassNotFound('no lexer for alias %r found' % _alias)
+        raise ClassNotFound("no lexer for alias %r found" % _alias)
 
     # lookup builtin lexers
     for module_name, name, aliases, _, _ in LEXERS.values():
@@ -120,11 +133,12 @@ def get_lexer_by_name(_alias, **options):
     for cls in find_plugin_lexers():
         if _alias.lower() in cls.aliases:
             return cls(**options)
-    raise ClassNotFound('no lexer for alias %r found' % _alias)
+    raise ClassNotFound("no lexer for alias %r found" % _alias)
 
 
 def load_lexer_from_file(filename, lexername="CustomLexer", **options):
-    """Load a lexer from a file.
+    """
+    Load a lexer from a file.
 
     This method expects a file located relative to the current working
     directory, which contains a Lexer class. By default, it expects the
@@ -141,25 +155,25 @@ def load_lexer_from_file(filename, lexername="CustomLexer", **options):
     try:
         # This empty dict will contain the namespace for the exec'd file
         custom_namespace = {}
-        with open(filename, 'rb') as f:
+        with open(filename, "rb") as f:
             exec(f.read(), custom_namespace)
         # Retrieve the class `lexername` from that namespace
         if lexername not in custom_namespace:
-            raise ClassNotFound('no valid %s class found in %s' %
-                                (lexername, filename))
+            raise ClassNotFound("no valid %s class found in %s" % (lexername, filename))
         lexer_class = custom_namespace[lexername]
         # And finally instantiate it with the options
         return lexer_class(**options)
     except IOError as err:
-        raise ClassNotFound('cannot read %s: %s' % (filename, err))
+        raise ClassNotFound("cannot read %s: %s" % (filename, err))
     except ClassNotFound:
         raise
     except Exception as err:
-        raise ClassNotFound('error when loading custom lexer: %s' % err)
+        raise ClassNotFound("error when loading custom lexer: %s" % err)
 
 
 def find_lexer_class_for_filename(_fn, code=None):
-    """Get a lexer for a filename.
+    """
+    Get a lexer for a filename.
 
     If multiple lexers match the filename pattern, use ``analyse_text()`` to
     figure out which one is more appropriate.
@@ -186,7 +200,7 @@ def find_lexer_class_for_filename(_fn, code=None):
     def get_rating(info):
         cls, filename = info
         # explicit patterns get a bonus
-        bonus = '*' not in filename and 0.5 or 0
+        bonus = "*" not in filename and 0.5 or 0
         # The class _always_ defines analyse_text because it's included in
         # the Lexer class.  The default implementation returns None which
         # gets turned into 0.0.  Run scripts/detect_missing_analyse_text.py
@@ -202,7 +216,8 @@ def find_lexer_class_for_filename(_fn, code=None):
 
 
 def get_lexer_for_filename(_fn, code=None, **options):
-    """Get a lexer for a filename.
+    """
+    Get a lexer for a filename.
 
     If multiple lexers match the filename pattern, use ``analyse_text()`` to
     figure out which one is more appropriate.
@@ -211,12 +226,13 @@ def get_lexer_for_filename(_fn, code=None, **options):
     """
     res = find_lexer_class_for_filename(_fn, code)
     if not res:
-        raise ClassNotFound('no lexer for filename %r found' % _fn)
+        raise ClassNotFound("no lexer for filename %r found" % _fn)
     return res(**options)
 
 
 def get_lexer_for_mimetype(_mime, **options):
-    """Get a lexer for a mimetype.
+    """
+    Get a lexer for a mimetype.
 
     Raises ClassNotFound if not found.
     """
@@ -228,7 +244,7 @@ def get_lexer_for_mimetype(_mime, **options):
     for cls in find_plugin_lexers():
         if _mime in cls.mimetypes:
             return cls(**options)
-    raise ClassNotFound('no lexer for mimetype %r found' % _mime)
+    raise ClassNotFound("no lexer for mimetype %r found" % _mime)
 
 
 def _iter_lexerclasses(plugins=True):
@@ -270,7 +286,7 @@ def guess_lexer_for_filename(_fn, _text, **options):
                 matching_lexers.add(lexer)
                 primary[lexer] = False
     if not matching_lexers:
-        raise ClassNotFound('no lexer for filename %r found' % fn)
+        raise ClassNotFound("no lexer for filename %r found" % fn)
     if len(matching_lexers) == 1:
         return matching_lexers.pop()(**options)
     result = []
@@ -297,9 +313,9 @@ def guess_lexer(_text, **options):
     """Guess a lexer by strong distinctions in the text (eg, shebang)."""
 
     if not isinstance(_text, str):
-        inencoding = options.get('inencoding', options.get('encoding'))
+        inencoding = options.get("inencoding", options.get("encoding"))
         if inencoding:
-            _text = _text.decode(inencoding or 'utf8')
+            _text = _text.decode(inencoding or "utf8")
         else:
             _text, _ = guess_decode(_text)
 
@@ -320,7 +336,7 @@ def guess_lexer(_text, **options):
         if rv > best_lexer[0]:
             best_lexer[:] = (rv, lexer)
     if not best_lexer[0] or best_lexer[1] is None:
-        raise ClassNotFound('no lexer matching the text found')
+        raise ClassNotFound("no lexer matching the text found")
     return best_lexer[1](**options)
 
 

@@ -15,7 +15,7 @@ from filetype_test_utils import build_tests
 from filetype_test_utils import load_filetype_tests
 
 test_env = FileDrivenTesting()
-test_env.test_data_dir = os.path.join(os.path.dirname(__file__), 'data')
+test_env.test_data_dir = os.path.join(os.path.dirname(__file__), "data")
 
 
 class TestFileTypesDataDriven(FileDrivenTesting):
@@ -24,8 +24,7 @@ class TestFileTypesDataDriven(FileDrivenTesting):
 
 
 build_tests(
-    filetype_tests=load_filetype_tests(
-        os.path.join(test_env.test_data_dir, 'filetest')),
+    filetype_tests=load_filetype_tests(os.path.join(test_env.test_data_dir, "filetest")),
     clazz=TestFileTypesDataDriven,
     test_data_dir=test_env.test_data_dir,
     regen=False,

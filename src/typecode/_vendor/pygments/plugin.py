@@ -43,11 +43,11 @@ FILTER_ENTRY_POINT = 'pygments.filters'
 
 def iter_entry_points(group_name):
     try:
-        import pkg_resources
+        import importlib.metadata
     except (ImportError, IOError):
         return []
 
-    return pkg_resources.iter_entry_points(group_name)
+    return importlib.metadata.entry_points(group=group_name)
 
 
 def find_plugin_lexers():

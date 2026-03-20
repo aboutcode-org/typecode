@@ -81,3 +81,5 @@ tcl
 !/tests/typecode/data/contenttype/compiled/linux/*
 !/tests/typecode/data/contenttype/compiled/win/*
 !/tests/typecode/data/contenttype/package/*
+/.ruff_cache/
+.env

@@ -31,7 +31,7 @@ system, use the `minimal` option::
 In this case, you will need to provide a working libmagic and its database
 available in one of these ways:
 
-- **a typecode-libmagic plugin**: See the standard ones at 
+- **a typecode-libmagic plugin**: See the standard ones at
   https://github.com/nexB/scancode-plugins/tree/main/builtins
   These can either bundle a libmagic library and its magic database or expose a
   system-installed libmagic.

@@ -3,7 +3,7 @@
 # ScanCode is a trademark of nexB Inc.
 # SPDX-License-Identifier: Apache-2.0
 # See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
-# See https://github.com/nexB/typecode for support or download.
+# See https://github.com/aboutcode-org/typecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
@@ -17,7 +17,7 @@ def entropy(location, length=5000):
     Return the Shannon entropy of up to `length` bytes from the file at
     location.
     """
-    with open(location, 'rb') as locf:
+    with open(location, "rb") as locf:
         data = locf.read(length)
     return shannon_entropy(data)
 
@@ -52,7 +52,7 @@ def gzip_entropy(s):
         return 0
 
     if isinstance(s, str):
-        s = s.encode('utf-8')
+        s = s.encode("utf-8")
 
     length = len(s)
     if not length:
