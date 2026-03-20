@@ -141,9 +141,9 @@ class TestContentTypeComplex(FileBasedTesting):
         expected = (
             "ascii text, with very long lines",
             # libmagic 5.39+
-            'json data',
+            "json data",
             # Apple Silicon Homebrew libmagic
-            'json text data',
+            "json text data",
         )
 
         assert get_filetype(test_file) in expected
@@ -295,14 +295,14 @@ class TestContentTypeComplex(FileBasedTesting):
             get_mimetype_file=get_mimetype_file(test_file),
         )
         expected = dict(
-            get_filetype_file='DOS EPS Binary File',
+            get_filetype_file="DOS EPS Binary File",
             get_mimetype_file=(
-                'application/octet-stream',
-                'image/x-eps',
-            )
+                "application/octet-stream",
+                "image/x-eps",
+            ),
         )
-        assert expected['get_filetype_file'] in results['get_filetype_file']
-        assert results['get_mimetype_file'] in expected['get_mimetype_file']
+        assert expected["get_filetype_file"] in results["get_filetype_file"]
+        assert results["get_mimetype_file"] in expected["get_mimetype_file"]
 
     def test_media_image_img(self):
         test_file = self.get_test_loc("contenttype/media/Image1.img")
@@ -327,9 +327,9 @@ class TestContentTypeComplex(FileBasedTesting):
             # libmagic 5.38
             "debian binary package (format 2.0), with control.tar.gz, data compression gz",
             # libmagic 5.2x
-            'debian binary package (format 2.0)',
+            "debian binary package (format 2.0)",
             # Apple Silicon Homebrew libmagic
-            'debian binary package (format 2.0), with control.tar.gz , data compression gz',
+            "debian binary package (format 2.0), with control.tar.gz , data compression gz",
         )
         assert get_filetype(test_file) in expected
         assert is_binary(test_file)

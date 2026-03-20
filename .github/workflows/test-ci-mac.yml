@@ -4,12 +4,13 @@ on: [push, pull_request]
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: ${{ matrix.os }}
 
     strategy:
       max-parallel: 4
       matrix:
-        python-version: ["3.10", "3.11"]
+        os: [macos-14, macos-15]
+        python-version: ["3.10", "3.14"]
 
     steps:
       - name: Checkout code
@@ -26,10 +27,7 @@ jobs:
           brew install p7zip libarchive libmagic
 
       - name: Set up venv
-        run: |
-          python3 -m venv venv
-          source venv/bin/activate
-          pip install -e .[system_provided,testing]
+        run: ./configure --dev-system-provided
 
       - name: Run tests
         run: venv/bin/pytest -n 3 -vvs .

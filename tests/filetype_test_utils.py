@@ -124,7 +124,7 @@ class FileTypeTest(object):
         fields_filter = attr.filters.exclude(*filtered)
 
         if normalize_filetype:
-            split_filetype_file = self.filetype_file.split(' ')
+            split_filetype_file = self.filetype_file.split(" ")
             if split_filetype_file:
                 self.filetype_file = split_filetype_file[0]
 
