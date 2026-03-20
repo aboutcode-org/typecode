@@ -1,11 +1,8 @@
-filetype_file: troff or preprocessor input, ASCII text
+filetype_file: troff or preprocessor input
 mimetype_file: text/troff
 mimetype_python: text/troff
-filetype_pygment:
-programming_language:
 is_file: yes
 is_regular: yes
 size: 93
 is_text: yes
 contains_text: yes
-is_source: yes

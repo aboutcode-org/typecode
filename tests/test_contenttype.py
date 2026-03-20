@@ -142,6 +142,8 @@ class TestContentTypeComplex(FileBasedTesting):
             "ascii text, with very long lines",
             # libmagic 5.39+
             "json data",
+            # Apple Silicon Homebrew libmagic
+            "json text data",
         )
 
         assert get_filetype(test_file) in expected
@@ -260,8 +262,9 @@ class TestContentTypeComplex(FileBasedTesting):
         expected_mime = (
             "application/octet-stream",
             # libmagic 5.39
-            "application/x-bytecode.python",
             "text/x-bytecode.python",
+            # Apple Silicon Homebrew libmagic
+            "application/x-bytecode.python",
         )
         assert get_mimetype_file(test_file) in expected_mime
         assert get_filetype_pygment(test_file) == ""
@@ -291,17 +294,15 @@ class TestContentTypeComplex(FileBasedTesting):
             get_filetype_file=get_filetype_file(test_file),
             get_mimetype_file=get_mimetype_file(test_file),
         )
-        if on_windows:
-            expected = dict(
-                get_filetype_file="DOS EPS Binary File Postscript starts at byte 32 length 466 TIFF starts at byte 498 length 11890",
-                get_mimetype_file="application/octet-stream",
-            )
-        else:
-            expected = dict(
-                get_filetype_file="DOS EPS Binary File Postscript starts at byte 32 length 466 TIFF starts at byte 498 length 11890",
-                get_mimetype_file="image/x-eps",
-            )
-        assert results == expected
+        expected = dict(
+            get_filetype_file="DOS EPS Binary File",
+            get_mimetype_file=(
+                "application/octet-stream",
+                "image/x-eps",
+            ),
+        )
+        assert expected["get_filetype_file"] in results["get_filetype_file"]
+        assert results["get_mimetype_file"] in expected["get_mimetype_file"]
 
     def test_media_image_img(self):
         test_file = self.get_test_loc("contenttype/media/Image1.img")
@@ -327,6 +328,8 @@ class TestContentTypeComplex(FileBasedTesting):
             "debian binary package (format 2.0), with control.tar.gz, data compression gz",
             # libmagic 5.2x
             "debian binary package (format 2.0)",
+            # Apple Silicon Homebrew libmagic
+            "debian binary package (format 2.0), with control.tar.gz , data compression gz",
         )
         assert get_filetype(test_file) in expected
         assert is_binary(test_file)

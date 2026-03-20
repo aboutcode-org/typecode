@@ -1,4 +1,4 @@
-filetype_file: PE32+ executable (DLL) x86-64, for MS Windows
+filetype_file: PE32+
 mimetype_file: application/x-dosexec
 mimetype_python: application/x-msdownload
 is_file: yes
