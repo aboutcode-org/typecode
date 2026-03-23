@@ -1,6 +1,12 @@
 Release notes
 =============
 
+Version 30.2.0
+-----------------
+
+ - Support linux/macos arm devices with system provided
+   or installed libmagic 
+   https://github.com/aboutcode-org/typecode/pull/40
 
 Version 30.1.0
 -----------------
