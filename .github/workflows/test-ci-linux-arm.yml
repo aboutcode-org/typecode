@@ -1,4 +1,4 @@
-name: Test CI Macos ARM
+name: Test CI Linux ARM
 
 on: [push, pull_request]
 
@@ -7,9 +7,9 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     strategy:
-      max-parallel: 4
+      max-parallel: 2
       matrix:
-        os: [macos-14, macos-15]
+        os: [ubuntu-24.04-arm]
         python-version: ["3.10", "3.14"]
 
     steps:
@@ -23,8 +23,8 @@ jobs:
 
       - name: Install system dependencies
         run: |
-          brew update
-          brew install libarchive libmagic
+          sudo apt update
+          sudo apt install libarchive-tools libarchive-dev libmagic1 libmagic-dev 
 
       - name: Set up venv
         run: ./configure --dev-system-provided

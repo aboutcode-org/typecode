@@ -16,6 +16,7 @@ import attr
 import pytest
 import saneyaml
 
+from commoncode.system import on_linux
 from commoncode.system import on_mac
 from commoncode.system import on_windows
 from commoncode.testcase import FileDrivenTesting
@@ -115,7 +116,10 @@ class FileTypeTest(object):
     def __attrs_post_init__(self, *args, **kwargs):
         if self.data_file:
             if is_arm_architecture():
-                other_file = self.data_file.replace(".yml", ".yml-mac-system-provided~")
+                if on_mac:
+                    other_file = self.data_file.replace(".yml", ".yml-mac-system-provided~")
+                elif on_linux:
+                    other_file = self.data_file.replace(".yml", ".yml-linux-system-provided~")
                 if path.exists(other_file):
                     self.data_file = other_file
 
