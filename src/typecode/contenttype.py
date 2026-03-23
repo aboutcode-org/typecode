@@ -163,7 +163,7 @@ class Type(object):
     )
 
     # FIXME: we should use an introspectable attrs class instead
-    # ATTENTION: keep this in sync with sloats and properties
+    # ATTENTION: keep this in sync with slots and properties
     text_attributes = [
         "filetype_file",
         "mimetype_file",

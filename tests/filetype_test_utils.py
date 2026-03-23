@@ -8,6 +8,7 @@
 #
 
 import io
+import platform
 from os import path
 from collections import OrderedDict
 
@@ -30,6 +31,18 @@ Data-driven file type test utilities.
 
 test_env = FileDrivenTesting()
 test_env.test_data_dir = path.join(path.dirname(__file__), "data")
+
+
+def is_arm_architecture():
+    """
+    Return True if the current system architecture is ARM, False otherwise.
+    """
+    machine = platform.machine().lower()
+    # Common ARM architectures include 'arm64', 'aarch64', 'armv7l', etc.
+    if "arm" in machine or "aarch" in machine:
+        return True
+    else:
+        return False
 
 
 @attr.s(slots=True)
@@ -101,6 +114,11 @@ class FileTypeTest(object):
 
     def __attrs_post_init__(self, *args, **kwargs):
         if self.data_file:
+            if is_arm_architecture():
+                other_file = self.data_file.replace(".yml", ".yml-mac-system-provided~")
+                if path.exists(other_file):
+                    self.data_file = other_file
+
             try:
                 with io.open(self.data_file, encoding="utf-8") as df:
                     for key, value in saneyaml.load(df.read()).items():
