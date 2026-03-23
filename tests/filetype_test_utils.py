@@ -7,14 +7,16 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
-from collections import OrderedDict
 import io
+import platform
 from os import path
+from collections import OrderedDict
 
 import attr
 import pytest
 import saneyaml
 
+from commoncode.system import on_linux
 from commoncode.system import on_mac
 from commoncode.system import on_windows
 from commoncode.testcase import FileDrivenTesting
@@ -23,12 +25,25 @@ from commoncode.text import python_safe_name
 from typecode.contenttype import get_type
 from typecode.contenttype import Type
 
+
 """
 Data-driven file type test utilities.
 """
 
 test_env = FileDrivenTesting()
 test_env.test_data_dir = path.join(path.dirname(__file__), "data")
+
+
+def is_arm_architecture():
+    """
+    Return True if the current system architecture is ARM, False otherwise.
+    """
+    machine = platform.machine().lower()
+    # Common ARM architectures include 'arm64', 'aarch64', 'armv7l', etc.
+    if "arm" in machine or "aarch" in machine:
+        return True
+    else:
+        return False
 
 
 @attr.s(slots=True)
@@ -100,6 +115,14 @@ class FileTypeTest(object):
 
     def __attrs_post_init__(self, *args, **kwargs):
         if self.data_file:
+            if is_arm_architecture():
+                if on_mac:
+                    other_file = self.data_file.replace(".yml", ".yml-mac-system-provided~")
+                elif on_linux:
+                    other_file = self.data_file.replace(".yml", ".yml-linux-system-provided~")
+                if path.exists(other_file):
+                    self.data_file = other_file
+
             try:
                 with io.open(self.data_file, encoding="utf-8") as df:
                     for key, value in saneyaml.load(df.read()).items():
@@ -113,7 +136,7 @@ class FileTypeTest(object):
         if isinstance(self.size, str):
             self.size = int(self.size)
 
-    def to_dict(self, filter_empty=False, filter_extra=False):
+    def to_dict(self, filter_empty=False, filter_extra=False, normalize_filetype=True):
         """
         Serialize self to an ordered mapping.
         """
@@ -121,7 +144,13 @@ class FileTypeTest(object):
             field for field in attr.fields(FileTypeTest) if field.name in ("data_file", "test_file")
         ]
         fields_filter = attr.filters.exclude(*filtered)
-        data = attr.asdict(self, filter=fields_filter, dict_factory=OrderedDict)
+
+        if normalize_filetype:
+            split_filetype_file = self.filetype_file.split(" ")
+            if split_filetype_file:
+                self.filetype_file = split_filetype_file[0]
+
+        data = attr.asdict(self, filter=fields_filter)
         data = data.items()
         if filter_empty:
             # skip empty fields

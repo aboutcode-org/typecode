@@ -1,0 +1,9 @@
+filetype_file: PE32 executable for MS Windows 4.00 (console), Intel i386 (stripped to external PDB), 5 sections
+mimetype_file: application/vnd.microsoft.portable-executable
+mimetype_python: application/x-msdownload
+is_file: yes
+is_regular: yes
+size: 45056
+is_binary: yes
+contains_text: yes
+is_winexe: yes

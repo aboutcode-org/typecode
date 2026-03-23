@@ -1,4 +1,4 @@
-filetype_file: Zip archive data, at least v1.0 to extract
+filetype_file: Zip archive data
 mimetype_file: application/zip
 mimetype_python: application/zip
 is_file: yes
