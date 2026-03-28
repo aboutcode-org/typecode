@@ -742,7 +742,8 @@ class Type(object):
         elif self.is_makefile or self.is_js_map:
             return False
 
-        elif self.is_java_source is True or self.is_c_source is True:
+        # Recognize "known-by-extension" source types
+        elif self.is_java_source or self.is_c_source or self.is_julia_source:
             return True
 
         elif self.filetype_pygment or self.is_script is True:
@@ -758,8 +759,18 @@ class Type(object):
         string.
         """
         if self.is_source:
+            # If the custom extension check found Julia, use that name explicitly
+            if self.is_julia_source:
+                return "Julia"
             return self.filetype_pygment or ""
         return ""
+
+    @property
+    def is_julia_source(self):
+        """
+        Return True if the file is Julia source code based on .jl extension.
+        """
+        return self.is_file and self.location.lower().endswith(".jl")
 
     @property
     def is_c_source(self):
@@ -950,7 +961,8 @@ def get_text_file_start(location, length=4096):
         with open(location, "rb") as f:
             content = text.as_unicode(f.read(length))
     finally:
-        return content
+        pass
+    return content
 
 
 def get_filetype(location):
