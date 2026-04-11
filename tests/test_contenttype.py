@@ -422,8 +422,8 @@ class TestContentTypeComplex(FileBasedTesting):
     def test_contenttype_language_attributes_exist(self):
         from typecode.contenttype import get_type
         
-        # Get a Type object to test against using a dummy file extension
-        test_type = get_type('dummy.txt')
+        # Get a Type object to test against using this exact test script
+        test_type = get_type(__file__)
 
         expected_language_attributes = [
             'is_c_source',
