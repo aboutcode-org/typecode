@@ -205,6 +205,12 @@ class Type(object):
         "is_filesystem",
         "is_java_class",
         "is_java_source",
+        "is_julia_source",
+        "is_python_source",
+        "is_javascript_source",
+        "is_cpp_source",
+        "is_rust_source",
+        "is_go_source",
         "is_media",
         "is_media_with_meta",
         "is_office_doc",
@@ -742,7 +748,18 @@ class Type(object):
         elif self.is_makefile or self.is_js_map:
             return False
 
-        elif self.is_java_source is True or self.is_c_source is True:
+        # Recognize "known-by-extension" source types
+        elif (
+            self.is_java_source or 
+            self.is_c_source or 
+            self.is_julia_source or
+            self.is_python_source or
+            self.is_javascript_source or
+            self.is_cpp_source or
+            self.is_rust_source or
+            self.is_go_source
+        
+        ):
             return True
 
         elif self.filetype_pygment or self.is_script is True:
@@ -758,8 +775,38 @@ class Type(object):
         string.
         """
         if self.is_source:
+            # If the custom extension check found Julia, use that name explicitly
+            if self.is_julia_source:
+                return "Julia"
             return self.filetype_pygment or ""
         return ""
+
+    @property
+    def is_julia_source(self):
+        """
+        Return True if the file is Julia source code based on .jl extension.
+        """
+        return self.is_file and self.location.lower().endswith(".jl")
+
+    @property
+    def is_python_source(self):
+        return self.is_file and self.file_name.lower().endswith(('.py', '.pyw'))
+
+    @property
+    def is_javascript_source(self):
+        return self.is_file and self.file_name.lower().endswith(('.js', '.mjs'))
+
+    @property
+    def is_cpp_source(self):
+        return self.is_file and self.file_name.lower().endswith(('.cpp', '.cc', '.cxx', '.hpp'))
+
+    @property
+    def is_rust_source(self):
+        return self.is_file and self.file_name.lower().endswith('.rs')
+
+    @property
+    def is_go_source(self):
+        return self.is_file and self.file_name.lower().endswith('.go')
 
     @property
     def is_c_source(self):
@@ -950,7 +997,8 @@ def get_text_file_start(location, length=4096):
         with open(location, "rb") as f:
             content = text.as_unicode(f.read(length))
     finally:
-        return content
+        pass
+    return content
 
 
 def get_filetype(location):
