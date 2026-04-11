@@ -418,3 +418,23 @@ class TestContentTypeComplex(FileBasedTesting):
         test_dir = self.get_test_loc("contenttype/size")
         result = size(test_dir)
         assert result == 18
+
+    def test_contenttype_language_attributes_exist(self):
+        from typecode.contenttype import get_type
+        
+        # Get a Type object to test against using a dummy file extension
+        test_type = get_type('dummy.txt')
+
+        expected_language_attributes = [
+            'is_c_source',
+            'is_java_source',
+            'is_julia_source',
+            'is_python_source',
+            'is_javascript_source',
+            'is_cpp_source',
+            'is_rust_source',
+            'is_go_source'
+        ]
+
+        for attr_name in expected_language_attributes:
+            assert hasattr(test_type, attr_name), f"ContentType is missing the expected attribute: {attr_name}"
