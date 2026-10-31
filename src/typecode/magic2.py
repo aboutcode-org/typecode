@@ -31,6 +31,7 @@
 import ctypes.util
 import glob
 import os
+import re
 import sys
 import warnings
 
@@ -301,6 +302,18 @@ def encoding(location):
     return _detect(location, DETECT_ENC)
 
 
+#  For GNU message catalog (.mo) files, some libmagic versions append the
+#  gettext PO header's "Project-Id-Version" field verbatim to the detected
+#  type string. That field is free-form content taken from inside the
+#  scanned file (translators can put arbitrary, including non-ASCII escaped,
+#  text there) rather than structural information about the file type, so we
+#  strip it and keep only libmagic's own description.
+MO_FILE_TYPE_RE = re.compile(
+    r"^(GNU message catalog \([^)]*\), revision [\d.]+, \d+ messages),"
+    r" Project-Id-Version:.*$"
+)
+
+
 def _detect(location, flags):
     """ "
     Return the detected type using `flags` of file at `location` or an empty
@@ -314,7 +327,11 @@ def _detect(location, flags):
     val = detector.get(location)
     val = val or ""
     val = val.decode("ascii", "ignore").strip()
-    return " ".join(val.split())
+    val = " ".join(val.split())
+    mo_match = MO_FILE_TYPE_RE.match(val)
+    if mo_match:
+        val = mo_match.group(1)
+    return val
 
 
 class MagicException(Exception):
