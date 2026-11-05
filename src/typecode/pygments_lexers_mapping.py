@@ -121,7 +121,7 @@ LEXERS = {
         "typecode._vendor.pygments.lexers.c_cpp",
         "C",
         ("c",),
-        ("*.c", "*.h", "*.idc"),
+        ("*.c", "*.h", "*.idc", "*.h.in"),
         ("text/x-chdr", "text/x-csrc"),
     ),
     "CMakeLexer": (
